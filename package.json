@@ -1,0 +1,17 @@
+{
+  "name": "yper-fronts",
+  "private": true,
+  "packageManager": "pnpm@12.6.0",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "coverage": "turbo run coverage"
+  },
+  "devDependencies": {
+    "turbo": "^2.11.3"
+  }
+}
