@@ -8,7 +8,7 @@
   },
   "login": {
     "email": "Email",
-    "emailPlaceholder": "you@email.com",
+    "emailPlaceholder": "you{'@'}email.com",
     "password": "Password",
     "name": "Name",
     "submit": "Sign in",

@@ -18,3 +18,13 @@ describe('locales', () => {
     expect(flatKeys(ptBR).sort()).toEqual(flatKeys(enUS).sort());
   });
 });
+
+describe('mensagens comuns', () => {
+  it.each(['pt-BR', 'en-US'])('todas compilam e traduzem em %s', async (locale) => {
+    const { createAppI18n } = await import('../src/index.js');
+    const { t } = createAppI18n({ locale }).global;
+    for (const key of flatKeys(ptBR)) {
+      expect(t(key)).not.toBe(key);
+    }
+  });
+});

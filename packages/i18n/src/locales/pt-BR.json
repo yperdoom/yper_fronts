@@ -8,7 +8,7 @@
   },
   "login": {
     "email": "E-mail",
-    "emailPlaceholder": "voce@email.com",
+    "emailPlaceholder": "voce{'@'}email.com",
     "password": "Senha",
     "name": "Nome",
     "submit": "Entrar",
