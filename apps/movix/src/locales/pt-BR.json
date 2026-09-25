@@ -1,0 +1,12 @@
+{
+  "app": {
+    "tagline": "Controle de estoque e notas"
+  },
+  "nav": {
+    "home": "Visão geral",
+    "products": "Produtos",
+    "movements": "Movimentações",
+    "invoices": "Notas",
+    "suppliers": "Fornecedores"
+  }
+}
