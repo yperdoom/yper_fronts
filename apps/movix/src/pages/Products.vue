@@ -1,8 +1,8 @@
 <template>
-  <AppShell title="Produtos">
+  <AppShell :title="$t('products.title')">
     <template #actions>
       <button class="btn btn-primary" @click="openForm()">
-        <span class="material-symbols-outlined">add</span> Novo produto
+        <span class="material-symbols-outlined">add</span> {{ $t('products.newProduct') }}
       </button>
     </template>
 
@@ -11,34 +11,34 @@
         <div class="row">
           <div class="search">
             <span class="material-symbols-outlined">search</span>
-            <input v-model="search" type="search" placeholder="Nome, SKU ou categoria" />
+            <input v-model="search" type="search" :placeholder="$t('products.search.placeholder')" />
           </div>
           <label class="row" :class="$style.toggle">
             <input v-model="onlyLow" type="checkbox" :class="$style.checkbox" />
-            <span>Só abaixo do mínimo</span>
+            <span>{{ $t('products.filters.onlyLow') }}</span>
           </label>
         </div>
-        <span class="muted">{{ filtered.length }} de {{ products.length }}</span>
+        <span class="muted">{{ $t('products.count', { shown: filtered.length, total: products.length }) }}</span>
       </div>
 
-      <div v-if="loading" class="loading">Carregando...</div>
+      <div v-if="loading" class="loading">{{ $t('common.loading') }}</div>
 
       <div v-else-if="!filtered.length" class="empty">
         <span class="material-symbols-outlined">inventory_2</span>
-        <p>{{ products.length ? 'Nenhum produto com esse filtro.' : 'Cadastre seu primeiro produto.' }}</p>
+        <p>{{ products.length ? $t('products.empty.filtered') : $t('products.empty.first') }}</p>
       </div>
 
       <div v-else class="table-wrap">
         <table class="data">
           <thead>
             <tr>
-              <th>Produto</th>
-              <th>Categoria</th>
-              <th>Fornecedor</th>
-              <th class="num">Estoque</th>
-              <th class="num">Custo</th>
-              <th class="num">Venda</th>
-              <th class="num">Em estoque</th>
+              <th>{{ $t('products.table.product') }}</th>
+              <th>{{ $t('products.table.category') }}</th>
+              <th>{{ $t('products.table.supplier') }}</th>
+              <th class="num">{{ $t('products.table.stock') }}</th>
+              <th class="num">{{ $t('products.table.cost') }}</th>
+              <th class="num">{{ $t('products.table.sale') }}</th>
+              <th class="num">{{ $t('products.table.stockValue') }}</th>
               <th></th>
             </tr>
           </thead>
@@ -60,13 +60,13 @@
               <td class="num">{{ currency(product.stockValue) }}</td>
               <td>
                 <div class="row" :class="$style.actions">
-                  <button class="btn-icon" title="Movimentar" @click="$router.push(`/movimentacoes?produto=${product._id}`)">
+                  <button class="btn-icon" :title="$t('products.actions.move')" @click="$router.push(`/movimentacoes?produto=${product._id}`)">
                     <span class="material-symbols-outlined">swap_vert</span>
                   </button>
-                  <button class="btn-icon" title="Editar" @click="openForm(product)">
+                  <button class="btn-icon" :title="$t('common.edit')" @click="openForm(product)">
                     <span class="material-symbols-outlined">edit</span>
                   </button>
-                  <button class="btn-icon" title="Remover" @click="remove(product)">
+                  <button class="btn-icon" :title="$t('common.remove')" @click="remove(product)">
                     <span class="material-symbols-outlined">delete</span>
                   </button>
                 </div>
@@ -79,64 +79,64 @@
 
     <Modal
       :show="showForm"
-      :title="editingId ? 'Editar produto' : 'Novo produto'"
+      :title="editingId ? $t('products.form.editTitle') : $t('products.form.newTitle')"
       :saving="saving"
       @close="showForm = false"
       @submit="save"
     >
       <div class="form-grid">
         <div class="field full">
-          <label for="name">Nome</label>
+          <label for="name">{{ $t('products.form.name') }}</label>
           <input id="name" v-model="form.name" required />
         </div>
         <div class="field">
-          <label for="sku">SKU</label>
-          <input id="sku" v-model="form.sku" placeholder="opcional" />
+          <label for="sku">{{ $t('products.form.sku') }}</label>
+          <input id="sku" v-model="form.sku" :placeholder="$t('products.form.optionalPlaceholder')" />
         </div>
         <div class="field">
-          <label for="barcode">Código de barras</label>
-          <input id="barcode" v-model="form.barcode" placeholder="opcional" />
+          <label for="barcode">{{ $t('products.form.barcode') }}</label>
+          <input id="barcode" v-model="form.barcode" :placeholder="$t('products.form.optionalPlaceholder')" />
         </div>
         <div class="field">
-          <label for="category">Categoria</label>
+          <label for="category">{{ $t('products.form.category') }}</label>
           <input id="category" v-model="form.category" list="categories" />
           <datalist id="categories">
             <option v-for="c in categories" :key="c" :value="c" />
           </datalist>
         </div>
         <div class="field">
-          <label for="unit">Unidade</label>
+          <label for="unit">{{ $t('products.form.unit') }}</label>
           <select id="unit" v-model="form.unit">
             <option v-for="unit in UNITS" :key="unit" :value="unit">{{ unit }}</option>
           </select>
         </div>
         <div class="field">
-          <label for="supplier">Fornecedor</label>
+          <label for="supplier">{{ $t('products.form.supplier') }}</label>
           <select id="supplier" v-model="form.supplier">
-            <option :value="null">—</option>
+            <option :value="null">{{ '—' }}</option>
             <option v-for="s in suppliers" :key="s._id" :value="s._id">{{ s.name }}</option>
           </select>
         </div>
         <div class="field">
-          <label for="costPrice">Preço de custo</label>
+          <label for="costPrice">{{ $t('products.form.costPrice') }}</label>
           <input id="costPrice" v-model.number="form.costPrice" type="number" step="0.01" min="0" />
         </div>
         <div class="field">
-          <label for="salePrice">Preço de venda</label>
+          <label for="salePrice">{{ $t('products.form.salePrice') }}</label>
           <input id="salePrice" v-model.number="form.salePrice" type="number" step="0.01" min="0" />
         </div>
         <div class="field">
-          <label for="minimumStock">Estoque mínimo</label>
+          <label for="minimumStock">{{ $t('products.form.minimumStock') }}</label>
           <input id="minimumStock" v-model.number="form.minimumStock" type="number" step="0.01" min="0" />
         </div>
         <div v-if="!editingId" class="field">
-          <label for="currentStock">Estoque inicial</label>
+          <label for="currentStock">{{ $t('products.form.currentStock') }}</label>
           <input id="currentStock" v-model.number="form.currentStock" type="number" step="0.01" />
         </div>
       </div>
 
       <p v-if="editingId" class="muted" :class="$style.note">
-        O saldo não é editado aqui. Para corrigir, lance uma movimentação do tipo ajuste.
+        {{ $t('products.form.note') }}
       </p>
     </Modal>
   </AppShell>
@@ -145,7 +145,7 @@
 <script>
 import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
-import { currency, number } from '@yper/i18n';
+import { currency, number, errorMessage } from '@yper/i18n';
 
 const UNITS = ['un', 'cx', 'kg', 'g', 'L', 'ml', 'm', 'pct'];
 
@@ -201,7 +201,7 @@ export default {
         const { products } = await api.get('/products');
         this.products = products;
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.loading = false;
       }
@@ -242,18 +242,18 @@ export default {
         this.showForm = false;
         await this.load();
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.saving = false;
       }
     },
     async remove(product) {
-      if (!confirm(`Remover "${product.name}"?`)) return;
+      if (!confirm(this.$t('common.confirmRemove', { name: product.name }))) return;
       try {
         await api.del(`/products/${product._id}`);
         await this.load();
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       }
     },
   },

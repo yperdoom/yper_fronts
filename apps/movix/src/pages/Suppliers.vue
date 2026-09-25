@@ -1,8 +1,8 @@
 <template>
-  <AppShell title="Fornecedores">
+  <AppShell :title="$t('suppliers.title')">
     <template #actions>
       <button class="btn btn-primary" @click="openForm()">
-        <span class="material-symbols-outlined">add</span> Novo fornecedor
+        <span class="material-symbols-outlined">add</span> {{ $t('suppliers.newSupplier') }}
       </button>
     </template>
 
@@ -10,26 +10,26 @@
       <div class="card-head">
         <div class="search">
           <span class="material-symbols-outlined">search</span>
-          <input v-model="search" type="search" placeholder="Nome ou documento" />
+          <input v-model="search" type="search" :placeholder="$t('suppliers.search.placeholder')" />
         </div>
-        <span class="muted">{{ filtered.length }} de {{ suppliers.length }}</span>
+        <span class="muted">{{ $t('suppliers.count', { shown: filtered.length, total: suppliers.length }) }}</span>
       </div>
 
-      <div v-if="loading" class="loading">Carregando...</div>
+      <div v-if="loading" class="loading">{{ $t('common.loading') }}</div>
 
       <div v-else-if="!filtered.length" class="empty">
         <span class="material-symbols-outlined">local_shipping</span>
-        <p>{{ suppliers.length ? 'Nenhum fornecedor com esse filtro.' : 'Cadastre seu primeiro fornecedor.' }}</p>
+        <p>{{ suppliers.length ? $t('suppliers.empty.filtered') : $t('suppliers.empty.first') }}</p>
       </div>
 
       <div v-else class="table-wrap">
         <table class="data">
           <thead>
             <tr>
-              <th>Nome</th>
-              <th>Documento</th>
-              <th>Contato</th>
-              <th>Status</th>
+              <th>{{ $t('suppliers.table.name') }}</th>
+              <th>{{ $t('suppliers.table.document') }}</th>
+              <th>{{ $t('suppliers.table.contact') }}</th>
+              <th>{{ $t('suppliers.table.status') }}</th>
               <th></th>
             </tr>
           </thead>
@@ -43,19 +43,19 @@
               <td class="muted">
                 <div v-if="supplier.phone">{{ supplier.phone }}</div>
                 <div v-if="supplier.email">{{ supplier.email }}</div>
-                <span v-if="!supplier.phone && !supplier.email">—</span>
+                <span v-if="!supplier.phone && !supplier.email">{{ '—' }}</span>
               </td>
               <td>
                 <span class="badge" :class="supplier.active ? 'badge-ok' : ''">
-                  {{ supplier.active ? 'Ativo' : 'Inativo' }}
+                  {{ supplier.active ? $t('suppliers.status.active') : $t('suppliers.status.inactive') }}
                 </span>
               </td>
               <td>
                 <div class="row" :class="$style.actions">
-                  <button class="btn-icon" title="Editar" @click="openForm(supplier)">
+                  <button class="btn-icon" :title="$t('common.edit')" @click="openForm(supplier)">
                     <span class="material-symbols-outlined">edit</span>
                   </button>
-                  <button class="btn-icon" title="Remover" @click="remove(supplier)">
+                  <button class="btn-icon" :title="$t('common.remove')" @click="remove(supplier)">
                     <span class="material-symbols-outlined">delete</span>
                   </button>
                 </div>
@@ -68,35 +68,35 @@
 
     <Modal
       :show="showForm"
-      :title="editingId ? 'Editar fornecedor' : 'Novo fornecedor'"
+      :title="editingId ? $t('suppliers.form.editTitle') : $t('suppliers.newSupplier')"
       :saving="saving"
       @close="showForm = false"
       @submit="save"
     >
       <div class="form-grid">
         <div class="field full">
-          <label for="name">Nome</label>
+          <label for="name">{{ $t('suppliers.form.name') }}</label>
           <input id="name" v-model="form.name" required />
         </div>
         <div class="field">
-          <label for="document">CNPJ / CPF</label>
+          <label for="document">{{ $t('suppliers.form.document') }}</label>
           <input id="document" v-model="form.document" />
         </div>
         <div class="field">
-          <label for="phone">Telefone</label>
+          <label for="phone">{{ $t('suppliers.form.phone') }}</label>
           <input id="phone" v-model="form.phone" />
         </div>
         <div class="field full">
-          <label for="email">E-mail</label>
+          <label for="email">{{ $t('suppliers.form.email') }}</label>
           <input id="email" v-model="form.email" type="email" />
         </div>
         <div class="field full">
-          <label for="notes">Observações</label>
+          <label for="notes">{{ $t('suppliers.form.notes') }}</label>
           <textarea id="notes" v-model="form.notes"></textarea>
         </div>
         <label class="row full" :class="$style.toggle">
           <input v-model="form.active" type="checkbox" :class="$style.checkbox" />
-          <span>Fornecedor ativo</span>
+          <span>{{ $t('suppliers.form.activeToggle') }}</span>
         </label>
       </div>
     </Modal>
@@ -106,6 +106,7 @@
 <script>
 import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
+import { errorMessage } from '@yper/i18n';
 
 const EMPTY = { name: '', document: '', email: '', phone: '', notes: '', active: true };
 
@@ -142,7 +143,7 @@ export default {
         const { suppliers } = await api.get('/suppliers');
         this.suppliers = suppliers;
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.loading = false;
       }
@@ -163,18 +164,18 @@ export default {
         this.showForm = false;
         await this.load();
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.saving = false;
       }
     },
     async remove(supplier) {
-      if (!confirm(`Remover "${supplier.name}"?`)) return;
+      if (!confirm(this.$t('common.confirmRemove', { name: supplier.name }))) return;
       try {
         await api.del(`/suppliers/${supplier._id}`);
         await this.load();
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       }
     },
   },

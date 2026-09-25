@@ -1,8 +1,8 @@
 <template>
-  <AppShell title="Movimentações">
+  <AppShell :title="$t('movements.title')">
     <template #actions>
       <button class="btn btn-primary" @click="openForm()">
-        <span class="material-symbols-outlined">add</span> Lançar
+        <span class="material-symbols-outlined">add</span> {{ $t('movements.addButton') }}
       </button>
     </template>
 
@@ -10,38 +10,38 @@
       <div class="card-head">
         <div class="row">
           <select v-model="filterProduct" :class="$style.filter" @change="load">
-            <option value="">Todos os produtos</option>
+            <option value="">{{ $t('movements.filters.allProducts') }}</option>
             <option v-for="product in products" :key="product._id" :value="product._id">
               {{ product.name }}
             </option>
           </select>
           <select v-model="filterType" :class="$style.filter" @change="load">
-            <option value="">Todos os tipos</option>
-            <option value="in">Entrada</option>
-            <option value="out">Saída</option>
-            <option value="adjustment">Ajuste</option>
+            <option value="">{{ $t('movements.filters.allTypes') }}</option>
+            <option value="in">{{ $t('movements.types.in') }}</option>
+            <option value="out">{{ $t('movements.types.out') }}</option>
+            <option value="adjustment">{{ $t('movements.types.adjustment') }}</option>
           </select>
         </div>
-        <span class="muted">{{ movements.length }} lançamento(s)</span>
+        <span class="muted">{{ $t('movements.count', { count: movements.length }) }}</span>
       </div>
 
-      <div v-if="loading" class="loading">Carregando...</div>
+      <div v-if="loading" class="loading">{{ $t('common.loading') }}</div>
 
       <div v-else-if="!movements.length" class="empty">
         <span class="material-symbols-outlined">swap_vert</span>
-        <p>Nenhuma movimentação encontrada.</p>
+        <p>{{ $t('movements.empty') }}</p>
       </div>
 
       <div v-else class="table-wrap">
         <table class="data">
           <thead>
             <tr>
-              <th>Quando</th>
-              <th>Produto</th>
-              <th>Tipo</th>
-              <th class="num">Variação</th>
-              <th class="num">Saldo</th>
-              <th>Origem</th>
+              <th>{{ $t('movements.table.when') }}</th>
+              <th>{{ $t('movements.table.product') }}</th>
+              <th>{{ $t('movements.table.type') }}</th>
+              <th class="num">{{ $t('movements.table.delta') }}</th>
+              <th class="num">{{ $t('movements.table.balance') }}</th>
+              <th>{{ $t('movements.table.origin') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -52,7 +52,7 @@
                 <div v-if="movement.product?.sku" class="muted">{{ movement.product.sku }}</div>
               </td>
               <td>
-                <span class="badge" :class="TYPE_BADGE[movement.type]">{{ TYPE_LABEL[movement.type] }}</span>
+                <span class="badge" :class="TYPE_BADGE[movement.type]">{{ $t(`movements.types.${movement.type}`) }}</span>
               </td>
               <td class="num">
                 <strong :class="movement.delta >= 0 ? $style.pos : $style.neg">
@@ -62,7 +62,7 @@
               <td class="num">{{ number(movement.balanceAfter, 2) }}</td>
               <td class="muted">
                 <router-link v-if="movement.invoice" to="/notas">
-                  NF {{ movement.invoice.number }}/{{ movement.invoice.series }}
+                  {{ $t('movements.invoiceRef', { number: movement.invoice.number, series: movement.invoice.series }) }}
                 </router-link>
                 <span v-else>{{ movement.reason || '—' }}</span>
               </td>
@@ -74,50 +74,50 @@
 
     <Modal
       :show="showForm"
-      title="Nova movimentação"
-      submit-label="Lançar"
+      :title="$t('movements.form.title')"
+      :submit-label="$t('movements.addButton')"
       :saving="saving"
       @close="showForm = false"
       @submit="save"
     >
       <div class="form-grid">
         <div class="field full">
-          <label for="product">Produto</label>
+          <label for="product">{{ $t('movements.form.product') }}</label>
           <select id="product" v-model="form.product" required>
-            <option value="" disabled>Selecione</option>
+            <option value="" disabled>{{ $t('movements.form.selectProduct') }}</option>
             <option v-for="product in products" :key="product._id" :value="product._id">
-              {{ product.name }} — saldo {{ number(product.currentStock, 2) }} {{ product.unit }}
+              {{ $t('movements.form.productOption', { name: product.name, balance: number(product.currentStock, 2), unit: product.unit }) }}
             </option>
           </select>
         </div>
         <div class="field">
-          <label for="type">Tipo</label>
+          <label for="type">{{ $t('movements.form.type') }}</label>
           <select id="type" v-model="form.type">
-            <option value="in">Entrada</option>
-            <option value="out">Saída</option>
-            <option value="adjustment">Ajuste (saldo final)</option>
+            <option value="in">{{ $t('movements.types.in') }}</option>
+            <option value="out">{{ $t('movements.types.out') }}</option>
+            <option value="adjustment">{{ $t('movements.form.adjustmentType') }}</option>
           </select>
         </div>
         <div class="field">
-          <label for="quantity">{{ form.type === 'adjustment' ? 'Novo saldo' : 'Quantidade' }}</label>
+          <label for="quantity">{{ form.type === 'adjustment' ? $t('movements.form.newBalance') : $t('movements.form.quantity') }}</label>
           <input id="quantity" v-model.number="form.quantity" type="number" step="0.01" min="0" required />
         </div>
         <div class="field">
-          <label for="unitCost">Custo unitário</label>
+          <label for="unitCost">{{ $t('movements.form.unitCost') }}</label>
           <input id="unitCost" v-model.number="form.unitCost" type="number" step="0.01" min="0" />
         </div>
         <div class="field full">
-          <label for="reason">Motivo</label>
-          <input id="reason" v-model="form.reason" placeholder="compra, perda, contagem..." />
+          <label for="reason">{{ $t('movements.form.reason') }}</label>
+          <input id="reason" v-model="form.reason" :placeholder="$t('movements.form.reasonPlaceholder')" />
         </div>
       </div>
 
       <p class="muted" :class="$style.note">
         <template v-if="form.type === 'adjustment'">
-          No ajuste, informe o saldo que o produto passa a ter. A diferença é calculada e registrada.
+          {{ $t('movements.form.noteAdjustment') }}
         </template>
         <template v-else>
-          Movimentações não podem ser editadas nem apagadas. Para corrigir, lance um ajuste.
+          {{ $t('movements.form.noteDefault') }}
         </template>
       </p>
     </Modal>
@@ -127,9 +127,8 @@
 <script>
 import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
-import { number, dateTime } from '@yper/i18n';
+import { number, dateTime, errorMessage } from '@yper/i18n';
 
-const TYPE_LABEL = { in: 'Entrada', out: 'Saída', adjustment: 'Ajuste' };
 const TYPE_BADGE = { in: 'badge-ok', out: 'badge-danger', adjustment: 'badge-accent' };
 const EMPTY = { product: '', type: 'in', quantity: 0, unitCost: 0, reason: '' };
 
@@ -138,7 +137,6 @@ export default {
   components: { AppShell, Modal },
   data() {
     return {
-      TYPE_LABEL,
       TYPE_BADGE,
       movements: [],
       products: [],
@@ -168,7 +166,7 @@ export default {
         const { movements } = await api.get(`/movements${query ? `?${query}` : ''}`);
         this.movements = movements;
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.loading = false;
       }
@@ -192,7 +190,7 @@ export default {
         this.showForm = false;
         await Promise.all([this.load(), this.loadProducts()]);
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.saving = false;
       }

@@ -1,25 +1,25 @@
 <template>
-  <AppShell title="Visão geral">
-    <div v-if="loading" class="loading">Carregando...</div>
+  <AppShell :title="$t('dashboard.title')">
+    <div v-if="loading" class="loading">{{ $t('common.loading') }}</div>
 
     <div v-else class="stack">
       <div class="grid">
         <div class="card kpi">
-          <div class="kpi-label"><span class="material-symbols-outlined">inventory_2</span> Produtos ativos</div>
+          <div class="kpi-label"><span class="material-symbols-outlined">inventory_2</span> {{ $t('dashboard.kpis.activeProducts') }}</div>
           <div class="kpi-value">{{ data.totalProducts }}</div>
         </div>
         <div class="card kpi">
-          <div class="kpi-label"><span class="material-symbols-outlined">payments</span> Valor em estoque</div>
+          <div class="kpi-label"><span class="material-symbols-outlined">payments</span> {{ $t('dashboard.kpis.stockValue') }}</div>
           <div class="kpi-value">{{ currency(data.stockValue) }}</div>
-          <div class="kpi-hint">pelo preço de custo</div>
+          <div class="kpi-hint">{{ $t('dashboard.kpis.stockValueHint') }}</div>
         </div>
         <div class="card kpi">
-          <div class="kpi-label"><span class="material-symbols-outlined">shopping_cart</span> Compras no mês</div>
+          <div class="kpi-label"><span class="material-symbols-outlined">shopping_cart</span> {{ $t('dashboard.kpis.purchasesThisMonth') }}</div>
           <div class="kpi-value">{{ currency(data.purchasesThisMonth) }}</div>
-          <div class="kpi-hint">{{ data.invoicesThisMonth }} nota(s) confirmada(s)</div>
+          <div class="kpi-hint">{{ $t('dashboard.kpis.purchasesThisMonthHint', { count: data.invoicesThisMonth }) }}</div>
         </div>
         <div class="card kpi">
-          <div class="kpi-label"><span class="material-symbols-outlined">sell</span> Vendas no mês</div>
+          <div class="kpi-label"><span class="material-symbols-outlined">sell</span> {{ $t('dashboard.kpis.salesThisMonth') }}</div>
           <div class="kpi-value">{{ currency(data.salesThisMonth) }}</div>
         </div>
       </div>
@@ -27,7 +27,7 @@
       <div :class="$style.split">
         <section class="card">
           <div class="card-head">
-            <h2>Abaixo do mínimo</h2>
+            <h2>{{ $t('dashboard.lowStock.title') }}</h2>
             <span class="badge" :class="data.lowStock.length ? 'badge-warn' : 'badge-ok'">
               {{ data.lowStock.length }}
             </span>
@@ -35,24 +35,24 @@
 
           <div v-if="!data.lowStock.length" class="empty">
             <span class="material-symbols-outlined">check_circle</span>
-            <p>Nenhum produto abaixo do mínimo.</p>
+            <p>{{ $t('dashboard.lowStock.empty') }}</p>
           </div>
 
           <div v-else class="table-wrap">
             <table class="data">
               <thead>
                 <tr>
-                  <th>Produto</th>
-                  <th class="num">Atual</th>
-                  <th class="num">Mínimo</th>
-                  <th class="num">Repor</th>
+                  <th>{{ $t('dashboard.lowStock.table.product') }}</th>
+                  <th class="num">{{ $t('dashboard.lowStock.table.current') }}</th>
+                  <th class="num">{{ $t('dashboard.lowStock.table.minimum') }}</th>
+                  <th class="num">{{ $t('dashboard.lowStock.table.reorder') }}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="product in data.lowStock" :key="product._id">
                   <td>
                     {{ product.name }}
-                    <span v-if="product.sku" class="muted">· {{ product.sku }}</span>
+                    <span v-if="product.sku" class="muted">{{ `· ${product.sku}` }}</span>
                   </td>
                   <td class="num">
                     <span class="badge" :class="product.currentStock <= 0 ? 'badge-danger' : 'badge-warn'">
@@ -69,23 +69,23 @@
 
         <section class="card">
           <div class="card-head">
-            <h2>Últimas movimentações</h2>
-            <router-link to="/movimentacoes" class="badge badge-accent">ver tudo</router-link>
+            <h2>{{ $t('dashboard.recentMovements.title') }}</h2>
+            <router-link to="/movimentacoes" class="badge badge-accent">{{ $t('dashboard.recentMovements.viewAll') }}</router-link>
           </div>
 
           <div v-if="!data.recentMovements.length" class="empty">
             <span class="material-symbols-outlined">swap_vert</span>
-            <p>Nenhuma movimentação registrada.</p>
+            <p>{{ $t('dashboard.recentMovements.empty') }}</p>
           </div>
 
           <div v-else class="table-wrap">
             <table class="data">
               <thead>
                 <tr>
-                  <th>Quando</th>
-                  <th>Produto</th>
-                  <th class="num">Variação</th>
-                  <th class="num">Saldo</th>
+                  <th>{{ $t('dashboard.recentMovements.table.when') }}</th>
+                  <th>{{ $t('dashboard.recentMovements.table.product') }}</th>
+                  <th class="num">{{ $t('dashboard.recentMovements.table.delta') }}</th>
+                  <th class="num">{{ $t('dashboard.recentMovements.table.balance') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -111,7 +111,7 @@
 <script>
 import { AppShell } from '@yper/ui';
 import { api } from '@/api';
-import { currency, number, dateTime } from '@yper/i18n';
+import { currency, number, dateTime, errorMessage } from '@yper/i18n';
 
 export default {
   name: 'Dashboard',
@@ -134,7 +134,7 @@ export default {
     try {
       this.data = await api.get('/dashboard');
     } catch (err) {
-      alert(err.message);
+      alert(errorMessage(this.$t, err));
     } finally {
       this.loading = false;
     }

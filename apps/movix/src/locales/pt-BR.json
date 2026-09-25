@@ -8,5 +8,219 @@
     "movements": "Movimentações",
     "invoices": "Notas",
     "suppliers": "Fornecedores"
+  },
+  "common": {
+    "edit": "Editar",
+    "remove": "Remover",
+    "confirmRemove": "Remover \"{name}\"?"
+  },
+  "dashboard": {
+    "title": "Visão geral",
+    "kpis": {
+      "activeProducts": "Produtos ativos",
+      "stockValue": "Valor em estoque",
+      "stockValueHint": "pelo preço de custo",
+      "purchasesThisMonth": "Compras no mês",
+      "purchasesThisMonthHint": "{count} nota(s) confirmada(s)",
+      "salesThisMonth": "Vendas no mês"
+    },
+    "lowStock": {
+      "title": "Abaixo do mínimo",
+      "empty": "Nenhum produto abaixo do mínimo.",
+      "table": {
+        "product": "Produto",
+        "current": "Atual",
+        "minimum": "Mínimo",
+        "reorder": "Repor"
+      }
+    },
+    "recentMovements": {
+      "title": "Últimas movimentações",
+      "viewAll": "ver tudo",
+      "empty": "Nenhuma movimentação registrada.",
+      "table": {
+        "when": "Quando",
+        "product": "Produto",
+        "delta": "Variação",
+        "balance": "Saldo"
+      }
+    }
+  },
+  "products": {
+    "title": "Produtos",
+    "newProduct": "Novo produto",
+    "search": {
+      "placeholder": "Nome, SKU ou categoria"
+    },
+    "filters": {
+      "onlyLow": "Só abaixo do mínimo"
+    },
+    "count": "{shown} de {total}",
+    "empty": {
+      "filtered": "Nenhum produto com esse filtro.",
+      "first": "Cadastre seu primeiro produto."
+    },
+    "table": {
+      "product": "Produto",
+      "category": "Categoria",
+      "supplier": "Fornecedor",
+      "stock": "Estoque",
+      "cost": "Custo",
+      "sale": "Venda",
+      "stockValue": "Em estoque"
+    },
+    "actions": {
+      "move": "Movimentar"
+    },
+    "form": {
+      "editTitle": "Editar produto",
+      "newTitle": "Novo produto",
+      "name": "Nome",
+      "sku": "SKU",
+      "optionalPlaceholder": "opcional",
+      "barcode": "Código de barras",
+      "category": "Categoria",
+      "unit": "Unidade",
+      "supplier": "Fornecedor",
+      "costPrice": "Preço de custo",
+      "salePrice": "Preço de venda",
+      "minimumStock": "Estoque mínimo",
+      "currentStock": "Estoque inicial",
+      "note": "O saldo não é editado aqui. Para corrigir, lance uma movimentação do tipo ajuste."
+    }
+  },
+  "movements": {
+    "title": "Movimentações",
+    "addButton": "Lançar",
+    "filters": {
+      "allProducts": "Todos os produtos",
+      "allTypes": "Todos os tipos"
+    },
+    "count": "{count} lançamento(s)",
+    "empty": "Nenhuma movimentação encontrada.",
+    "table": {
+      "when": "Quando",
+      "product": "Produto",
+      "type": "Tipo",
+      "delta": "Variação",
+      "balance": "Saldo",
+      "origin": "Origem"
+    },
+    "types": {
+      "in": "Entrada",
+      "out": "Saída",
+      "adjustment": "Ajuste"
+    },
+    "invoiceRef": "NF {number}/{series}",
+    "form": {
+      "title": "Nova movimentação",
+      "product": "Produto",
+      "selectProduct": "Selecione",
+      "productOption": "{name} — saldo {balance} {unit}",
+      "type": "Tipo",
+      "adjustmentType": "Ajuste (saldo final)",
+      "newBalance": "Novo saldo",
+      "quantity": "Quantidade",
+      "unitCost": "Custo unitário",
+      "reason": "Motivo",
+      "reasonPlaceholder": "compra, perda, contagem...",
+      "noteAdjustment": "No ajuste, informe o saldo que o produto passa a ter. A diferença é calculada e registrada.",
+      "noteDefault": "Movimentações não podem ser editadas nem apagadas. Para corrigir, lance um ajuste."
+    }
+  },
+  "invoices": {
+    "title": "Notas",
+    "newTitle": "Nova nota",
+    "editTitle": "Editar nota",
+    "filters": {
+      "allTypes": "Entradas e saídas",
+      "onlyIn": "Só entradas",
+      "onlyOut": "Só saídas",
+      "allStatus": "Todos os status"
+    },
+    "status": {
+      "draft": "Rascunho",
+      "confirmed": "Confirmada",
+      "cancelled": "Cancelada"
+    },
+    "count": "{count} nota(s)",
+    "empty": "Nenhuma nota lançada.",
+    "table": {
+      "number": "Nota",
+      "issueDate": "Emissão",
+      "type": "Tipo",
+      "counterpart": "Contraparte",
+      "items": "Itens",
+      "total": "Total",
+      "status": "Status"
+    },
+    "types": {
+      "in": "Entrada",
+      "out": "Saída"
+    },
+    "actions": {
+      "confirm": "Confirmar e dar baixa no estoque"
+    },
+    "form": {
+      "number": "Número",
+      "series": "Série",
+      "type": "Tipo",
+      "types": {
+        "in": "Entrada (compra)",
+        "out": "Saída (venda)"
+      },
+      "issueDate": "Emissão",
+      "supplier": "Fornecedor",
+      "counterpart": "Destinatário",
+      "accessKey": "Chave de acesso",
+      "accessKeyPlaceholder": "44 dígitos (opcional)"
+    },
+    "items": {
+      "title": "Itens",
+      "addButton": "Item",
+      "empty": "Adicione ao menos um item — é o que gera as movimentações na confirmação.",
+      "productPlaceholder": "Produto",
+      "quantityPlaceholder": "Qtd",
+      "unitPricePlaceholder": "Valor un.",
+      "total": "Total"
+    },
+    "confirmVerb": {
+      "in": "somar",
+      "out": "subtrair"
+    },
+    "confirmMessage": "Confirmar a nota {number}/{series}? Isso vai {verb} os itens no estoque.",
+    "cancelMessage": "Cancelar a nota {number}/{series}? As movimentações geradas serão estornadas.",
+    "removeMessage": "Remover a nota {number}/{series}?"
+  },
+  "suppliers": {
+    "title": "Fornecedores",
+    "newSupplier": "Novo fornecedor",
+    "search": {
+      "placeholder": "Nome ou documento"
+    },
+    "count": "{shown} de {total}",
+    "empty": {
+      "filtered": "Nenhum fornecedor com esse filtro.",
+      "first": "Cadastre seu primeiro fornecedor."
+    },
+    "table": {
+      "name": "Nome",
+      "document": "Documento",
+      "contact": "Contato",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Ativo",
+      "inactive": "Inativo"
+    },
+    "form": {
+      "editTitle": "Editar fornecedor",
+      "name": "Nome",
+      "document": "CNPJ / CPF",
+      "phone": "Telefone",
+      "email": "E-mail",
+      "notes": "Observações",
+      "activeToggle": "Fornecedor ativo"
+    }
   }
 }
