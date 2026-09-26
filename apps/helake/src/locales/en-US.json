@@ -20,12 +20,91 @@
     "title": "Recipes"
   },
   "customers": {
-    "title": "Customers"
+    "title": "Customers",
+    "newCustomer": "New Customer",
+    "search": {
+      "placeholder": "Search customers..."
+    },
+    "count": "{shown} of {total}",
+    "empty": {
+      "filtered": "No customers match this filter.",
+      "first": "Register your first customer."
+    },
+    "table": {
+      "customer": "Customer",
+      "phone": "Phone",
+      "orders": "Orders",
+      "spent": "Total spent",
+      "lastOrder": "Last order"
+    },
+    "form": {
+      "editTitle": "Edit Customer",
+      "name": "Name",
+      "phone": "Phone",
+      "notes": "Notes"
+    }
   },
   "ingredients": {
-    "title": "Ingredients"
+    "title": "Ingredients",
+    "newIngredient": "New Ingredient",
+    "search": {
+      "placeholder": "Search ingredients..."
+    },
+    "filters": {
+      "all": "All"
+    },
+    "empty": "No ingredients found.",
+    "table": {
+      "ingredient": "Ingredient",
+      "category": "Category",
+      "inStock": "In Stock",
+      "projected": "Projected",
+      "minStock": "Min. Stock",
+      "unit": "Unit",
+      "cost": "Cost / unit",
+      "status": "Status"
+    },
+    "status": {
+      "critical": "Critical",
+      "low": "Low Stock",
+      "ok": "In Stock"
+    },
+    "form": {
+      "editTitle": "Edit Ingredient",
+      "name": "Name",
+      "namePlaceholder": "e.g. Wheat flour",
+      "category": "Category",
+      "unit": "Unit",
+      "cost": "Cost per unit (R$)",
+      "currentStock": "Current Stock",
+      "minimumStock": "Minimum Stock (alert)"
+    }
   },
   "settings": {
-    "title": "Settings"
+    "title": "Settings",
+    "sections": {
+      "profile": "Profile",
+      "business": "Business",
+      "infrastructure": "Infrastructure Costs (R$/month)"
+    },
+    "form": {
+      "ownerName": "Name",
+      "whatsapp": "WhatsApp",
+      "whatsappPlaceholder": "(11) 99999-0000",
+      "businessName": "Business Name",
+      "currency": "Currency",
+      "defaultMargin": "Default Profit Margin (%)",
+      "gas": "Gas",
+      "electricity": "Electricity",
+      "water": "Water",
+      "other": "Other",
+      "monthlyHours": "Monthly Working Hours",
+      "defaultInfraPercentage": "Default Infra % on ingredient cost"
+    },
+    "currencyOptions": {
+      "BRL": "BRL — Brazilian Real",
+      "USD": "USD — US Dollar"
+    },
+    "savedMessage": "Settings saved."
   }
 }

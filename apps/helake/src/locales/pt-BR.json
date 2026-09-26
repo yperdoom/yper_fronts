@@ -20,12 +20,91 @@
     "title": "Receitas"
   },
   "customers": {
-    "title": "Clientes"
+    "title": "Clientes",
+    "newCustomer": "Novo cliente",
+    "search": {
+      "placeholder": "Buscar clientes..."
+    },
+    "count": "{shown} de {total}",
+    "empty": {
+      "filtered": "Nenhum cliente com esse filtro.",
+      "first": "Cadastre seu primeiro cliente."
+    },
+    "table": {
+      "customer": "Cliente",
+      "phone": "Telefone",
+      "orders": "Pedidos",
+      "spent": "Total gasto",
+      "lastOrder": "Último pedido"
+    },
+    "form": {
+      "editTitle": "Editar cliente",
+      "name": "Nome",
+      "phone": "Telefone",
+      "notes": "Observações"
+    }
   },
   "ingredients": {
-    "title": "Ingredientes"
+    "title": "Ingredientes",
+    "newIngredient": "Novo ingrediente",
+    "search": {
+      "placeholder": "Buscar ingredientes..."
+    },
+    "filters": {
+      "all": "Todos"
+    },
+    "empty": "Nenhum ingrediente encontrado.",
+    "table": {
+      "ingredient": "Ingrediente",
+      "category": "Categoria",
+      "inStock": "Em estoque",
+      "projected": "Projetado",
+      "minStock": "Estoque mín.",
+      "unit": "Unidade",
+      "cost": "Custo/unidade",
+      "status": "Status"
+    },
+    "status": {
+      "critical": "Crítico",
+      "low": "Estoque baixo",
+      "ok": "Em estoque"
+    },
+    "form": {
+      "editTitle": "Editar ingrediente",
+      "name": "Nome",
+      "namePlaceholder": "ex.: Farinha de trigo",
+      "category": "Categoria",
+      "unit": "Unidade",
+      "cost": "Custo por unidade (R$)",
+      "currentStock": "Estoque atual",
+      "minimumStock": "Estoque mínimo (alerta)"
+    }
   },
   "settings": {
-    "title": "Configurações"
+    "title": "Configurações",
+    "sections": {
+      "profile": "Perfil",
+      "business": "Negócio",
+      "infrastructure": "Custos de infraestrutura (R$/mês)"
+    },
+    "form": {
+      "ownerName": "Nome",
+      "whatsapp": "WhatsApp",
+      "whatsappPlaceholder": "(11) 99999-0000",
+      "businessName": "Nome do negócio",
+      "currency": "Moeda",
+      "defaultMargin": "Margem de lucro padrão (%)",
+      "gas": "Gás",
+      "electricity": "Energia",
+      "water": "Água",
+      "other": "Outros",
+      "monthlyHours": "Horas trabalhadas por mês",
+      "defaultInfraPercentage": "% padrão de infra sobre o custo do ingrediente"
+    },
+    "currencyOptions": {
+      "BRL": "BRL — Real brasileiro",
+      "USD": "USD — Dólar americano"
+    },
+    "savedMessage": "Configurações salvas."
   }
 }
