@@ -60,6 +60,13 @@ describe('LoginPage', () => {
     expect(wrapper.text()).toContain('Entrar');
   });
 
+  it.each([['<html>'], [{}]])('permanece em modo login quando auth.status responde %j', async (response) => {
+    const auth = makeAuth({ status: vi.fn().mockResolvedValue(response) });
+    const { wrapper } = await mountLogin({ auth });
+
+    expect(wrapper.find('#name').exists()).toBe(false);
+  });
+
   it('submit em modo login chama auth.login e navega para o redirect informado', async () => {
     const auth = makeAuth();
     const { wrapper, router } = await mountLogin({ auth, query: { redirect: '/produtos' } });

@@ -89,7 +89,7 @@ export default {
     // Se a base ainda nao tem nenhum usuario, a tela vira cadastro.
     try {
       const { initialized } = await this.shell.api.auth.status();
-      this.needsSetup = !initialized;
+      this.needsSetup = initialized === false;
     } catch {
       // Sem resposta da API, segue como login normal.
     }
