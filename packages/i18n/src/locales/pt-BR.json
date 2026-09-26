@@ -23,7 +23,7 @@
     "createAccount": "Criar conta",
     "wait": "Aguarde...",
     "setupNotice": "Nenhuma conta cadastrada ainda. Crie a primeira — ela vale para os três apps.",
-    "hibernateHint": "A API gratuita hiberna quando fica sem uso. Se a primeira tentativa demorar, aguarde."
+    "hibernateHint": "A API hiberna quando fica sem uso. Se a primeira tentativa demorar, aguarde."
   },
   "errors": {
     "NETWORK": "Não foi possível falar com o servidor. Tente de novo.",

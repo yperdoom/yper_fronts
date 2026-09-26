@@ -23,7 +23,7 @@
     "createAccount": "Create account",
     "wait": "Please wait...",
     "setupNotice": "No account registered yet. Create the first one — it works for all three apps.",
-    "hibernateHint": "The free API hibernates when idle. If the first attempt takes a while, please wait."
+    "hibernateHint": "The API hibernates when idle. If the first attempt takes a while, please wait."
   },
   "errors": {
     "NETWORK": "Could not reach the server. Please try again.",
