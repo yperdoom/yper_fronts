@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { createAuthGuard } from '@yper/auth';
+import { createAuthGuard, UsersPage, ChangePasswordPage } from '@yper/auth';
 
 import Login from './pages/Login.vue';
 import Dashboard from './pages/Dashboard.vue';
@@ -16,6 +16,8 @@ export const routes = [
   { path: '/movements', name: 'Movements', component: Movements },
   { path: '/invoices', name: 'Invoices', component: Invoices },
   { path: '/suppliers', name: 'Suppliers', component: Suppliers },
+  { path: '/users', name: 'Users', component: UsersPage, meta: { admin: true } },
+  { path: '/account/password', name: 'ChangePassword', component: ChangePasswordPage },
   { path: '/:pathMatch(.*)*', redirect: '/home' },
 ];
 
@@ -24,6 +26,8 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(createAuthGuard({ isAuthenticated: session.isAuthenticated, homeRoute: 'Dashboard' }));
+router.beforeEach(
+  createAuthGuard({ isAuthenticated: session.isAuthenticated, isAdmin: session.isAdmin, homeRoute: 'Dashboard' }),
+);
 
 export default router;

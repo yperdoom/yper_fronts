@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { createAuthGuard } from '@yper/auth';
+import { createAuthGuard, UsersPage, ChangePasswordPage } from '@yper/auth';
 
 import Login from './pages/Login.vue';
 import Today from './pages/Today.vue';
@@ -22,6 +22,8 @@ export const routes = [
   { path: '/foods', name: 'Foods', component: Foods },
   { path: '/measurements', name: 'Measurements', component: Measurements },
   { path: '/profile', name: 'Profile', component: Profile },
+  { path: '/users', name: 'Users', component: UsersPage, meta: { admin: true } },
+  { path: '/account/password', name: 'ChangePassword', component: ChangePasswordPage },
   { path: '/:pathMatch(.*)*', redirect: '/home' },
 ];
 
@@ -30,6 +32,8 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(createAuthGuard({ isAuthenticated: session.isAuthenticated, homeRoute: 'Today' }));
+router.beforeEach(
+  createAuthGuard({ isAuthenticated: session.isAuthenticated, isAdmin: session.isAdmin, homeRoute: 'Today' }),
+);
 
 export default router;
