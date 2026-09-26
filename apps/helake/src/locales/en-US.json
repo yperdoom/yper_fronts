@@ -11,13 +11,93 @@
     "settings": "Settings"
   },
   "dashboard": {
-    "title": "Dashboard"
+    "title": "Dashboard",
+    "kpis": {
+      "activeOrders": "Active orders",
+      "revenueThisMonth": "Revenue this month",
+      "upcoming": "Upcoming (7 days)",
+      "pending": "Pending (new)"
+    },
+    "upcoming": {
+      "title": "Upcoming orders",
+      "viewAll": "View all",
+      "empty": "No upcoming orders in the next 7 days."
+    },
+    "alerts": {
+      "title": "Ingredient alerts",
+      "empty": "All ingredients are OK.",
+      "detail": "Stock: {current} {unit} · Projected: {projected} {unit}"
+    }
   },
   "orders": {
-    "title": "Orders"
+    "title": "Orders",
+    "newOrder": "New order",
+    "empty": "No orders yet. Create your first order!",
+    "table": {
+      "customer": "Customer",
+      "recipe": "Recipe",
+      "quantity": "Qty",
+      "delivery": "Delivery",
+      "status": "Status",
+      "value": "Value"
+    },
+    "status": {
+      "new": "New",
+      "in_production": "In production",
+      "ready": "Ready",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "form": {
+      "editTitle": "Edit order",
+      "customer": "Customer",
+      "customerPlaceholder": "— Select customer —",
+      "recipe": "Recipe",
+      "recipePlaceholder": "— Select recipe —",
+      "quantity": "Quantity",
+      "deliveryDate": "Delivery date",
+      "paidPrice": "Paid price (R$)",
+      "notes": "Notes",
+      "notesPlaceholder": "Any special requests..."
+    }
   },
   "recipes": {
-    "title": "Recipes"
+    "title": "Recipes",
+    "newRecipe": "New recipe",
+    "empty": "No recipes yet. Create your first recipe!",
+    "table": {
+      "recipe": "Recipe",
+      "category": "Category",
+      "yield": "Yield",
+      "ingredientCost": "Ingredient cost",
+      "totalCost": "Total cost",
+      "sellingPrice": "Selling price",
+      "margin": "Margin"
+    },
+    "categories": {
+      "cakes": "Cakes",
+      "sweets": "Sweets",
+      "breads": "Breads",
+      "pastries": "Pastries",
+      "other": "Other"
+    },
+    "form": {
+      "editTitle": "Edit recipe",
+      "name": "Name",
+      "namePlaceholder": "e.g. Chocolate cake",
+      "category": "Category",
+      "yield": "Yield",
+      "yieldUnit": "Yield unit",
+      "sellingPrice": "Selling price (R$)",
+      "laborCost": "Labor cost (R$)",
+      "infraCostPercentage": "Infra % (leave blank to use default)",
+      "infraPlaceholder": "Default from Settings",
+      "ingredients": "Ingredients",
+      "addIngredient": "Add",
+      "noIngredients": "No ingredients added yet.",
+      "ingredientPlaceholder": "— Select ingredient —",
+      "quantityPlaceholder": "Qty"
+    }
   },
   "customers": {
     "title": "Customers",

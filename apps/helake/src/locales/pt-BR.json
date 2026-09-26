@@ -11,13 +11,93 @@
     "settings": "Configurações"
   },
   "dashboard": {
-    "title": "Visão geral"
+    "title": "Visão geral",
+    "kpis": {
+      "activeOrders": "Encomendas ativas",
+      "revenueThisMonth": "Faturamento do mês",
+      "upcoming": "Próximos 7 dias",
+      "pending": "Pendentes (novas)"
+    },
+    "upcoming": {
+      "title": "Próximas encomendas",
+      "viewAll": "Ver todas",
+      "empty": "Nenhuma encomenda nos próximos 7 dias."
+    },
+    "alerts": {
+      "title": "Alertas de ingredientes",
+      "empty": "Todos os ingredientes estão OK.",
+      "detail": "Estoque: {current} {unit} · Projetado: {projected} {unit}"
+    }
   },
   "orders": {
-    "title": "Encomendas"
+    "title": "Encomendas",
+    "newOrder": "Nova encomenda",
+    "empty": "Nenhuma encomenda ainda. Crie a primeira!",
+    "table": {
+      "customer": "Cliente",
+      "recipe": "Receita",
+      "quantity": "Qtd.",
+      "delivery": "Entrega",
+      "status": "Status",
+      "value": "Valor"
+    },
+    "status": {
+      "new": "Nova",
+      "in_production": "Em produção",
+      "ready": "Pronta",
+      "delivered": "Entregue",
+      "cancelled": "Cancelada"
+    },
+    "form": {
+      "editTitle": "Editar encomenda",
+      "customer": "Cliente",
+      "customerPlaceholder": "— Selecione o cliente —",
+      "recipe": "Receita",
+      "recipePlaceholder": "— Selecione a receita —",
+      "quantity": "Quantidade",
+      "deliveryDate": "Data de entrega",
+      "paidPrice": "Valor pago (R$)",
+      "notes": "Observações",
+      "notesPlaceholder": "Algum pedido especial..."
+    }
   },
   "recipes": {
-    "title": "Receitas"
+    "title": "Receitas",
+    "newRecipe": "Nova receita",
+    "empty": "Nenhuma receita ainda. Crie a primeira!",
+    "table": {
+      "recipe": "Receita",
+      "category": "Categoria",
+      "yield": "Rendimento",
+      "ingredientCost": "Custo ingredientes",
+      "totalCost": "Custo total",
+      "sellingPrice": "Preço de venda",
+      "margin": "Margem"
+    },
+    "categories": {
+      "cakes": "Bolos",
+      "sweets": "Doces",
+      "breads": "Pães",
+      "pastries": "Tortas",
+      "other": "Outros"
+    },
+    "form": {
+      "editTitle": "Editar receita",
+      "name": "Nome",
+      "namePlaceholder": "ex.: Bolo de chocolate",
+      "category": "Categoria",
+      "yield": "Rendimento",
+      "yieldUnit": "Unidade de rendimento",
+      "sellingPrice": "Preço de venda (R$)",
+      "laborCost": "Mão de obra (R$)",
+      "infraCostPercentage": "% de infra (em branco usa o padrão)",
+      "infraPlaceholder": "Padrão das configurações",
+      "ingredients": "Ingredientes",
+      "addIngredient": "Adicionar",
+      "noIngredients": "Nenhum ingrediente adicionado ainda.",
+      "ingredientPlaceholder": "— Selecione o ingrediente —",
+      "quantityPlaceholder": "Qtd."
+    }
   },
   "customers": {
     "title": "Clientes",

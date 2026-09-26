@@ -19,6 +19,9 @@ export default defineConfig(({ mode }) => ({
     coverage: {
       include: ['src/**/*.{js,vue}'],
       exclude: ['src/main.js'],
+      thresholds: {
+        lines: 85,
+      },
     },
   },
 }));
