@@ -39,7 +39,7 @@ describe('rotulos de enums vem do locale', () => {
 
   it('grupos musculares mostram o rotulo traduzido e mantem o valor salvo', async () => {
     api.get.mockImplementation(async () => ({
-      exercises: [{ _id: 'e1', name: 'Supino', muscleGroup: 'Peito' }],
+      exercises: [{ _id: 'e1', name: 'Supino', muscleGroup: 'chest' }],
     }));
     const muscleGroups = { chest: 'Chest' };
 
@@ -47,6 +47,6 @@ describe('rotulos de enums vem do locale', () => {
 
     expect(wrapper.find('td .badge').text()).toBe('Chest');
     const option = wrapper.findAll('option').find((o) => o.text() === 'Chest');
-    expect(option.attributes('value')).toBe('Peito');
+    expect(option.attributes('value')).toBe('chest');
   });
 });

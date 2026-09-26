@@ -14,11 +14,11 @@ import Exercises from '../../src/pages/Exercises.vue';
 
 const EXERCISES = [
   {
-    _id: 'e1', name: 'Supino reto', muscleGroup: 'Peito', equipment: 'Barra', notes: '', videoUrl: 'https://vid/1',
+    _id: 'e1', name: 'Supino reto', muscleGroup: 'chest', equipment: 'Barra', notes: '', videoUrl: 'https://vid/1',
     createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-02T00:00:00.000Z',
   },
   {
-    _id: 'e2', name: 'Agachamento', muscleGroup: 'Pernas', equipment: 'Barra', notes: '',
+    _id: 'e2', name: 'Agachamento', muscleGroup: 'legs', equipment: 'Barra', notes: '',
     createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-02T00:00:00.000Z',
   },
 ];
@@ -65,7 +65,7 @@ describe('Exercises', () => {
     expect(wrapper.text()).not.toContain('Supino reto');
 
     await wrapper.find('input[type="search"]').setValue('');
-    await wrapper.find('select').setValue('Peito');
+    await wrapper.find('select').setValue('chest');
     expect(wrapper.text()).toContain('1 de 2');
     expect(wrapper.text()).toContain('Supino reto');
     expect(wrapper.text()).not.toContain('Agachamento');
@@ -81,7 +81,7 @@ describe('Exercises', () => {
     await flushPromises();
 
     await body.find('#name').setValue('Remada curvada');
-    await body.find('#muscleGroup').setValue('Costas');
+    await body.find('#muscleGroup').setValue('back');
     await body.find('#equipment').setValue('Barra');
     await body.find('#videoUrl').setValue('https://vid/2');
     await body.find('#notes').setValue('cuidado com a lombar');
@@ -90,7 +90,7 @@ describe('Exercises', () => {
 
     expect(api.post).toHaveBeenCalledWith('/exercises', {
       name: 'Remada curvada',
-      muscleGroup: 'Costas',
+      muscleGroup: 'back',
       equipment: 'Barra',
       videoUrl: 'https://vid/2',
       notes: 'cuidado com a lombar',
@@ -111,7 +111,7 @@ describe('Exercises', () => {
 
     expect(api.put).toHaveBeenCalledWith('/exercises/e1', {
       name: 'Supino reto',
-      muscleGroup: 'Peito',
+      muscleGroup: 'chest',
       equipment: 'Halteres',
       notes: '',
       videoUrl: 'https://vid/1',

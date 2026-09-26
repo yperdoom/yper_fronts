@@ -36,7 +36,7 @@
                   {{ categoryLabel(recipe.category) }}
                 </span>
               </td>
-              <td class="muted">{{ `${recipe.yield} ${recipe.yieldUnit}` }}</td>
+              <td class="muted">{{ `${recipe.yield} ${yieldUnitLabel(recipe.yieldUnit)}` }}</td>
               <td class="num">{{ money(recipe.ingredientCost) }}</td>
               <td class="num">{{ money(recipe.totalCost) }}</td>
               <td class="num">{{ money(recipe.sellingPrice) }}</td>
@@ -84,7 +84,7 @@
         <div class="field">
           <label for="yieldUnit">{{ $t('recipes.form.yieldUnit') }}</label>
           <select id="yieldUnit" v-model="form.yieldUnit">
-            <option v-for="unit in YIELD_UNITS" :key="unit" :value="unit">{{ unit }}</option>
+            <option v-for="unit in YIELD_UNITS" :key="unit" :value="unit">{{ $t(`recipes.yieldUnits.${unit}`) }}</option>
           </select>
         </div>
         <div class="field">
@@ -154,7 +154,7 @@ const CATEGORIES = [
   { value: 'Pastries', key: 'pastries' },
   { value: 'Other', key: 'other' },
 ];
-const YIELD_UNITS = ['un', 'fatias', 'dz', 'kg', 'L'];
+const YIELD_UNITS = ['un', 'slices', 'dz', 'kg', 'L'];
 const empty = () => ({
   name: '', category: 'Other', yield: 1, yieldUnit: 'un',
   laborCost: 0, infraCostPercentage: null, sellingPrice: 0, ingredients: [],
@@ -183,6 +183,9 @@ export default {
     categoryLabel(value) {
       const category = CATEGORIES.find((c) => c.value === value);
       return category ? this.$t(`recipes.categories.${category.key}`) : value;
+    },
+    yieldUnitLabel(value) {
+      return YIELD_UNITS.includes(value) ? this.$t(`recipes.yieldUnits.${value}`) : value;
     },
     money(value) {
       return value == null ? '—' : currency(value);

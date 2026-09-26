@@ -81,6 +81,13 @@
       "pastries": "Pastries",
       "other": "Other"
     },
+    "yieldUnits": {
+      "un": "un",
+      "slices": "slices",
+      "dz": "doz",
+      "kg": "kg",
+      "L": "L"
+    },
     "form": {
       "editTitle": "Edit recipe",
       "name": "Name",

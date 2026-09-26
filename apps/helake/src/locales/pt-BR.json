@@ -81,6 +81,13 @@
       "pastries": "Tortas",
       "other": "Outros"
     },
+    "yieldUnits": {
+      "un": "un",
+      "slices": "fatias",
+      "dz": "dz",
+      "kg": "kg",
+      "L": "L"
+    },
     "form": {
       "editTitle": "Editar receita",
       "name": "Nome",

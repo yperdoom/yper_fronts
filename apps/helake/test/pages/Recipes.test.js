@@ -23,7 +23,7 @@ const INGREDIENTS = [
 // => total 35,6; margem (100 - 35,6) / 100 = 64,4%.
 const RECIPES = [
   {
-    _id: 'r1', name: 'Bolo de Chocolate', category: 'Cakes', yield: 10, yieldUnit: 'fatias',
+    _id: 'r1', name: 'Bolo de Chocolate', category: 'Cakes', yield: 10, yieldUnit: 'slices',
     laborCost: 20, infraCostPercentage: null, sellingPrice: 100,
     ingredients: [
       { ingredient: { _id: 'i1', name: 'Farinha', unit: 'kg', costPerUnit: 4.5 }, quantity: 2 },
@@ -154,10 +154,13 @@ describe('Recipes', () => {
     const categoryOption = body.findAll('#category option').find((o) => o.text() === 'Bolos');
     expect(categoryOption.attributes('value')).toBe('Cakes');
 
+    const yieldUnitOption = body.findAll('#yieldUnit option').find((o) => o.text() === 'fatias');
+    expect(yieldUnitOption.attributes('value')).toBe('slices');
+
     await body.find('#name').setValue('Bolo de Cenoura');
     await body.find('#category').setValue('Cakes');
     await body.find('#yield').setValue('12');
-    await body.find('#yieldUnit').setValue('fatias');
+    await body.find('#yieldUnit').setValue('slices');
     await body.find('#sellingPrice').setValue('80');
     await body.find('#laborCost').setValue('15');
     await body.find('#infraCostPercentage').setValue('25');
@@ -177,7 +180,7 @@ describe('Recipes', () => {
     await flushPromises();
 
     expect(api.post).toHaveBeenCalledWith('/recipes', {
-      name: 'Bolo de Cenoura', category: 'Cakes', yield: 12, yieldUnit: 'fatias',
+      name: 'Bolo de Cenoura', category: 'Cakes', yield: 12, yieldUnit: 'slices',
       laborCost: 15, infraCostPercentage: 25, sellingPrice: 80,
       ingredients: [{ ingredient: 'i1', quantity: 1.5 }],
     });
@@ -230,7 +233,7 @@ describe('Recipes', () => {
     await flushPromises();
 
     expect(api.put).toHaveBeenCalledWith('/recipes/r1', {
-      name: 'Bolo de Chocolate', category: 'Cakes', yield: 10, yieldUnit: 'fatias',
+      name: 'Bolo de Chocolate', category: 'Cakes', yield: 10, yieldUnit: 'slices',
       laborCost: 20, infraCostPercentage: null, sellingPrice: 120,
       ingredients: [{ ingredient: 'i1', quantity: 2 }, { ingredient: 'i2', quantity: 0.5 }],
     });

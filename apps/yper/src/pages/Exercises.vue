@@ -15,7 +15,7 @@
           </div>
           <select v-model="filterGroup" :class="$style.filter">
             <option value="">{{ $t('exercises.filters.allGroups') }}</option>
-            <option v-for="group in MUSCLE_GROUPS" :key="group.value" :value="group.value">{{ $t(`exercises.muscleGroups.${group.key}`) }}</option>
+            <option v-for="group in MUSCLE_GROUPS" :key="group" :value="group">{{ $t(`exercises.muscleGroups.${group}`) }}</option>
           </select>
         </div>
         <span class="muted">{{ $t('exercises.count', { shown: filtered.length, total: exercises.length }) }}</span>
@@ -87,7 +87,7 @@
         <div class="field">
           <label for="muscleGroup">{{ $t('exercises.form.muscleGroup') }}</label>
           <select id="muscleGroup" v-model="form.muscleGroup">
-            <option v-for="group in MUSCLE_GROUPS" :key="group.value" :value="group.value">{{ $t(`exercises.muscleGroups.${group.key}`) }}</option>
+            <option v-for="group in MUSCLE_GROUPS" :key="group" :value="group">{{ $t(`exercises.muscleGroups.${group}`) }}</option>
           </select>
         </div>
         <div class="field">
@@ -113,21 +113,11 @@ import { api } from '@/api';
 import { errorMessage } from '@yper/i18n';
 
 const MUSCLE_GROUPS = [
-  { value: 'Peito', key: 'chest' },
-  { value: 'Costas', key: 'back' },
-  { value: 'Pernas', key: 'legs' },
-  { value: 'Gluteos', key: 'glutes' },
-  { value: 'Ombros', key: 'shoulders' },
-  { value: 'Biceps', key: 'biceps' },
-  { value: 'Triceps', key: 'triceps' },
-  { value: 'Abdomen', key: 'abs' },
-  { value: 'Panturrilha', key: 'calves' },
-  { value: 'Cardio', key: 'cardio' },
-  { value: 'Corpo inteiro', key: 'fullBody' },
-  { value: 'Outro', key: 'other' },
+  'chest', 'back', 'legs', 'glutes', 'shoulders', 'biceps',
+  'triceps', 'abs', 'calves', 'cardio', 'fullBody', 'other',
 ];
 
-const EMPTY = { name: '', muscleGroup: 'Outro', equipment: '', videoUrl: '', notes: '' };
+const EMPTY = { name: '', muscleGroup: 'other', equipment: '', videoUrl: '', notes: '' };
 
 export default {
   name: 'Exercises',
@@ -161,8 +151,7 @@ export default {
   },
   methods: {
     muscleGroupLabel(value) {
-      const group = MUSCLE_GROUPS.find((g) => g.value === value);
-      return group ? this.$t(`exercises.muscleGroups.${group.key}`) : value;
+      return MUSCLE_GROUPS.includes(value) ? this.$t(`exercises.muscleGroups.${value}`) : value;
     },
     async load() {
       this.loading = true;
