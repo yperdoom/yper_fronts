@@ -111,11 +111,7 @@
 import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
 import { errorMessage } from '@yper/i18n';
-
-const MUSCLE_GROUPS = [
-  'chest', 'back', 'legs', 'glutes', 'shoulders', 'biceps',
-  'triceps', 'abs', 'calves', 'cardio', 'fullBody', 'other',
-];
+import { MUSCLE_GROUPS } from '@/muscleGroups';
 
 const EMPTY = { name: '', muscleGroup: 'other', equipment: '', videoUrl: '', notes: '' };
 
