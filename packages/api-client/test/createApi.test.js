@@ -185,6 +185,22 @@ describe('createApi', () => {
     expect(storage.getItem('movix_user')).toBe(JSON.stringify({ email: 'a@a.com' }));
   });
 
+  it('auth.me atualiza o usuario salvo na sessao mantendo o token', async () => {
+    storage.setItem('movix_token', 'tok');
+    storage.setItem('movix_user', JSON.stringify({ email: 'a@a.com', role: 'employee' }));
+    fetchFn.mockResolvedValue(jsonResponse({ user: { email: 'a@a.com', role: 'admin' } }));
+    const { auth, session } = createApi({ app: 'movix', baseUrl: 'https://api.test', storage, fetchFn });
+
+    await auth.me();
+
+    expect(fetchFn).toHaveBeenCalledWith(
+      'https://api.test/auth/me',
+      expect.objectContaining({ method: 'GET' }),
+    );
+    expect(storage.getItem('movix_token')).toBe('tok');
+    expect(session.getUser()).toEqual({ email: 'a@a.com', role: 'admin' });
+  });
+
   it.each([
     [{ role: 'admin' }, true],
     [{ role: 'employee' }, false],

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { mount, flushPromises } from '@vue/test-utils';
 import { createRouter, createMemoryHistory } from 'vue-router';
 import { createAppI18n } from '@yper/i18n';
 import AppShell from '../src/AppShell.vue';
@@ -23,10 +23,17 @@ function makeRouter() {
   });
 }
 
-function makeApi({ email = 'user@yper.dev', admin = false } = {}) {
+function makeApi({ email = 'user@yper.dev', admin = false, meResolvesAdmin, meFails } = {}) {
+  let currentAdmin = admin;
   return {
-    auth: { logout: vi.fn() },
-    session: { getUser: () => (email ? { email } : null), isAdmin: () => admin },
+    auth: {
+      logout: vi.fn(),
+      me: vi.fn(async () => {
+        if (meFails) throw new Error('network down');
+        if (meResolvesAdmin !== undefined) currentAdmin = meResolvesAdmin;
+      }),
+    },
+    session: { getUser: () => (email ? { email } : null), isAdmin: () => currentAdmin },
   };
 }
 
@@ -114,6 +121,23 @@ describe('AppShell', () => {
     const targets = footLinks(wrapper).map((link) => link.props('to'));
     expect(targets).toEqual(['/account/password']);
     expect(wrapper.text()).not.toContain('Usuários');
+  });
+
+  it('chama api.auth.me ao montar e passa a mostrar Usuarios quando o papel virou admin', async () => {
+    const { wrapper, api } = await mountShell({ api: makeApi({ admin: false, meResolvesAdmin: true }) });
+    await flushPromises();
+
+    expect(api.auth.me).toHaveBeenCalledTimes(1);
+    const targets = footLinks(wrapper).map((link) => link.props('to'));
+    expect(targets).toEqual(['/users', '/account/password']);
+  });
+
+  it('ignora falha de api.auth.me e mantem o estado anterior', async () => {
+    const { wrapper } = await mountShell({ api: makeApi({ admin: false, meFails: true }) });
+    await flushPromises();
+
+    const targets = footLinks(wrapper).map((link) => link.props('to'));
+    expect(targets).toEqual(['/account/password']);
   });
 
   it.each([

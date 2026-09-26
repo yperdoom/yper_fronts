@@ -143,7 +143,11 @@ export function createApi({
       return data.user;
     },
 
-    me: () => request('GET', '/auth/me'),
+    async me() {
+      const data = await request('GET', '/auth/me');
+      if (data?.user) storage.setItem(USER_KEY, JSON.stringify(data.user));
+      return data;
+    },
 
     changePassword: (currentPassword, newPassword) =>
       request('PUT', '/auth/me/password', { currentPassword, newPassword }),

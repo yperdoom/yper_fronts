@@ -97,6 +97,17 @@ export default {
       logoFailed: false,
     };
   },
+  async mounted() {
+    // Atualiza papel/apps/nome ao abrir o app, sem exigir relogin apos mudanca.
+    // Falha (ex: rede, ou 401 que ja dispara logout via onUnauthorized) e ignorada.
+    try {
+      await this.shell.api.auth.me();
+    } catch {
+      return;
+    }
+    this.user = this.shell.api.session.getUser();
+    this.isAdmin = this.shell.api.session.isAdmin();
+  },
   methods: {
     signOut() {
       this.shell.api.auth.logout();
