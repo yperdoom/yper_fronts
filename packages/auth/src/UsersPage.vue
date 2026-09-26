@@ -126,7 +126,7 @@
 
 <script>
 import { AppShell, Modal, SHELL_KEY } from '@yper/ui';
-import { translateApiError } from './translateApiError.js';
+import { errorMessage } from '@yper/i18n';
 
 const ROLES = Object.freeze(['admin', 'manager', 'employee']);
 const APPS = Object.freeze(['helake', 'movix', 'yper']);
@@ -173,7 +173,7 @@ export default {
         const { users } = await this.shell.api.auth.users.list();
         this.users = users;
       } catch (err) {
-        alert(translateApiError(this.$t, err));
+        alert(errorMessage(this.$t, err));
       } finally {
         this.loading = false;
       }
@@ -203,7 +203,7 @@ export default {
         this.showForm = false;
         await this.load();
       } catch (err) {
-        alert(translateApiError(this.$t, err));
+        alert(errorMessage(this.$t, err));
       } finally {
         this.saving = false;
       }
@@ -218,7 +218,7 @@ export default {
         await this.shell.api.auth.users.setPassword(this.resetting.id, this.newPassword);
         this.resetting = null;
       } catch (err) {
-        alert(translateApiError(this.$t, err));
+        alert(errorMessage(this.$t, err));
       } finally {
         this.saving = false;
       }
@@ -229,7 +229,7 @@ export default {
         await this.shell.api.auth.users.remove(user.id);
         await this.load();
       } catch (err) {
-        alert(translateApiError(this.$t, err));
+        alert(errorMessage(this.$t, err));
       }
     },
   },

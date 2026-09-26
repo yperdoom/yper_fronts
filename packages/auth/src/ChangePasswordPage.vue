@@ -28,7 +28,7 @@
 
 <script>
 import { AppShell, SHELL_KEY } from '@yper/ui';
-import { translateApiError } from './translateApiError.js';
+import { errorMessage } from '@yper/i18n';
 
 const MIN_PASSWORD_LENGTH = 6;
 
@@ -54,7 +54,7 @@ export default {
       this.success = false;
 
       if (this.newPassword.length < MIN_PASSWORD_LENGTH) {
-        this.error = this.$t('users.errors.passwordTooShort');
+        this.error = this.$t('account.errors.passwordTooShort');
         return;
       }
       if (this.newPassword !== this.confirmPassword) {
@@ -70,7 +70,7 @@ export default {
         this.newPassword = '';
         this.confirmPassword = '';
       } catch (err) {
-        this.error = translateApiError(this.$t, err);
+        this.error = errorMessage(this.$t, err);
       } finally {
         this.saving = false;
       }

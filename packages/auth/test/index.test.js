@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest';
 import * as auth from '../src/index.js';
 
 describe('@yper/auth', () => {
-  it('exporta paginas, guard e traducao de erros da api', () => {
+  it('exporta paginas e guard; mensagens de erro da api vem prontas, sem traducao local', () => {
     expect(Object.keys(auth).sort()).toEqual(
-      ['ChangePasswordPage', 'LoginPage', 'UsersPage', 'createAuthGuard', 'translateApiError'].sort(),
+      ['ChangePasswordPage', 'LoginPage', 'UsersPage', 'createAuthGuard'].sort(),
     );
   });
 });

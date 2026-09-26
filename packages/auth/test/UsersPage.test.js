@@ -51,12 +51,12 @@ describe('UsersPage', () => {
     expect(row(wrapper, 'admin@yper.dev').text()).toContain('Ativo');
   });
 
-  it('erro ao carregar a lista mostra alerta', async () => {
+  it('erro ao carregar a lista mostra a mensagem vinda da api', async () => {
     const api = makeApi();
     api.auth.users.list.mockRejectedValue({ code: 'HTTP', message: 'Admin only' });
     await mountUsers(api);
 
-    expect(window.alert).toHaveBeenCalledWith('Apenas administradores podem fazer isso.');
+    expect(window.alert).toHaveBeenCalledWith('Admin only');
   });
 
   it('cria usuario com nome, e-mail, senha, papel e apps e recarrega a lista', async () => {
@@ -116,7 +116,7 @@ describe('UsersPage', () => {
     });
   });
 
-  it('erro conhecido da api ao salvar mostra mensagem traduzida', async () => {
+  it('erro da api ao salvar mostra a mensagem vinda da api', async () => {
     const api = makeApi();
     api.auth.users.create.mockRejectedValue({ code: 'HTTP', status: 409, message: 'Duplicate value' });
     const { wrapper, body } = await mountUsers(api);
@@ -127,7 +127,7 @@ describe('UsersPage', () => {
     await body.find('form').trigger('submit');
     await flushPromises();
 
-    expect(window.alert).toHaveBeenCalledWith('Já existe um usuário com este e-mail.');
+    expect(window.alert).toHaveBeenCalledWith('Duplicate value');
     expect(body.find('[role="dialog"]').exists()).toBe(true);
   });
 
@@ -144,7 +144,7 @@ describe('UsersPage', () => {
     expect(body.find('[role="dialog"]').exists()).toBe(false);
   });
 
-  it('erro ao redefinir a senha mostra alerta traduzido', async () => {
+  it('erro ao redefinir a senha mostra a mensagem vinda da api', async () => {
     const api = makeApi();
     api.auth.users.setPassword.mockRejectedValue({
       code: 'HTTP',
@@ -157,7 +157,7 @@ describe('UsersPage', () => {
     await body.find('form').trigger('submit');
     await flushPromises();
 
-    expect(window.alert).toHaveBeenCalledWith('A senha precisa ter pelo menos 6 caracteres.');
+    expect(window.alert).toHaveBeenCalledWith('Password must have at least 6 characters');
   });
 
   it('remove com confirmacao e recarrega a lista', async () => {
@@ -180,7 +180,7 @@ describe('UsersPage', () => {
     expect(api.auth.users.remove).not.toHaveBeenCalled();
   });
 
-  it('erro ao remover mostra alerta', async () => {
+  it('erro ao remover mostra a mensagem vinda da api', async () => {
     const api = makeApi();
     api.auth.users.remove.mockRejectedValue({ code: 'HTTP', message: 'Not found' });
     const { wrapper } = await mountUsers(api);
@@ -188,7 +188,7 @@ describe('UsersPage', () => {
     await button(row(wrapper, 'bia@yper.dev'), 'Remover').trigger('click');
     await flushPromises();
 
-    expect(window.alert).toHaveBeenCalledWith('Usuário não encontrado.');
+    expect(window.alert).toHaveBeenCalledWith('Not found');
   });
 
   it('na propria linha nao ha remover nem controles de papel e ativo', async () => {

@@ -48,9 +48,9 @@ describe('usuarios, papeis e conta', () => {
       'roles.manager',
       'roles.employee',
       'users.title',
-      'users.errors.duplicateEmail',
       'account.changePassword',
-      'account.errors.currentIncorrect',
+      'account.errors.mismatch',
+      'account.errors.passwordTooShort',
     ]) {
       expect(t(key)).not.toBe(key);
     }
@@ -61,5 +61,21 @@ describe('usuarios, papeis e conta', () => {
 
     expect(ptBR.apps).toEqual(expected);
     expect(enUS.apps).toEqual(expected);
+  });
+});
+
+describe('mensagens de erro traduzidas pela api', () => {
+  it('nao existem mais chaves de erro derivadas da api: ela agora manda o texto ja traduzido', () => {
+    expect(ptBR.users.errors).toBeUndefined();
+    expect(enUS.users.errors).toBeUndefined();
+    expect(ptBR.account.errors.currentRequired).toBeUndefined();
+    expect(ptBR.account.errors.currentIncorrect).toBeUndefined();
+    expect(enUS.account.errors.currentRequired).toBeUndefined();
+    expect(enUS.account.errors.currentIncorrect).toBeUndefined();
+  });
+
+  it('password-too-short e validacao do proprio front, mantida em account.errors', () => {
+    expect(ptBR.account.errors.passwordTooShort).toBe('A senha precisa ter pelo menos 6 caracteres.');
+    expect(enUS.account.errors.passwordTooShort).toBe('Password must have at least 6 characters.');
   });
 });

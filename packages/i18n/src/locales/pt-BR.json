@@ -52,16 +52,6 @@
     "status": {
       "active": "Ativo",
       "inactive": "Inativo"
-    },
-    "errors": {
-      "emailPasswordRequired": "E-mail e senha são obrigatórios.",
-      "passwordTooShort": "A senha precisa ter pelo menos 6 caracteres.",
-      "validationFailed": "Dados inválidos. Confira os campos.",
-      "duplicateEmail": "Já existe um usuário com este e-mail.",
-      "selfDemote": "Você não pode rebaixar nem desativar a si mesmo.",
-      "selfDelete": "Você não pode remover a si mesmo.",
-      "notFound": "Usuário não encontrado.",
-      "adminOnly": "Apenas administradores podem fazer isso."
     }
   },
   "roles": {
@@ -82,8 +72,7 @@
     "success": "Senha alterada com sucesso.",
     "errors": {
       "mismatch": "A confirmação não confere com a nova senha.",
-      "currentRequired": "Informe a senha atual.",
-      "currentIncorrect": "Senha atual incorreta."
+      "passwordTooShort": "A senha precisa ter pelo menos 6 caracteres."
     }
   }
 }

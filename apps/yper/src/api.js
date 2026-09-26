@@ -1,4 +1,5 @@
 import { createApi } from '@yper/api-client';
+import { i18n } from './i18n.js';
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -9,6 +10,7 @@ if (!baseUrl) {
 const client = createApi({
   app: 'yper',
   baseUrl,
+  getLocale: () => i18n.global.locale.value,
   onUnauthorized: () => window.location.assign('/'),
 });
 

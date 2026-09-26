@@ -44,9 +44,9 @@ describe('ChangePasswordPage', () => {
     expect(wrapper.text()).toContain('A senha precisa ter pelo menos 6 caracteres.');
   });
 
-  it('senha atual errada (400 da api) mostra mensagem traduzida', async () => {
+  it('senha atual errada mostra a mensagem vinda da api', async () => {
     const api = createFakeApi();
-    api.auth.changePassword.mockRejectedValue({ code: 'HTTP', status: 400, message: 'Current password is incorrect' });
+    api.auth.changePassword.mockRejectedValue({ code: 'HTTP', message: 'Senha atual incorreta.' });
     const { wrapper } = await mountPage(ChangePasswordPage, { api });
 
     await fill(wrapper);

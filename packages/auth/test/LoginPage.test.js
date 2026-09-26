@@ -149,6 +149,20 @@ describe('LoginPage', () => {
     expect(wrapper.text()).toContain('Credenciais invalidas');
   });
 
+  it('401 com credenciais invalidas exibe a mensagem vinda da api, sem deslogar', async () => {
+    const auth = makeAuth({
+      login: vi.fn().mockRejectedValue({ code: 'HTTP', status: 401, message: 'E-mail ou senha inválidos.' }),
+    });
+    const { wrapper } = await mountLogin({ auth });
+
+    await wrapper.find('#email').setValue('ana@yper.dev');
+    await wrapper.find('#password').setValue('errada');
+    await wrapper.find('form').trigger('submit');
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('E-mail ou senha inválidos.');
+  });
+
   it('erro ao carregar o wordmark mostra o appName no h1 e a tagline', async () => {
     const { wrapper } = await mountLogin({ props: { tagline: 'Controle de estoque e notas' } });
 

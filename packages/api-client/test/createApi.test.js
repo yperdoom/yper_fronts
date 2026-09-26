@@ -195,4 +195,75 @@ describe('createApi', () => {
 
     expect(session.isAdmin()).toBe(expected);
   });
+
+  it('envia Accept-Language com o locale quando getLocale e fornecido', async () => {
+    fetchFn.mockResolvedValue(jsonResponse({ ok: true }));
+    const { api } = createApi({
+      app: 'movix',
+      baseUrl: 'https://api.test',
+      storage,
+      fetchFn,
+      getLocale: () => 'pt-BR',
+    });
+
+    await api.get('/products');
+
+    const headers = fetchFn.mock.calls[0][1].headers;
+    expect(headers['Accept-Language']).toBe('pt-BR');
+  });
+
+  it('nao envia Accept-Language quando getLocale nao e fornecido', async () => {
+    fetchFn.mockResolvedValue(jsonResponse({ ok: true }));
+    const { api } = createApi({ app: 'movix', baseUrl: 'https://api.test', storage, fetchFn });
+
+    await api.get('/products');
+
+    const headers = fetchFn.mock.calls[0][1].headers;
+    expect(headers['Accept-Language']).toBeUndefined();
+  });
+
+  it('ApiError expoe apiCode e params vindos do payload de erro', async () => {
+    fetchFn.mockResolvedValue(
+      jsonResponse({ error: 'Dados invalidos', code: 'VALIDATION_FAILED', params: { field: 'email' } }, { status: 422 }),
+    );
+    const { api } = createApi({ app: 'movix', baseUrl: 'https://api.test', storage, fetchFn });
+
+    await expect(api.post('/products', {})).rejects.toMatchObject({
+      message: 'Dados invalidos',
+      code: 'HTTP',
+      apiCode: 'VALIDATION_FAILED',
+      params: { field: 'email' },
+    });
+  });
+
+  it('401 em /auth/login apenas lanca ApiError HTTP, sem logout nem onUnauthorized', async () => {
+    storage.setItem('movix_token', 'tok');
+    fetchFn.mockResolvedValue(
+      jsonResponse({ error: 'E-mail ou senha invalidos.', code: 'INVALID_CREDENTIALS' }, { status: 401 }),
+    );
+    const onUnauthorized = vi.fn();
+    const { auth } = createApi({ app: 'movix', baseUrl: 'https://api.test', storage, fetchFn, onUnauthorized });
+
+    await expect(auth.login('a@a.com', 'wrong')).rejects.toMatchObject({
+      code: 'HTTP',
+      status: 401,
+      message: 'E-mail ou senha invalidos.',
+      apiCode: 'INVALID_CREDENTIALS',
+    });
+    expect(onUnauthorized).not.toHaveBeenCalled();
+    expect(storage.getItem('movix_token')).toBe('tok');
+  });
+
+  it('401 em /auth/setup apenas lanca ApiError HTTP, sem logout nem onUnauthorized', async () => {
+    fetchFn.mockResolvedValue(jsonResponse({ error: 'Cadastro ja realizado' }, { status: 401 }));
+    const onUnauthorized = vi.fn();
+    const { auth } = createApi({ app: 'movix', baseUrl: 'https://api.test', storage, fetchFn, onUnauthorized });
+
+    await expect(auth.setup('A', 'a@a.com', 'secret')).rejects.toMatchObject({
+      code: 'HTTP',
+      status: 401,
+      message: 'Cadastro ja realizado',
+    });
+    expect(onUnauthorized).not.toHaveBeenCalled();
+  });
 });

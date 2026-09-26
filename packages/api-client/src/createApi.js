@@ -7,12 +7,14 @@
  */
 
 export class ApiError extends Error {
-  constructor(message, status, body, code) {
+  constructor(message, status, body, code, apiCode, params) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
     this.body = body;
     this.code = code;
+    this.apiCode = apiCode;
+    this.params = params;
   }
 }
 
@@ -22,6 +24,7 @@ export function createApi({
   storage = globalThis.localStorage,
   fetchFn = globalThis.fetch,
   onUnauthorized,
+  getLocale,
 }) {
   const base = (baseUrl || '').replace(/\/$/, '');
   const TOKEN_KEY = `${app}_token`;
@@ -61,8 +64,13 @@ export function createApi({
 
   // ---------- requisicoes ----------
 
+  // Login e setup sao entrada de sessao: um 401 ali e credencial invalida ou
+  // cadastro ja feito, nao expiracao de sessao, entao nao derruba nem redireciona.
+  const AUTH_ENTRY_PATHS = new Set(['/auth/login', '/auth/setup']);
+
   async function request(method, path, body) {
     const token = getToken();
+    const locale = typeof getLocale === 'function' ? getLocale() : null;
 
     let response;
     try {
@@ -71,6 +79,7 @@ export function createApi({
         headers: {
           ...(body ? { 'Content-Type': 'application/json' } : {}),
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(locale ? { 'Accept-Language': locale } : {}),
         },
         body: body ? JSON.stringify(body) : undefined,
       });
@@ -89,14 +98,21 @@ export function createApi({
       }
     }
 
-    if (response.status === 401) {
+    if (response.status === 401 && !AUTH_ENTRY_PATHS.has(path)) {
       logout();
       onUnauthorized?.();
       throw new ApiError('Sessao expirada. Faca login novamente.', 401, payload, 'UNAUTHORIZED');
     }
 
     if (!response.ok) {
-      throw new ApiError(payload?.error || `Erro ${response.status}`, response.status, payload, 'HTTP');
+      throw new ApiError(
+        payload?.error || `Erro ${response.status}`,
+        response.status,
+        payload,
+        'HTTP',
+        payload?.code,
+        payload?.params,
+      );
     }
 
     return payload;
