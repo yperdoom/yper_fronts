@@ -27,4 +27,13 @@ describe('mensagens comuns', () => {
       expect(t(key)).not.toBe(key);
     }
   });
+
+  it.each(['pt-BR', 'en-US'])('edit/remove/confirmRemove sao compartilhados entre apps em %s', async (locale) => {
+    const { createAppI18n } = await import('../src/index.js');
+    const { t } = createAppI18n({ locale }).global;
+
+    expect(t('common.edit')).not.toBe('common.edit');
+    expect(t('common.remove')).not.toBe('common.remove');
+    expect(t('common.confirmRemove', { name: 'Acme' })).toContain('Acme');
+  });
 });

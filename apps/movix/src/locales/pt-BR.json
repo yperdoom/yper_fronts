@@ -9,11 +9,6 @@
     "invoices": "Notas",
     "suppliers": "Fornecedores"
   },
-  "common": {
-    "edit": "Editar",
-    "remove": "Remover",
-    "confirmRemove": "Remover \"{name}\"?"
-  },
   "dashboard": {
     "title": "Visão geral",
     "kpis": {

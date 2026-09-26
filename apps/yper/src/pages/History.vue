@@ -1,33 +1,33 @@
 <template>
-  <AppShell title="Histórico">
+  <AppShell :title="$t('history.title')">
     <template #actions>
       <button class="btn btn-primary" @click="openForm()">
-        <span class="material-symbols-outlined">add</span> Registrar treino
+        <span class="material-symbols-outlined">add</span> {{ $t('history.newLog') }}
       </button>
     </template>
 
     <div class="card">
       <div class="card-head">
-        <h2>Sessões registradas</h2>
-        <span class="muted">{{ logs.length }} sessão(ões)</span>
+        <h2>{{ $t('history.loggedSessions') }}</h2>
+        <span class="muted">{{ $t('history.count', { count: logs.length }) }}</span>
       </div>
 
-      <div v-if="loading" class="loading">Carregando...</div>
+      <div v-if="loading" class="loading">{{ $t('common.loading') }}</div>
 
       <div v-else-if="!logs.length" class="empty">
         <span class="material-symbols-outlined">history</span>
-        <p>Nenhum treino registrado ainda.</p>
+        <p>{{ $t('history.empty') }}</p>
       </div>
 
       <div v-else>
         <article v-for="log in logs" :key="log._id" :class="$style.entry">
           <div class="row">
-            <strong>{{ log.workout?.name || 'Treino avulso' }}</strong>
+            <strong>{{ log.workout?.name || $t('history.freeWorkout') }}</strong>
             <span class="badge">{{ date(log.date) }}</span>
-            <span v-if="log.durationMinutes" class="badge">{{ log.durationMinutes }} min</span>
-            <span class="badge badge-accent">{{ number(log.totalVolume) }} kg de volume</span>
+            <span v-if="log.durationMinutes" class="badge">{{ $t('history.durationMinutes', { minutes: log.durationMinutes }) }}</span>
+            <span class="badge badge-accent">{{ $t('history.volume', { value: number(log.totalVolume) }) }}</span>
             <div class="spacer"></div>
-            <button class="btn-icon" title="Remover" @click="remove(log)">
+            <button class="btn-icon" :title="$t('common.remove')" @click="remove(log)">
               <span class="material-symbols-outlined">delete</span>
             </button>
           </div>
@@ -36,7 +36,9 @@
             <li v-for="(entry, index) in log.entries" :key="index">
               <span>{{ entry.exercise?.name || '—' }}</span>
               <span class="muted">
-                {{ entry.sets.map((set) => `${set.reps}x${set.weight}kg`).join('  ·  ') || 'sem séries' }}
+                {{ entry.sets.length
+                  ? entry.sets.map((set) => $t('history.entrySet', { reps: set.reps, weight: set.weight })).join('  ·  ')
+                  : $t('history.noSets') }}
               </span>
             </li>
           </ul>
@@ -48,49 +50,49 @@
 
     <Modal
       :show="showForm"
-      title="Registrar treino"
-      submit-label="Registrar"
+      :title="$t('history.newLog')"
+      :submit-label="$t('history.submitLabel')"
       :saving="saving"
       @close="showForm = false"
       @submit="save"
     >
       <div class="form-grid">
         <div class="field">
-          <label for="workout">Treino</label>
+          <label for="workout">{{ $t('history.form.workout') }}</label>
           <select id="workout" v-model="form.workout" @change="prefill">
-            <option :value="null">Avulso</option>
+            <option :value="null">{{ $t('history.form.freeOption') }}</option>
             <option v-for="workout in workouts" :key="workout._id" :value="workout._id">
               {{ workout.name }}
             </option>
           </select>
         </div>
         <div class="field">
-          <label for="date">Data</label>
+          <label for="date">{{ $t('history.form.date') }}</label>
           <input id="date" v-model="form.date" type="date" required />
         </div>
         <div class="field">
-          <label for="duration">Duração (min)</label>
+          <label for="duration">{{ $t('history.form.duration') }}</label>
           <input id="duration" v-model.number="form.durationMinutes" type="number" min="0" />
         </div>
       </div>
 
       <div :class="$style.items">
         <div class="row">
-          <strong>Exercícios</strong>
+          <strong>{{ $t('history.items.title') }}</strong>
           <div class="spacer"></div>
           <button type="button" class="btn" @click="addEntry">
-            <span class="material-symbols-outlined">add</span> Exercício
+            <span class="material-symbols-outlined">add</span> {{ $t('history.items.addButton') }}
           </button>
         </div>
 
         <p v-if="!form.entries.length" class="muted" :class="$style.notes">
-          Escolha um treino acima para trazer os exercícios prontos, ou adicione um a um.
+          {{ $t('history.items.empty') }}
         </p>
 
         <div v-for="(entry, entryIndex) in form.entries" :key="entryIndex" :class="$style.entryForm">
           <div class="row">
             <select v-model="entry.exercise" required :class="$style.grow">
-              <option value="" disabled>Exercício</option>
+              <option value="" disabled>{{ $t('history.items.selectPlaceholder') }}</option>
               <option v-for="exercise in exercises" :key="exercise._id" :value="exercise._id">
                 {{ exercise.name }}
               </option>
@@ -101,22 +103,22 @@
           </div>
 
           <div v-for="(set, setIndex) in entry.sets" :key="setIndex" :class="$style.set">
-            <span class="muted">{{ setIndex + 1 }}ª</span>
-            <input v-model.number="set.reps" type="number" min="0" placeholder="reps" required />
-            <input v-model.number="set.weight" type="number" step="0.5" min="0" placeholder="kg" />
+            <span class="muted">{{ $t('history.items.setNumber', { number: setIndex + 1 }) }}</span>
+            <input v-model.number="set.reps" type="number" min="0" :placeholder="$t('history.items.repsPlaceholder')" required />
+            <input v-model.number="set.weight" type="number" step="0.5" min="0" :placeholder="$t('history.items.weightPlaceholder')" />
             <button type="button" class="btn-icon" @click="entry.sets.splice(setIndex, 1)">
               <span class="material-symbols-outlined">remove</span>
             </button>
           </div>
 
           <button type="button" class="btn" :class="$style.addSet" @click="addSet(entry)">
-            <span class="material-symbols-outlined">add</span> Série
+            <span class="material-symbols-outlined">add</span> {{ $t('history.items.addSetButton') }}
           </button>
         </div>
       </div>
 
       <div class="field" :class="$style.items">
-        <label for="notes">Observações</label>
+        <label for="notes">{{ $t('history.form.notes') }}</label>
         <textarea id="notes" v-model="form.notes"></textarea>
       </div>
     </Modal>
@@ -126,7 +128,7 @@
 <script>
 import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
-import { number, date, toDateInput } from '@yper/i18n';
+import { number, date, toDateInput, errorMessage } from '@yper/i18n';
 
 const empty = () => ({
   workout: null,
@@ -162,7 +164,7 @@ export default {
         const { logs } = await api.get('/logs');
         this.logs = logs;
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.loading = false;
       }
@@ -217,18 +219,18 @@ export default {
         this.showForm = false;
         await this.load();
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.saving = false;
       }
     },
     async remove(log) {
-      if (!confirm('Remover este registro?')) return;
+      if (!confirm(this.$t('history.confirmRemove'))) return;
       try {
         await api.del(`/logs/${log._id}`);
         await this.load();
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       }
     },
   },

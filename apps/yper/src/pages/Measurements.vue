@@ -1,35 +1,35 @@
 <template>
-  <AppShell title="Evolução">
+  <AppShell :title="$t('measurements.title')">
     <template #actions>
       <button class="btn btn-primary" @click="openForm()">
-        <span class="material-symbols-outlined">add</span> Nova medição
+        <span class="material-symbols-outlined">add</span> {{ $t('measurements.newMeasurement') }}
       </button>
     </template>
 
     <div class="stack">
       <div v-if="measurements.length" class="grid">
         <div class="card kpi">
-          <div class="kpi-label"><span class="material-symbols-outlined">monitor_weight</span> Peso atual</div>
-          <div class="kpi-value">{{ number(latest.weightKg, 1) }} kg</div>
+          <div class="kpi-label"><span class="material-symbols-outlined">monitor_weight</span> {{ $t('measurements.kpi.currentWeight') }}</div>
+          <div class="kpi-value">{{ $t('measurements.kpi.weightValue', { value: number(latest.weightKg, 1) }) }}</div>
           <div class="kpi-hint">{{ date(latest.date) }}</div>
         </div>
         <div class="card kpi">
-          <div class="kpi-label"><span class="material-symbols-outlined">trending_down</span> Variação total</div>
+          <div class="kpi-label"><span class="material-symbols-outlined">trending_down</span> {{ $t('measurements.kpi.totalVariation') }}</div>
           <div class="kpi-value" :class="variation > 0 ? $style.up : $style.down">
-            {{ variation > 0 ? '+' : '' }}{{ number(variation, 1) }} kg
+            {{ variation > 0 ? '+' : '' }}{{ $t('measurements.kpi.weightValue', { value: number(variation, 1) }) }}
           </div>
-          <div class="kpi-hint">desde {{ date(first.date) }}</div>
+          <div class="kpi-hint">{{ $t('measurements.kpi.since', { date: date(first.date) }) }}</div>
         </div>
         <div v-if="latest.bodyFatPercentage != null" class="card kpi">
-          <div class="kpi-label"><span class="material-symbols-outlined">percent</span> Gordura corporal</div>
-          <div class="kpi-value">{{ number(latest.bodyFatPercentage, 1) }}%</div>
+          <div class="kpi-label"><span class="material-symbols-outlined">percent</span> {{ $t('measurements.kpi.bodyFat') }}</div>
+          <div class="kpi-value">{{ $t('measurements.kpi.percentValue', { value: number(latest.bodyFatPercentage, 1) }) }}</div>
         </div>
       </div>
 
       <section v-if="chart.points.length > 1" class="card">
         <div class="card-head">
-          <h2>Peso ao longo do tempo</h2>
-          <span class="muted">{{ chart.points.length }} medições</span>
+          <h2>{{ $t('measurements.chart.title') }}</h2>
+          <span class="muted">{{ $t('measurements.chart.count', { count: chart.points.length }) }}</span>
         </div>
         <div class="card-body">
           <svg :viewBox="`0 0 ${chart.width} ${chart.height}`" :class="$style.chart" preserveAspectRatio="none">
@@ -52,7 +52,7 @@
           <div class="row" :class="$style.chartAxis">
             <span class="muted">{{ date(first.date) }}</span>
             <div class="spacer"></div>
-            <span class="muted">{{ number(chart.min, 1) }} – {{ number(chart.max, 1) }} kg</span>
+            <span class="muted">{{ $t('measurements.chart.range', { min: number(chart.min, 1), max: number(chart.max, 1) }) }}</span>
             <div class="spacer"></div>
             <span class="muted">{{ date(latest.date) }}</span>
           </div>
@@ -61,37 +61,37 @@
 
       <div class="card">
         <div class="card-head">
-          <h2>Medições</h2>
-          <span class="muted">{{ measurements.length }} registro(s)</span>
+          <h2>{{ $t('measurements.list.title') }}</h2>
+          <span class="muted">{{ $t('measurements.list.count', { count: measurements.length }) }}</span>
         </div>
 
-        <div v-if="loading" class="loading">Carregando...</div>
+        <div v-if="loading" class="loading">{{ $t('common.loading') }}</div>
 
         <div v-else-if="!measurements.length" class="empty">
           <span class="material-symbols-outlined">monitoring</span>
-          <p>Registre sua primeira medição para acompanhar a evolução.</p>
+          <p>{{ $t('measurements.list.empty') }}</p>
         </div>
 
         <div v-else class="table-wrap">
           <table class="data">
             <thead>
               <tr>
-                <th>Data</th>
-                <th class="num">Peso</th>
-                <th class="num">Gordura</th>
-                <th class="num">Peito</th>
-                <th class="num">Cintura</th>
-                <th class="num">Quadril</th>
-                <th class="num">Braço</th>
-                <th class="num">Coxa</th>
+                <th>{{ $t('measurements.table.date') }}</th>
+                <th class="num">{{ $t('measurements.table.weight') }}</th>
+                <th class="num">{{ $t('measurements.table.fat') }}</th>
+                <th class="num">{{ $t('measurements.table.chest') }}</th>
+                <th class="num">{{ $t('measurements.table.waist') }}</th>
+                <th class="num">{{ $t('measurements.table.hip') }}</th>
+                <th class="num">{{ $t('measurements.table.arm') }}</th>
+                <th class="num">{{ $t('measurements.table.thigh') }}</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in measurements" :key="item._id">
                 <td class="muted">{{ date(item.date) }}</td>
-                <td class="num"><strong>{{ number(item.weightKg, 1) }} kg</strong></td>
-                <td class="num">{{ item.bodyFatPercentage != null ? `${number(item.bodyFatPercentage, 1)}%` : '—' }}</td>
+                <td class="num"><strong>{{ $t('measurements.kpi.weightValue', { value: number(item.weightKg, 1) }) }}</strong></td>
+                <td class="num">{{ item.bodyFatPercentage != null ? $t('measurements.kpi.percentValue', { value: number(item.bodyFatPercentage, 1) }) : '—' }}</td>
                 <td class="num">{{ cm(item.chestCm) }}</td>
                 <td class="num">{{ cm(item.waistCm) }}</td>
                 <td class="num">{{ cm(item.hipCm) }}</td>
@@ -99,10 +99,10 @@
                 <td class="num">{{ cm(item.thighCm) }}</td>
                 <td>
                   <div class="row" :class="$style.actions">
-                    <button class="btn-icon" title="Editar" @click="openForm(item)">
+                    <button class="btn-icon" :title="$t('common.edit')" @click="openForm(item)">
                       <span class="material-symbols-outlined">edit</span>
                     </button>
-                    <button class="btn-icon" title="Remover" @click="remove(item)">
+                    <button class="btn-icon" :title="$t('common.remove')" @click="remove(item)">
                       <span class="material-symbols-outlined">delete</span>
                     </button>
                   </div>
@@ -116,46 +116,46 @@
 
     <Modal
       :show="showForm"
-      :title="editingId ? 'Editar medição' : 'Nova medição'"
+      :title="editingId ? $t('measurements.form.editTitle') : $t('measurements.newMeasurement')"
       :saving="saving"
       @close="showForm = false"
       @submit="save"
     >
       <div class="form-grid">
         <div class="field">
-          <label for="date">Data</label>
+          <label for="date">{{ $t('measurements.form.date') }}</label>
           <input id="date" v-model="form.date" type="date" required />
         </div>
         <div class="field">
-          <label for="weightKg">Peso (kg)</label>
+          <label for="weightKg">{{ $t('measurements.form.weight') }}</label>
           <input id="weightKg" v-model.number="form.weightKg" type="number" step="0.1" min="0" required />
         </div>
         <div class="field">
-          <label for="bodyFat">Gordura (%)</label>
+          <label for="bodyFat">{{ $t('measurements.form.bodyFat') }}</label>
           <input id="bodyFat" v-model.number="form.bodyFatPercentage" type="number" step="0.1" min="0" max="100" />
         </div>
         <div class="field">
-          <label for="chest">Peito (cm)</label>
+          <label for="chest">{{ $t('measurements.form.chest') }}</label>
           <input id="chest" v-model.number="form.chestCm" type="number" step="0.1" min="0" />
         </div>
         <div class="field">
-          <label for="waist">Cintura (cm)</label>
+          <label for="waist">{{ $t('measurements.form.waist') }}</label>
           <input id="waist" v-model.number="form.waistCm" type="number" step="0.1" min="0" />
         </div>
         <div class="field">
-          <label for="hip">Quadril (cm)</label>
+          <label for="hip">{{ $t('measurements.form.hip') }}</label>
           <input id="hip" v-model.number="form.hipCm" type="number" step="0.1" min="0" />
         </div>
         <div class="field">
-          <label for="arm">Braço (cm)</label>
+          <label for="arm">{{ $t('measurements.form.arm') }}</label>
           <input id="arm" v-model.number="form.armCm" type="number" step="0.1" min="0" />
         </div>
         <div class="field">
-          <label for="thigh">Coxa (cm)</label>
+          <label for="thigh">{{ $t('measurements.form.thigh') }}</label>
           <input id="thigh" v-model.number="form.thighCm" type="number" step="0.1" min="0" />
         </div>
         <div class="field full">
-          <label for="notes">Observações</label>
+          <label for="notes">{{ $t('measurements.form.notes') }}</label>
           <textarea id="notes" v-model="form.notes"></textarea>
         </div>
       </div>
@@ -166,7 +166,7 @@
 <script>
 import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
-import { number, date, toDateInput } from '@yper/i18n';
+import { number, date, toDateInput, errorMessage } from '@yper/i18n';
 
 const CHART_WIDTH = 600;
 const CHART_HEIGHT = 140;
@@ -251,7 +251,7 @@ export default {
         const { measurements } = await api.get('/measurements');
         this.measurements = measurements;
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.loading = false;
       }
@@ -272,18 +272,18 @@ export default {
         this.showForm = false;
         await this.load();
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.saving = false;
       }
     },
     async remove(item) {
-      if (!confirm(`Remover a medição de ${date(item.date)}?`)) return;
+      if (!confirm(this.$t('measurements.confirmRemove', { date: date(item.date) }))) return;
       try {
         await api.del(`/measurements/${item._id}`);
         await this.load();
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       }
     },
   },

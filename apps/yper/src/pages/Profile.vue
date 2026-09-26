@@ -1,32 +1,32 @@
 <template>
-  <AppShell title="Metas">
-    <div v-if="loading" class="loading">Carregando...</div>
+  <AppShell :title="$t('profile.pageTitle')">
+    <div v-if="loading" class="loading">{{ $t('common.loading') }}</div>
 
     <form v-else :class="$style.wrap" @submit.prevent="save">
       <section class="card">
         <div class="card-head">
-          <h2>Perfil</h2>
+          <h2>{{ $t('profile.title') }}</h2>
         </div>
         <div class="card-body">
           <div class="form-grid">
             <div class="field">
-              <label for="birthDate">Nascimento</label>
+              <label for="birthDate">{{ $t('profile.form.birthDate') }}</label>
               <input id="birthDate" v-model="form.birthDate" type="date" />
             </div>
             <div class="field">
-              <label for="heightCm">Altura (cm)</label>
+              <label for="heightCm">{{ $t('profile.form.height') }}</label>
               <input id="heightCm" v-model.number="form.heightCm" type="number" step="0.1" min="0" />
             </div>
             <div class="field">
-              <label for="goal">Objetivo</label>
+              <label for="goal">{{ $t('profile.form.goal') }}</label>
               <select id="goal" v-model="form.goal">
-                <option value="cut">Perder gordura</option>
-                <option value="maintain">Manter</option>
-                <option value="bulk">Ganhar massa</option>
+                <option value="cut">{{ $t('profile.goals.cut') }}</option>
+                <option value="maintain">{{ $t('profile.goals.maintain') }}</option>
+                <option value="bulk">{{ $t('profile.goals.bulk') }}</option>
               </select>
             </div>
             <div class="field">
-              <label for="workoutDays">Treinos por semana</label>
+              <label for="workoutDays">{{ $t('profile.form.workoutDays') }}</label>
               <input id="workoutDays" v-model.number="form.workoutDaysPerWeek" type="number" min="0" max="7" />
             </div>
           </div>
@@ -35,43 +35,42 @@
 
       <section class="card">
         <div class="card-head">
-          <h2>Metas diárias</h2>
+          <h2>{{ $t('profile.dailyGoals.title') }}</h2>
           <span class="badge" :class="macroCalories > 0 && Math.abs(macroCalories - form.dailyCalories) > 50 ? 'badge-warn' : 'badge-ok'">
-            macros somam {{ number(macroCalories) }} kcal
+            {{ $t('profile.dailyGoals.macroCaloriesBadge', { value: number(macroCalories) }) }}
           </span>
         </div>
         <div class="card-body">
           <div class="form-grid">
             <div class="field">
-              <label for="dailyCalories">Calorias</label>
+              <label for="dailyCalories">{{ $t('profile.dailyGoals.calories') }}</label>
               <input id="dailyCalories" v-model.number="form.dailyCalories" type="number" min="0" />
             </div>
             <div class="field">
-              <label for="proteinTarget">Proteína (g)</label>
+              <label for="proteinTarget">{{ $t('profile.dailyGoals.protein') }}</label>
               <input id="proteinTarget" v-model.number="form.proteinTarget" type="number" min="0" />
             </div>
             <div class="field">
-              <label for="carbsTarget">Carboidrato (g)</label>
+              <label for="carbsTarget">{{ $t('profile.dailyGoals.carbs') }}</label>
               <input id="carbsTarget" v-model.number="form.carbsTarget" type="number" min="0" />
             </div>
             <div class="field">
-              <label for="fatTarget">Gordura (g)</label>
+              <label for="fatTarget">{{ $t('profile.dailyGoals.fat') }}</label>
               <input id="fatTarget" v-model.number="form.fatTarget" type="number" min="0" />
             </div>
           </div>
 
           <p class="muted" :class="$style.note">
-            Proteína e carboidrato rendem 4 kcal por grama, gordura rende 9. A soma acima ajuda a conferir se os
-            macros batem com a meta de calorias.
+            {{ $t('profile.dailyGoals.note') }}
           </p>
         </div>
       </section>
 
       <div class="row">
-        <p v-if="saved" class="alert alert-success">Metas salvas.</p>
+        <p v-if="saved" class="alert alert-success">{{ $t('profile.savedMessage') }}</p>
         <div class="spacer"></div>
         <button type="submit" class="btn btn-primary" :disabled="saving">
-          {{ saving ? 'Salvando...' : 'Salvar' }}
+          {{ saving ? $t('common.saving') : $t('common.save') }}
         </button>
       </div>
     </form>
@@ -81,7 +80,7 @@
 <script>
 import { AppShell } from '@yper/ui';
 import { api } from '@/api';
-import { number, toDateInput } from '@yper/i18n';
+import { number, toDateInput, errorMessage } from '@yper/i18n';
 
 const DEFAULT = {
   birthDate: '',
@@ -119,7 +118,7 @@ export default {
         birthDate: profile.birthDate ? toDateInput(profile.birthDate) : '',
       };
     } catch (err) {
-      alert(err.message);
+      alert(errorMessage(this.$t, err));
     } finally {
       this.loading = false;
     }
@@ -136,7 +135,7 @@ export default {
         this.saved = true;
         setTimeout(() => { this.saved = false; }, 3000);
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.saving = false;
       }

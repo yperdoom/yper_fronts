@@ -1,8 +1,8 @@
 <template>
-  <AppShell title="Exercícios">
+  <AppShell :title="$t('exercises.title')">
     <template #actions>
       <button class="btn btn-primary" @click="openForm()">
-        <span class="material-symbols-outlined">add</span> Novo exercício
+        <span class="material-symbols-outlined">add</span> {{ $t('exercises.newExercise') }}
       </button>
     </template>
 
@@ -11,30 +11,30 @@
         <div class="row">
           <div class="search">
             <span class="material-symbols-outlined">search</span>
-            <input v-model="search" type="search" placeholder="Nome ou equipamento" />
+            <input v-model="search" type="search" :placeholder="$t('exercises.search.placeholder')" />
           </div>
           <select v-model="filterGroup" :class="$style.filter">
-            <option value="">Todos os grupos</option>
+            <option value="">{{ $t('exercises.filters.allGroups') }}</option>
             <option v-for="group in MUSCLE_GROUPS" :key="group" :value="group">{{ group }}</option>
           </select>
         </div>
-        <span class="muted">{{ filtered.length }} de {{ exercises.length }}</span>
+        <span class="muted">{{ $t('exercises.count', { shown: filtered.length, total: exercises.length }) }}</span>
       </div>
 
-      <div v-if="loading" class="loading">Carregando...</div>
+      <div v-if="loading" class="loading">{{ $t('common.loading') }}</div>
 
       <div v-else-if="!filtered.length" class="empty">
         <span class="material-symbols-outlined">exercise</span>
-        <p>{{ exercises.length ? 'Nenhum exercício com esse filtro.' : 'Cadastre seu primeiro exercício.' }}</p>
+        <p>{{ exercises.length ? $t('exercises.empty.filtered') : $t('exercises.empty.first') }}</p>
       </div>
 
       <div v-else class="table-wrap">
         <table class="data">
           <thead>
             <tr>
-              <th>Exercício</th>
-              <th>Grupo</th>
-              <th>Equipamento</th>
+              <th>{{ $t('exercises.table.exercise') }}</th>
+              <th>{{ $t('exercises.table.group') }}</th>
+              <th>{{ $t('exercises.table.equipment') }}</th>
               <th></th>
             </tr>
           </thead>
@@ -54,14 +54,14 @@
                     target="_blank"
                     rel="noopener"
                     class="btn-icon"
-                    title="Ver vídeo"
+                    :title="$t('exercises.actions.watchVideo')"
                   >
                     <span class="material-symbols-outlined">play_circle</span>
                   </a>
-                  <button class="btn-icon" title="Editar" @click="openForm(exercise)">
+                  <button class="btn-icon" :title="$t('common.edit')" @click="openForm(exercise)">
                     <span class="material-symbols-outlined">edit</span>
                   </button>
-                  <button class="btn-icon" title="Remover" @click="remove(exercise)">
+                  <button class="btn-icon" :title="$t('common.remove')" @click="remove(exercise)">
                     <span class="material-symbols-outlined">delete</span>
                   </button>
                 </div>
@@ -74,32 +74,32 @@
 
     <Modal
       :show="showForm"
-      :title="editingId ? 'Editar exercício' : 'Novo exercício'"
+      :title="editingId ? $t('exercises.form.editTitle') : $t('exercises.newExercise')"
       :saving="saving"
       @close="showForm = false"
       @submit="save"
     >
       <div class="form-grid">
         <div class="field full">
-          <label for="name">Nome</label>
+          <label for="name">{{ $t('exercises.form.name') }}</label>
           <input id="name" v-model="form.name" required />
         </div>
         <div class="field">
-          <label for="muscleGroup">Grupo muscular</label>
+          <label for="muscleGroup">{{ $t('exercises.form.muscleGroup') }}</label>
           <select id="muscleGroup" v-model="form.muscleGroup">
             <option v-for="group in MUSCLE_GROUPS" :key="group" :value="group">{{ group }}</option>
           </select>
         </div>
         <div class="field">
-          <label for="equipment">Equipamento</label>
-          <input id="equipment" v-model="form.equipment" placeholder="Barra, halter, máquina..." />
+          <label for="equipment">{{ $t('exercises.form.equipment') }}</label>
+          <input id="equipment" v-model="form.equipment" :placeholder="$t('exercises.form.equipmentPlaceholder')" />
         </div>
         <div class="field full">
-          <label for="videoUrl">Link do vídeo</label>
-          <input id="videoUrl" v-model="form.videoUrl" type="url" placeholder="opcional" />
+          <label for="videoUrl">{{ $t('exercises.form.videoUrl') }}</label>
+          <input id="videoUrl" v-model="form.videoUrl" type="url" :placeholder="$t('exercises.form.optionalPlaceholder')" />
         </div>
         <div class="field full">
-          <label for="notes">Observações</label>
+          <label for="notes">{{ $t('exercises.form.notes') }}</label>
           <textarea id="notes" v-model="form.notes"></textarea>
         </div>
       </div>
@@ -110,6 +110,7 @@
 <script>
 import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
+import { errorMessage } from '@yper/i18n';
 
 const MUSCLE_GROUPS = [
   'Peito', 'Costas', 'Pernas', 'Gluteos', 'Ombros',
@@ -156,7 +157,7 @@ export default {
         const { exercises } = await api.get('/exercises');
         this.exercises = exercises;
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.loading = false;
       }
@@ -177,18 +178,18 @@ export default {
         this.showForm = false;
         await this.load();
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.saving = false;
       }
     },
     async remove(exercise) {
-      if (!confirm(`Remover "${exercise.name}"?`)) return;
+      if (!confirm(this.$t('common.confirmRemove', { name: exercise.name }))) return;
       try {
         await api.del(`/exercises/${exercise._id}`);
         await this.load();
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       }
     },
   },

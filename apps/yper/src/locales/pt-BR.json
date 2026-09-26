@@ -11,5 +11,309 @@
     "foods": "Alimentos",
     "measurements": "Evolução",
     "profile": "Metas"
+  },
+  "today": {
+    "pageTitle": "Hoje",
+    "actions": {
+      "meal": "Refeição",
+      "workout": "Treino"
+    },
+    "macros": {
+      "title": "Macros do dia",
+      "mealsCount": "{count} refeição(ões) registrada(s)",
+      "types": {
+        "calories": "Calorias",
+        "protein": "Proteína",
+        "carbs": "Carboidrato",
+        "fat": "Gordura"
+      },
+      "consumedTarget": "{consumed} / {target}{unit}",
+      "remaining": "faltam {amount}{unit}",
+      "over": "{amount}{unit} acima da meta"
+    },
+    "workoutToday": {
+      "title": "Treino de hoje",
+      "weekCount": "{done} / {target} na semana",
+      "empty": "Nenhum treino marcado para hoje.",
+      "setsReps": "{sets}x{reps}",
+      "itemWeight": " · {weight}kg"
+    },
+    "recentWorkouts": {
+      "title": "Últimos treinos",
+      "viewAll": "ver tudo",
+      "empty": "Nenhum treino registrado ainda.",
+      "table": {
+        "date": "Data",
+        "workout": "Treino",
+        "duration": "Duração",
+        "volume": "Volume"
+      },
+      "freeWorkout": "Avulso",
+      "durationMinutes": "{minutes} min",
+      "volumeValue": "{value} kg"
+    },
+    "lastWeight": {
+      "label": "Último peso:",
+      "value": "{weight} kg",
+      "at": "em {date}"
+    }
+  },
+  "workouts": {
+    "title": "Treinos",
+    "newWorkout": "Novo treino",
+    "empty": "Monte seu primeiro treino para começar a registrar as sessões.",
+    "noFocus": "Sem foco definido",
+    "noItems": "Nenhum exercício adicionado.",
+    "card": {
+      "setsReps": "{sets}x{reps}",
+      "itemWeight": " · {weight}kg"
+    },
+    "form": {
+      "editTitle": "Editar treino",
+      "name": "Nome",
+      "namePlaceholder": "Treino A",
+      "focus": "Foco",
+      "focusPlaceholder": "Peito e tríceps",
+      "weekdays": "Dias da semana"
+    },
+    "items": {
+      "title": "Exercícios",
+      "addButton": "Exercício",
+      "emptyBefore": "Cadastre exercícios em",
+      "emptyAfter": "para montar o treino.",
+      "selectPlaceholder": "Exercício",
+      "setsPlaceholder": "Séries",
+      "repsPlaceholder": "Reps",
+      "weightPlaceholder": "kg"
+    }
+  },
+  "exercises": {
+    "title": "Exercícios",
+    "newExercise": "Novo exercício",
+    "search": {
+      "placeholder": "Nome ou equipamento"
+    },
+    "filters": {
+      "allGroups": "Todos os grupos"
+    },
+    "count": "{shown} de {total}",
+    "empty": {
+      "filtered": "Nenhum exercício com esse filtro.",
+      "first": "Cadastre seu primeiro exercício."
+    },
+    "table": {
+      "exercise": "Exercício",
+      "group": "Grupo",
+      "equipment": "Equipamento"
+    },
+    "actions": {
+      "watchVideo": "Ver vídeo"
+    },
+    "form": {
+      "editTitle": "Editar exercício",
+      "name": "Nome",
+      "muscleGroup": "Grupo muscular",
+      "equipment": "Equipamento",
+      "equipmentPlaceholder": "Barra, halter, máquina...",
+      "videoUrl": "Link do vídeo",
+      "optionalPlaceholder": "opcional",
+      "notes": "Observações"
+    }
+  },
+  "history": {
+    "title": "Histórico",
+    "newLog": "Registrar treino",
+    "loggedSessions": "Sessões registradas",
+    "count": "{count} sessão(ões)",
+    "empty": "Nenhum treino registrado ainda.",
+    "freeWorkout": "Treino avulso",
+    "durationMinutes": "{minutes} min",
+    "volume": "{value} kg de volume",
+    "entrySet": "{reps}x{weight}kg",
+    "noSets": "sem séries",
+    "submitLabel": "Registrar",
+    "confirmRemove": "Remover este registro?",
+    "form": {
+      "workout": "Treino",
+      "freeOption": "Avulso",
+      "date": "Data",
+      "duration": "Duração (min)",
+      "notes": "Observações"
+    },
+    "items": {
+      "title": "Exercícios",
+      "addButton": "Exercício",
+      "empty": "Escolha um treino acima para trazer os exercícios prontos, ou adicione um a um.",
+      "selectPlaceholder": "Exercício",
+      "setNumber": "{number}ª",
+      "repsPlaceholder": "reps",
+      "weightPlaceholder": "kg",
+      "addSetButton": "Série"
+    }
+  },
+  "nutrition": {
+    "title": "Nutrição",
+    "newMealButton": "Refeição",
+    "newMealTitle": "Nova refeição",
+    "prevDay": "Dia anterior",
+    "nextDay": "Próximo dia",
+    "mealsCount": "{count} refeição(ões)",
+    "macros": {
+      "types": {
+        "calories": "Calorias",
+        "protein": "Proteína",
+        "carbs": "Carboidrato",
+        "fat": "Gordura"
+      },
+      "consumedTarget": "{value} / {target}{unit}"
+    },
+    "empty": "Nenhuma refeição registrada nesse dia.",
+    "mealTypes": {
+      "breakfast": "Café da manhã",
+      "morning_snack": "Lanche da manhã",
+      "lunch": "Almoço",
+      "afternoon_snack": "Lanche da tarde",
+      "dinner": "Jantar",
+      "supper": "Ceia"
+    },
+    "caloriesValue": "{value} kcal",
+    "confirmRemove": "Remover {meal}?",
+    "table": {
+      "food": "Alimento",
+      "quantity": "Quantidade",
+      "kcal": "Kcal",
+      "protein": "P",
+      "carbs": "C",
+      "fat": "G"
+    },
+    "itemQuantity": "{quantity} {unit}",
+    "total": "Total",
+    "form": {
+      "editTitle": "Editar refeição",
+      "type": "Refeição",
+      "date": "Data"
+    },
+    "items": {
+      "title": "Alimentos",
+      "addButton": "Alimento",
+      "emptyBefore": "Cadastre alimentos em",
+      "emptyAfter": "para montar a refeição.",
+      "selectPlaceholder": "Alimento",
+      "foodOption": "{name} ({calories} kcal / {size}{unit})",
+      "quantityPlaceholder": "Qtd"
+    }
+  },
+  "foods": {
+    "title": "Alimentos",
+    "newFood": "Novo alimento",
+    "search": {
+      "placeholder": "Nome ou marca"
+    },
+    "count": "{shown} de {total}",
+    "empty": {
+      "filtered": "Nenhum alimento com esse filtro.",
+      "first": "Cadastre seu primeiro alimento."
+    },
+    "table": {
+      "food": "Alimento",
+      "serving": "Porção",
+      "kcal": "Kcal",
+      "protein": "Proteína",
+      "carbs": "Carbo",
+      "fat": "Gordura"
+    },
+    "servingValue": "{size} {unit}",
+    "gramsValue": "{value} g",
+    "servingUnits": {
+      "g": "gramas",
+      "ml": "mililitros",
+      "un": "unidade"
+    },
+    "form": {
+      "editTitle": "Editar alimento",
+      "name": "Nome",
+      "brand": "Marca",
+      "optionalPlaceholder": "opcional",
+      "servingSize": "Porção de referência",
+      "servingUnit": "Unidade",
+      "noteBefore": "Os valores abaixo são",
+      "noteEmphasis": "por porção de referência",
+      "noteAfter": "Ao montar a refeição você informa a quantidade real e os macros são convertidos.",
+      "calories": "Calorias",
+      "protein": "Proteína (g)",
+      "carbs": "Carboidrato (g)",
+      "fat": "Gordura (g)",
+      "fiber": "Fibra (g)"
+    }
+  },
+  "measurements": {
+    "title": "Evolução",
+    "newMeasurement": "Nova medição",
+    "confirmRemove": "Remover a medição de {date}?",
+    "kpi": {
+      "currentWeight": "Peso atual",
+      "weightValue": "{value} kg",
+      "totalVariation": "Variação total",
+      "since": "desde {date}",
+      "bodyFat": "Gordura corporal",
+      "percentValue": "{value}%"
+    },
+    "chart": {
+      "title": "Peso ao longo do tempo",
+      "count": "{count} medições",
+      "range": "{min} – {max} kg"
+    },
+    "list": {
+      "title": "Medições",
+      "count": "{count} registro(s)",
+      "empty": "Registre sua primeira medição para acompanhar a evolução."
+    },
+    "table": {
+      "date": "Data",
+      "weight": "Peso",
+      "fat": "Gordura",
+      "chest": "Peito",
+      "waist": "Cintura",
+      "hip": "Quadril",
+      "arm": "Braço",
+      "thigh": "Coxa"
+    },
+    "form": {
+      "editTitle": "Editar medição",
+      "date": "Data",
+      "weight": "Peso (kg)",
+      "bodyFat": "Gordura (%)",
+      "chest": "Peito (cm)",
+      "waist": "Cintura (cm)",
+      "hip": "Quadril (cm)",
+      "arm": "Braço (cm)",
+      "thigh": "Coxa (cm)",
+      "notes": "Observações"
+    }
+  },
+  "profile": {
+    "pageTitle": "Metas",
+    "title": "Perfil",
+    "savedMessage": "Metas salvas.",
+    "form": {
+      "birthDate": "Nascimento",
+      "height": "Altura (cm)",
+      "goal": "Objetivo",
+      "workoutDays": "Treinos por semana"
+    },
+    "goals": {
+      "cut": "Perder gordura",
+      "maintain": "Manter",
+      "bulk": "Ganhar massa"
+    },
+    "dailyGoals": {
+      "title": "Metas diárias",
+      "macroCaloriesBadge": "macros somam {value} kcal",
+      "calories": "Calorias",
+      "protein": "Proteína (g)",
+      "carbs": "Carboidrato (g)",
+      "fat": "Gordura (g)",
+      "note": "Proteína e carboidrato rendem 4 kcal por grama, gordura rende 9. A soma acima ajuda a conferir se os macros batem com a meta de calorias."
+    }
   }
 }

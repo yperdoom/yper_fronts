@@ -1,17 +1,17 @@
 <template>
-  <AppShell title="Treinos">
+  <AppShell :title="$t('workouts.title')">
     <template #actions>
       <button class="btn btn-primary" @click="openForm()">
-        <span class="material-symbols-outlined">add</span> Novo treino
+        <span class="material-symbols-outlined">add</span> {{ $t('workouts.newWorkout') }}
       </button>
     </template>
 
-    <div v-if="loading" class="loading">Carregando...</div>
+    <div v-if="loading" class="loading">{{ $t('common.loading') }}</div>
 
     <div v-else-if="!workouts.length" class="card">
       <div class="empty">
         <span class="material-symbols-outlined">fitness_center</span>
-        <p>Monte seu primeiro treino para começar a registrar as sessões.</p>
+        <p>{{ $t('workouts.empty') }}</p>
       </div>
     </div>
 
@@ -20,13 +20,13 @@
         <div class="card-head">
           <div>
             <h2>{{ workout.name }}</h2>
-            <p class="muted">{{ workout.focus || 'Sem foco definido' }}</p>
+            <p class="muted">{{ workout.focus || $t('workouts.noFocus') }}</p>
           </div>
           <div class="row" :class="$style.actions">
-            <button class="btn-icon" title="Editar" @click="openForm(workout)">
+            <button class="btn-icon" :title="$t('common.edit')" @click="openForm(workout)">
               <span class="material-symbols-outlined">edit</span>
             </button>
-            <button class="btn-icon" title="Remover" @click="remove(workout)">
+            <button class="btn-icon" :title="$t('common.remove')" @click="remove(workout)">
               <span class="material-symbols-outlined">delete</span>
             </button>
           </div>
@@ -48,11 +48,11 @@
             <li v-for="(item, index) in workout.items" :key="index">
               <span>{{ item.exercise?.name || '—' }}</span>
               <span class="muted">
-                {{ item.sets }}x{{ item.reps }}
-                <template v-if="item.weight"> · {{ number(item.weight, 1) }}kg</template>
+                {{ $t('workouts.card.setsReps', { sets: item.sets, reps: item.reps }) }}
+                <template v-if="item.weight">{{ $t('workouts.card.itemWeight', { weight: number(item.weight, 1) }) }}</template>
               </span>
             </li>
-            <li v-if="!workout.items.length" class="muted">Nenhum exercício adicionado.</li>
+            <li v-if="!workout.items.length" class="muted">{{ $t('workouts.noItems') }}</li>
           </ul>
         </div>
       </article>
@@ -60,22 +60,22 @@
 
     <Modal
       :show="showForm"
-      :title="editingId ? 'Editar treino' : 'Novo treino'"
+      :title="editingId ? $t('workouts.form.editTitle') : $t('workouts.newWorkout')"
       :saving="saving"
       @close="showForm = false"
       @submit="save"
     >
       <div class="form-grid">
         <div class="field">
-          <label for="name">Nome</label>
-          <input id="name" v-model="form.name" required placeholder="Treino A" />
+          <label for="name">{{ $t('workouts.form.name') }}</label>
+          <input id="name" v-model="form.name" required :placeholder="$t('workouts.form.namePlaceholder')" />
         </div>
         <div class="field">
-          <label for="focus">Foco</label>
-          <input id="focus" v-model="form.focus" placeholder="Peito e tríceps" />
+          <label for="focus">{{ $t('workouts.form.focus') }}</label>
+          <input id="focus" v-model="form.focus" :placeholder="$t('workouts.form.focusPlaceholder')" />
         </div>
         <div class="field full">
-          <label>Dias da semana</label>
+          <label>{{ $t('workouts.form.weekdays') }}</label>
           <div class="row">
             <button
               v-for="(day, index) in WEEKDAYS"
@@ -94,27 +94,27 @@
 
       <div :class="$style.items">
         <div class="row">
-          <strong>Exercícios</strong>
+          <strong>{{ $t('workouts.items.title') }}</strong>
           <div class="spacer"></div>
           <button type="button" class="btn" @click="addItem">
-            <span class="material-symbols-outlined">add</span> Exercício
+            <span class="material-symbols-outlined">add</span> {{ $t('workouts.items.addButton') }}
           </button>
         </div>
 
         <p v-if="!exercises.length" class="muted" :class="$style.note">
-          Cadastre exercícios em <router-link to="/exercicios">Exercícios</router-link> para montar o treino.
+          {{ $t('workouts.items.emptyBefore') }} <router-link to="/exercicios">{{ $t('nav.exercises') }}</router-link> {{ $t('workouts.items.emptyAfter') }}
         </p>
 
         <div v-for="(item, index) in form.items" :key="index" :class="$style.item">
           <select v-model="item.exercise" required>
-            <option value="" disabled>Exercício</option>
+            <option value="" disabled>{{ $t('workouts.items.selectPlaceholder') }}</option>
             <option v-for="exercise in exercises" :key="exercise._id" :value="exercise._id">
               {{ exercise.name }}
             </option>
           </select>
-          <input v-model.number="item.sets" type="number" min="1" placeholder="Séries" required />
-          <input v-model="item.reps" placeholder="Reps" required />
-          <input v-model.number="item.weight" type="number" step="0.5" min="0" placeholder="kg" />
+          <input v-model.number="item.sets" type="number" min="1" :placeholder="$t('workouts.items.setsPlaceholder')" required />
+          <input v-model="item.reps" :placeholder="$t('workouts.items.repsPlaceholder')" required />
+          <input v-model.number="item.weight" type="number" step="0.5" min="0" :placeholder="$t('workouts.items.weightPlaceholder')" />
           <button type="button" class="btn-icon" @click="form.items.splice(index, 1)">
             <span class="material-symbols-outlined">close</span>
           </button>
@@ -127,7 +127,7 @@
 <script>
 import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
-import { number } from '@yper/i18n';
+import { number, errorMessage } from '@yper/i18n';
 
 const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const empty = () => ({ name: '', focus: '', weekdays: [], items: [], notes: '', active: true });
@@ -158,7 +158,7 @@ export default {
         const { workouts } = await api.get('/workouts');
         this.workouts = workouts;
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.loading = false;
       }
@@ -211,18 +211,18 @@ export default {
         this.showForm = false;
         await this.load();
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       } finally {
         this.saving = false;
       }
     },
     async remove(workout) {
-      if (!confirm(`Remover "${workout.name}"?`)) return;
+      if (!confirm(this.$t('common.confirmRemove', { name: workout.name }))) return;
       try {
         await api.del(`/workouts/${workout._id}`);
         await this.load();
       } catch (err) {
-        alert(err.message);
+        alert(errorMessage(this.$t, err));
       }
     },
   },

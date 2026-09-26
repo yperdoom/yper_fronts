@@ -1,29 +1,29 @@
 <template>
-  <AppShell title="Hoje">
+  <AppShell :title="$t('today.pageTitle')">
     <template #actions>
       <router-link to="/nutricao" class="btn">
-        <span class="material-symbols-outlined">restaurant</span> Refeição
+        <span class="material-symbols-outlined">restaurant</span> {{ $t('today.actions.meal') }}
       </router-link>
       <router-link to="/historico" class="btn btn-primary">
-        <span class="material-symbols-outlined">fitness_center</span> Treino
+        <span class="material-symbols-outlined">fitness_center</span> {{ $t('today.actions.workout') }}
       </router-link>
     </template>
 
-    <div v-if="loading" class="loading">Carregando...</div>
+    <div v-if="loading" class="loading">{{ $t('common.loading') }}</div>
 
     <div v-else class="stack">
       <section class="card">
         <div class="card-head">
-          <h2>Macros do dia</h2>
-          <span class="muted">{{ data.mealsToday }} refeição(ões) registrada(s)</span>
+          <h2>{{ $t('today.macros.title') }}</h2>
+          <span class="muted">{{ $t('today.macros.mealsCount', { count: data.mealsToday }) }}</span>
         </div>
         <div class="card-body">
           <div :class="$style.macros">
             <div v-for="macro in macros" :key="macro.key" :class="$style.macro">
               <div :class="$style.macroTop">
-                <strong>{{ macro.label }}</strong>
+                <strong>{{ $t(`today.macros.types.${macro.key}`) }}</strong>
                 <span class="muted">
-                  {{ number(macro.consumed) }} / {{ number(macro.target) }}{{ macro.unit }}
+                  {{ $t('today.macros.consumedTarget', { consumed: number(macro.consumed), target: number(macro.target), unit: macro.unit }) }}
                 </span>
               </div>
               <div class="bar">
@@ -31,8 +31,8 @@
               </div>
               <div :class="[$style.macroFoot, macro.remaining < 0 && $style.over]">
                 {{ macro.remaining >= 0
-                  ? `faltam ${number(macro.remaining)}${macro.unit}`
-                  : `${number(-macro.remaining)}${macro.unit} acima da meta` }}
+                  ? $t('today.macros.remaining', { amount: number(macro.remaining), unit: macro.unit })
+                  : $t('today.macros.over', { amount: number(-macro.remaining), unit: macro.unit }) }}
               </div>
             </div>
           </div>
@@ -42,15 +42,15 @@
       <div :class="$style.split">
         <section class="card">
           <div class="card-head">
-            <h2>Treino de hoje</h2>
+            <h2>{{ $t('today.workoutToday.title') }}</h2>
             <span class="badge badge-accent">
-              {{ data.workoutsThisWeek }} / {{ data.workoutTargetPerWeek }} na semana
+              {{ $t('today.workoutToday.weekCount', { done: data.workoutsThisWeek, target: data.workoutTargetPerWeek }) }}
             </span>
           </div>
 
           <div v-if="!data.todaysWorkouts.length" class="empty">
             <span class="material-symbols-outlined">self_improvement</span>
-            <p>Nenhum treino marcado para hoje.</p>
+            <p>{{ $t('today.workoutToday.empty') }}</p>
           </div>
 
           <div v-else class="card-body stack">
@@ -63,8 +63,8 @@
                 <li v-for="(item, index) in workout.items" :key="index">
                   <span>{{ item.exercise?.name || '—' }}</span>
                   <span class="muted">
-                    {{ item.sets }}x{{ item.reps }}
-                    <template v-if="item.weight"> · {{ number(item.weight, 1) }}kg</template>
+                    {{ $t('today.workoutToday.setsReps', { sets: item.sets, reps: item.reps }) }}
+                    <template v-if="item.weight">{{ $t('today.workoutToday.itemWeight', { weight: number(item.weight, 1) }) }}</template>
                   </span>
                 </li>
               </ul>
@@ -74,31 +74,31 @@
 
         <section class="card">
           <div class="card-head">
-            <h2>Últimos treinos</h2>
-            <router-link to="/historico" class="badge badge-accent">ver tudo</router-link>
+            <h2>{{ $t('today.recentWorkouts.title') }}</h2>
+            <router-link to="/historico" class="badge badge-accent">{{ $t('today.recentWorkouts.viewAll') }}</router-link>
           </div>
 
           <div v-if="!data.recentLogs.length" class="empty">
             <span class="material-symbols-outlined">history</span>
-            <p>Nenhum treino registrado ainda.</p>
+            <p>{{ $t('today.recentWorkouts.empty') }}</p>
           </div>
 
           <div v-else class="table-wrap">
             <table class="data">
               <thead>
                 <tr>
-                  <th>Data</th>
-                  <th>Treino</th>
-                  <th class="num">Duração</th>
-                  <th class="num">Volume</th>
+                  <th>{{ $t('today.recentWorkouts.table.date') }}</th>
+                  <th>{{ $t('today.recentWorkouts.table.workout') }}</th>
+                  <th class="num">{{ $t('today.recentWorkouts.table.duration') }}</th>
+                  <th class="num">{{ $t('today.recentWorkouts.table.volume') }}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="log in data.recentLogs" :key="log._id">
                   <td class="muted">{{ date(log.date) }}</td>
-                  <td>{{ log.workout?.name || 'Avulso' }}</td>
-                  <td class="num">{{ log.durationMinutes ? `${log.durationMinutes} min` : '—' }}</td>
-                  <td class="num">{{ number(log.totalVolume) }} kg</td>
+                  <td>{{ log.workout?.name || $t('today.recentWorkouts.freeWorkout') }}</td>
+                  <td class="num">{{ log.durationMinutes ? $t('today.recentWorkouts.durationMinutes', { minutes: log.durationMinutes }) : '—' }}</td>
+                  <td class="num">{{ $t('today.recentWorkouts.volumeValue', { value: number(log.totalVolume) }) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -107,8 +107,8 @@
           <div v-if="data.lastMeasurement" :class="$style.weight">
             <span class="material-symbols-outlined">monitor_weight</span>
             <span>
-              Último peso: <strong>{{ number(data.lastMeasurement.weightKg, 1) }} kg</strong>
-              <span class="muted"> em {{ date(data.lastMeasurement.date) }}</span>
+              {{ $t('today.lastWeight.label') }} <strong>{{ $t('today.lastWeight.value', { weight: number(data.lastMeasurement.weightKg, 1) }) }}</strong>
+              <span class="muted"> {{ $t('today.lastWeight.at', { date: date(data.lastMeasurement.date) }) }}</span>
             </span>
           </div>
         </section>
@@ -120,7 +120,7 @@
 <script>
 import { AppShell } from '@yper/ui';
 import { api } from '@/api';
-import { number, date } from '@yper/i18n';
+import { number, date, errorMessage } from '@yper/i18n';
 
 const EMPTY_TOTALS = { calories: 0, protein: 0, carbs: 0, fat: 0 };
 
@@ -146,10 +146,10 @@ export default {
   computed: {
     macros() {
       const spec = [
-        { key: 'calories', label: 'Calorias', unit: ' kcal', color: 'var(--accent)' },
-        { key: 'protein', label: 'Proteína', unit: 'g', color: '#2563eb' },
-        { key: 'carbs', label: 'Carboidrato', unit: 'g', color: '#d97706' },
-        { key: 'fat', label: 'Gordura', unit: 'g', color: '#db2777' },
+        { key: 'calories', unit: ' kcal', color: 'var(--accent)' },
+        { key: 'protein', unit: 'g', color: '#2563eb' },
+        { key: 'carbs', unit: 'g', color: '#d97706' },
+        { key: 'fat', unit: 'g', color: '#db2777' },
       ];
       return spec.map((macro) => ({
         ...macro,
@@ -163,7 +163,7 @@ export default {
     try {
       this.data = await api.get('/dashboard');
     } catch (err) {
-      alert(err.message);
+      alert(errorMessage(this.$t, err));
     } finally {
       this.loading = false;
     }

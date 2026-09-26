@@ -4,7 +4,10 @@
     "cancel": "Cancel",
     "saving": "Saving...",
     "loading": "Loading...",
-    "logout": "Log out"
+    "logout": "Log out",
+    "edit": "Edit",
+    "remove": "Remove",
+    "confirmRemove": "Remove \"{name}\"?"
   },
   "login": {
     "email": "Email",
