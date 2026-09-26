@@ -184,10 +184,10 @@ export default {
   computed: {
     macros() {
       const spec = [
-        { key: 'calories', label: 'Calorias', unit: ' kcal', color: 'var(--accent)' },
-        { key: 'protein', label: 'Proteína', unit: 'g', color: '#2563eb' },
-        { key: 'carbs', label: 'Carboidrato', unit: 'g', color: '#d97706' },
-        { key: 'fat', label: 'Gordura', unit: 'g', color: '#db2777' },
+        { key: 'calories', unit: ' kcal', color: 'var(--accent)' },
+        { key: 'protein', unit: 'g', color: '#2563eb' },
+        { key: 'carbs', unit: 'g', color: '#d97706' },
+        { key: 'fat', unit: 'g', color: '#db2777' },
       ];
       return spec.map((macro) => {
         const value = this.totals[macro.key] || 0;
