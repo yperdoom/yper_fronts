@@ -33,6 +33,25 @@
           <span class="material-symbols-outlined">account_circle</span>
           <span :class="$style.userEmail">{{ user?.email || '—' }}</span>
         </div>
+        <router-link
+          v-if="isAdmin"
+          to="/users"
+          :class="$style.navItem"
+          :active-class="$style.navItemActive"
+          @click="open = false"
+        >
+          <span class="material-symbols-outlined">group</span>
+          <span>{{ $t('users.title') }}</span>
+        </router-link>
+        <router-link
+          to="/account/password"
+          :class="$style.navItem"
+          :active-class="$style.navItemActive"
+          @click="open = false"
+        >
+          <span class="material-symbols-outlined">key</span>
+          <span>{{ $t('account.changePassword') }}</span>
+        </router-link>
         <button type="button" :class="$style.logout" @click="signOut">
           <span class="material-symbols-outlined">logout</span>
           <span>{{ $t('common.logout') }}</span>
@@ -74,6 +93,7 @@ export default {
     return {
       open: false,
       user: this.shell.api.session.getUser(),
+      isAdmin: this.shell.api.session.isAdmin(),
       logoFailed: false,
     };
   },

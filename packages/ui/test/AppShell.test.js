@@ -17,14 +17,16 @@ function makeRouter() {
       { path: '/', component: { template: '<div/>' } },
       { path: '/home', component: { template: '<div/>' } },
       { path: '/products', component: { template: '<div/>' } },
+      { path: '/users', component: { template: '<div/>' } },
+      { path: '/account/password', component: { template: '<div/>' } },
     ],
   });
 }
 
-function makeApi({ email = 'user@yper.dev' } = {}) {
+function makeApi({ email = 'user@yper.dev', admin = false } = {}) {
   return {
     auth: { logout: vi.fn() },
-    session: { getUser: () => (email ? { email } : null) },
+    session: { getUser: () => (email ? { email } : null), isAdmin: () => admin },
   };
 }
 
@@ -52,7 +54,7 @@ describe('AppShell', () => {
   it('renderiza um router-link por item do nav com o label traduzido', async () => {
     const { wrapper } = await mountShell();
 
-    const links = wrapper.findAllComponents({ name: 'RouterLink' });
+    const links = wrapper.find('nav').findAllComponents({ name: 'RouterLink' });
     expect(links).toHaveLength(2);
     expect(wrapper.text()).toContain('Inicio');
     expect(wrapper.text()).toContain('Produtos');
@@ -96,4 +98,50 @@ describe('AppShell', () => {
     expect(wrapper.text()).toContain('conteudo');
     expect(wrapper.text()).toContain('acao');
   });
+
+  it('admin ve Usuarios e Alterar senha no rodape da sidebar', async () => {
+    const { wrapper } = await mountShell({ api: makeApi({ admin: true }) });
+
+    const targets = footLinks(wrapper).map((link) => link.props('to'));
+    expect(targets).toEqual(['/users', '/account/password']);
+    expect(wrapper.text()).toContain('Usuários');
+    expect(wrapper.text()).toContain('Alterar senha');
+  });
+
+  it('nao-admin ve so Alterar senha no rodape da sidebar', async () => {
+    const { wrapper } = await mountShell({ api: makeApi({ admin: false }) });
+
+    const targets = footLinks(wrapper).map((link) => link.props('to'));
+    expect(targets).toEqual(['/account/password']);
+    expect(wrapper.text()).not.toContain('Usuários');
+  });
+
+  it.each([
+    ['link do nav', (wrapper) => wrapper.find('nav a')],
+    ['Usuarios', (wrapper) => footLinks(wrapper)[0]],
+    ['Alterar senha', (wrapper) => footLinks(wrapper)[1]],
+  ])('menu abre a sidebar e clique em %s fecha', async (_name, target) => {
+    const { wrapper } = await mountShell({ api: makeApi({ admin: true }) });
+    await wrapper.find('header button').trigger('click');
+    expect(wrapper.vm.open).toBe(true);
+
+    await target(wrapper).trigger('click');
+    expect(wrapper.vm.open).toBe(false);
+  });
+
+  it('clique no backdrop fecha a sidebar', async () => {
+    const { wrapper } = await mountShell();
+
+    await wrapper.find('header button').trigger('click');
+    const backdrop = wrapper.find('aside + div');
+    await backdrop.trigger('click');
+
+    expect(wrapper.vm.open).toBe(false);
+  });
 });
+
+function footLinks(wrapper) {
+  return wrapper
+    .findAllComponents({ name: 'RouterLink' })
+    .filter((link) => !wrapper.find('nav').element.contains(link.element));
+}
