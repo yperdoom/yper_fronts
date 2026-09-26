@@ -127,7 +127,7 @@
         </div>
 
         <p v-if="!foods.length" class="muted" :class="$style.note">
-          {{ $t('nutrition.items.emptyBefore') }} <router-link to="/alimentos">{{ $t('nav.foods') }}</router-link> {{ $t('nutrition.items.emptyAfter') }}
+          {{ $t('nutrition.items.emptyBefore') }} <router-link to="/foods">{{ $t('nav.foods') }}</router-link> {{ $t('nutrition.items.emptyAfter') }}
         </p>
 
         <div v-for="(item, index) in form.items" :key="index" :class="$style.item">

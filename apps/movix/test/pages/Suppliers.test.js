@@ -26,7 +26,7 @@ const SUPPLIERS = [
   },
 ];
 
-async function mountSuppliers(route = '/fornecedores') {
+async function mountSuppliers(route = '/suppliers') {
   return mountPage(Suppliers, { messages: ptBR, api: client, route });
 }
 

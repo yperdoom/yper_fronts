@@ -34,7 +34,7 @@ const PRODUCTS = [
 
 const SUPPLIERS = [{ _id: 's1', name: 'Fornecedor A' }, { _id: 's2', name: 'Fornecedor B' }];
 
-async function mountProducts(route = '/produtos') {
+async function mountProducts(route = '/products') {
   return mountPage(Products, { messages: ptBR, api: client, route });
 }
 
@@ -197,8 +197,8 @@ describe('Products', () => {
     await findButtonByTitle(wrapper, 'Movimentar').trigger('click');
     await flushPromises();
 
-    expect(router.currentRoute.value.path).toBe('/movimentacoes');
-    expect(router.currentRoute.value.query.produto).toBe('p1');
+    expect(router.currentRoute.value.path).toBe('/movements');
+    expect(router.currentRoute.value.query.product).toBe('p1');
   });
 
   it('erro ao carregar produtos mostra alerta traduzido', async () => {

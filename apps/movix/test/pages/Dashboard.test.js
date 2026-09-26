@@ -104,11 +104,11 @@ describe('Dashboard', () => {
     expect(wrapper.text()).toContain('Nenhuma movimentação registrada.');
   });
 
-  it('o link "ver tudo" aponta para /movimentacoes', async () => {
+  it('o link "ver tudo" aponta para /movements', async () => {
     const { wrapper } = await mountDashboard();
 
     const link = wrapper.findAll('a').find((a) => a.text() === 'ver tudo');
-    expect(link.attributes('href')).toBe('/movimentacoes');
+    expect(link.attributes('href')).toBe('/movements');
   });
 
   it('erro ao carregar mostra alerta com a mensagem traduzida', async () => {

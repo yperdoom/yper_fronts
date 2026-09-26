@@ -102,7 +102,7 @@
         </div>
 
         <p v-if="!exercises.length" class="muted" :class="$style.note">
-          {{ $t('workouts.items.emptyBefore') }} <router-link to="/exercicios">{{ $t('nav.exercises') }}</router-link> {{ $t('workouts.items.emptyAfter') }}
+          {{ $t('workouts.items.emptyBefore') }} <router-link to="/exercises">{{ $t('nav.exercises') }}</router-link> {{ $t('workouts.items.emptyAfter') }}
         </p>
 
         <div v-for="(item, index) in form.items" :key="index" :class="$style.item">

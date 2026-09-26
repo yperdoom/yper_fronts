@@ -1,10 +1,10 @@
 <template>
   <AppShell :title="$t('today.pageTitle')">
     <template #actions>
-      <router-link to="/nutricao" class="btn">
+      <router-link to="/nutrition" class="btn">
         <span class="material-symbols-outlined">restaurant</span> {{ $t('today.actions.meal') }}
       </router-link>
-      <router-link to="/historico" class="btn btn-primary">
+      <router-link to="/history" class="btn btn-primary">
         <span class="material-symbols-outlined">fitness_center</span> {{ $t('today.actions.workout') }}
       </router-link>
     </template>
@@ -75,7 +75,7 @@
         <section class="card">
           <div class="card-head">
             <h2>{{ $t('today.recentWorkouts.title') }}</h2>
-            <router-link to="/historico" class="badge badge-accent">{{ $t('today.recentWorkouts.viewAll') }}</router-link>
+            <router-link to="/history" class="badge badge-accent">{{ $t('today.recentWorkouts.viewAll') }}</router-link>
           </div>
 
           <div v-if="!data.recentLogs.length" class="empty">

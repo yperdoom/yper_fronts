@@ -17,13 +17,13 @@ beforeEach(() => {
 describe('router', () => {
   it.each([
     ['/home', 'Today'],
-    ['/treinos', 'Workouts'],
-    ['/exercicios', 'Exercises'],
-    ['/historico', 'History'],
-    ['/nutricao', 'Nutrition'],
-    ['/alimentos', 'Foods'],
-    ['/evolucao', 'Measurements'],
-    ['/perfil', 'Profile'],
+    ['/workouts', 'Workouts'],
+    ['/exercises', 'Exercises'],
+    ['/history', 'History'],
+    ['/nutrition', 'Nutrition'],
+    ['/foods', 'Foods'],
+    ['/measurements', 'Measurements'],
+    ['/profile', 'Profile'],
   ])('resolve %s na rota %s', async (path, name) => {
     localStorage.setItem('yper_token', 'tok');
     const router = makeRouter();
@@ -40,12 +40,12 @@ describe('router', () => {
     expect(router.currentRoute.value.path).toBe('/home');
   });
 
-  it('sem sessao, /treinos redireciona para Login com redirect=/treinos', async () => {
+  it('sem sessao, /workouts redireciona para Login com redirect=/workouts', async () => {
     const router = makeRouter();
-    router.push('/treinos');
+    router.push('/workouts');
     await router.isReady();
     expect(router.currentRoute.value.name).toBe('Login');
-    expect(router.currentRoute.value.query.redirect).toBe('/treinos');
+    expect(router.currentRoute.value.query.redirect).toBe('/workouts');
   });
 
   it('com sessao, / vai para Today', async () => {

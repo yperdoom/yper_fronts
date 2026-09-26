@@ -37,7 +37,7 @@ const INVOICES = [
   },
 ];
 
-async function mountInvoices(route = '/notas') {
+async function mountInvoices(route = '/invoices') {
   return mountPage(Invoices, { messages: ptBR, api: client, route });
 }
 

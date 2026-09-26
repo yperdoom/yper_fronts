@@ -70,7 +70,7 @@
         <section class="card">
           <div class="card-head">
             <h2>{{ $t('dashboard.recentMovements.title') }}</h2>
-            <router-link to="/movimentacoes" class="badge badge-accent">{{ $t('dashboard.recentMovements.viewAll') }}</router-link>
+            <router-link to="/movements" class="badge badge-accent">{{ $t('dashboard.recentMovements.viewAll') }}</router-link>
           </div>
 
           <div v-if="!data.recentMovements.length" class="empty">

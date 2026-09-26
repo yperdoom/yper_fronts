@@ -29,7 +29,7 @@ const MOVEMENTS = [
   },
 ];
 
-async function mountMovements(route = '/movimentacoes') {
+async function mountMovements(route = '/movements') {
   return mountPage(Movements, { messages: ptBR, api: client, route });
 }
 
@@ -102,8 +102,8 @@ describe('Movements', () => {
     expect(api.get).toHaveBeenCalledWith('/movements?product=p1&type=out');
   });
 
-  it('ao chegar de /produtos com ?produto=X, filtra e abre o formulario com o produto selecionado', async () => {
-    const { wrapper, body } = await mountMovements('/movimentacoes?produto=p2');
+  it('ao chegar de /products com ?product=X, filtra e abre o formulario com o produto selecionado', async () => {
+    const { wrapper, body } = await mountMovements('/movements?product=p2');
 
     expect(api.get).toHaveBeenCalledWith('/movements?product=p2');
     expect(body.find('[role="dialog"]').exists()).toBe(true);

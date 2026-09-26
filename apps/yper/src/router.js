@@ -15,13 +15,13 @@ import { session } from './api.js';
 export const routes = [
   { path: '/', name: 'Login', component: Login, meta: { public: true } },
   { path: '/home', name: 'Today', component: Today },
-  { path: '/treinos', name: 'Workouts', component: Workouts },
-  { path: '/exercicios', name: 'Exercises', component: Exercises },
-  { path: '/historico', name: 'History', component: History },
-  { path: '/nutricao', name: 'Nutrition', component: Nutrition },
-  { path: '/alimentos', name: 'Foods', component: Foods },
-  { path: '/evolucao', name: 'Measurements', component: Measurements },
-  { path: '/perfil', name: 'Profile', component: Profile },
+  { path: '/workouts', name: 'Workouts', component: Workouts },
+  { path: '/exercises', name: 'Exercises', component: Exercises },
+  { path: '/history', name: 'History', component: History },
+  { path: '/nutrition', name: 'Nutrition', component: Nutrition },
+  { path: '/foods', name: 'Foods', component: Foods },
+  { path: '/measurements', name: 'Measurements', component: Measurements },
+  { path: '/profile', name: 'Profile', component: Profile },
   { path: '/:pathMatch(.*)*', redirect: '/home' },
 ];
 

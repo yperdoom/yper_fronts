@@ -61,7 +61,7 @@
               </td>
               <td class="num">{{ number(movement.balanceAfter, 2) }}</td>
               <td class="muted">
-                <router-link v-if="movement.invoice" to="/notas">
+                <router-link v-if="movement.invoice" to="/invoices">
                   {{ $t('movements.invoiceRef', { number: movement.invoice.number, series: movement.invoice.series }) }}
                 </router-link>
                 <span v-else>{{ movement.reason || '—' }}</span>
@@ -144,14 +144,14 @@ export default {
       saving: false,
       showForm: false,
       form: { ...EMPTY },
-      filterProduct: this.$route.query.produto || '',
+      filterProduct: this.$route.query.product || '',
       filterType: '',
     };
   },
   async mounted() {
     await Promise.all([this.load(), this.loadProducts()]);
-    // Chegou de /produtos com um produto escolhido: ja abre o lancamento.
-    if (this.$route.query.produto) this.openForm(this.$route.query.produto);
+    // Chegou de /products com um produto escolhido: ja abre o lancamento.
+    if (this.$route.query.product) this.openForm(this.$route.query.product);
   },
   methods: {
     number,

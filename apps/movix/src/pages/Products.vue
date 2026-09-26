@@ -60,7 +60,7 @@
               <td class="num">{{ currency(product.stockValue) }}</td>
               <td>
                 <div class="row" :class="$style.actions">
-                  <button class="btn-icon" :title="$t('products.actions.move')" @click="$router.push(`/movimentacoes?produto=${product._id}`)">
+                  <button class="btn-icon" :title="$t('products.actions.move')" @click="$router.push(`/movements?product=${product._id}`)">
                     <span class="material-symbols-outlined">swap_vert</span>
                   </button>
                   <button class="btn-icon" :title="$t('common.edit')" @click="openForm(product)">

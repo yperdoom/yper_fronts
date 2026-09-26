@@ -2,8 +2,8 @@ export const APP_NAME = 'Movix';
 
 export const NAV = [
   { to: '/home', labelKey: 'nav.home', icon: 'dashboard' },
-  { to: '/produtos', labelKey: 'nav.products', icon: 'inventory_2' },
-  { to: '/movimentacoes', labelKey: 'nav.movements', icon: 'swap_vert' },
-  { to: '/notas', labelKey: 'nav.invoices', icon: 'receipt_long' },
-  { to: '/fornecedores', labelKey: 'nav.suppliers', icon: 'local_shipping' },
+  { to: '/products', labelKey: 'nav.products', icon: 'inventory_2' },
+  { to: '/movements', labelKey: 'nav.movements', icon: 'swap_vert' },
+  { to: '/invoices', labelKey: 'nav.invoices', icon: 'receipt_long' },
+  { to: '/suppliers', labelKey: 'nav.suppliers', icon: 'local_shipping' },
 ];

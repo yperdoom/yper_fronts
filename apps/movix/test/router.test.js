@@ -17,10 +17,10 @@ beforeEach(() => {
 describe('router', () => {
   it.each([
     ['/home', 'Dashboard'],
-    ['/produtos', 'Products'],
-    ['/movimentacoes', 'Movements'],
-    ['/notas', 'Invoices'],
-    ['/fornecedores', 'Suppliers'],
+    ['/products', 'Products'],
+    ['/movements', 'Movements'],
+    ['/invoices', 'Invoices'],
+    ['/suppliers', 'Suppliers'],
   ])('resolve %s na rota %s', async (path, name) => {
     localStorage.setItem('movix_token', 'tok');
     const router = makeRouter();
@@ -37,12 +37,12 @@ describe('router', () => {
     expect(router.currentRoute.value.path).toBe('/home');
   });
 
-  it('sem sessao, /produtos redireciona para Login com redirect=/produtos', async () => {
+  it('sem sessao, /products redireciona para Login com redirect=/products', async () => {
     const router = makeRouter();
-    router.push('/produtos');
+    router.push('/products');
     await router.isReady();
     expect(router.currentRoute.value.name).toBe('Login');
-    expect(router.currentRoute.value.query.redirect).toBe('/produtos');
+    expect(router.currentRoute.value.query.redirect).toBe('/products');
   });
 
   it('com sessao, / vai para Dashboard', async () => {

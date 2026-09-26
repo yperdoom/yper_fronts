@@ -12,10 +12,10 @@ import { session } from './api.js';
 export const routes = [
   { path: '/', name: 'Login', component: Login, meta: { public: true } },
   { path: '/home', name: 'Dashboard', component: Dashboard },
-  { path: '/produtos', name: 'Products', component: Products },
-  { path: '/movimentacoes', name: 'Movements', component: Movements },
-  { path: '/notas', name: 'Invoices', component: Invoices },
-  { path: '/fornecedores', name: 'Suppliers', component: Suppliers },
+  { path: '/products', name: 'Products', component: Products },
+  { path: '/movements', name: 'Movements', component: Movements },
+  { path: '/invoices', name: 'Invoices', component: Invoices },
+  { path: '/suppliers', name: 'Suppliers', component: Suppliers },
   { path: '/:pathMatch(.*)*', redirect: '/home' },
 ];
 
