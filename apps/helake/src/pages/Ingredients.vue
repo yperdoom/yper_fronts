@@ -21,12 +21,12 @@
           >{{ $t('ingredients.filters.all') }}</button>
           <button
             v-for="cat in CATEGORIES"
-            :key="cat"
+            :key="cat.value"
             type="button"
             class="btn"
-            :class="activeFilter === cat ? 'btn-primary' : ''"
-            @click="activeFilter = cat"
-          >{{ cat }}</button>
+            :class="activeFilter === cat.value ? 'btn-primary' : ''"
+            @click="activeFilter = cat.value"
+          >{{ $t(`ingredients.categories.${cat.key}`) }}</button>
         </div>
       </div>
 
@@ -55,7 +55,7 @@
           <tbody>
             <tr v-for="ingredient in filtered" :key="ingredient._id">
               <td><strong>{{ ingredient.name }}</strong></td>
-              <td class="muted">{{ ingredient.category }}</td>
+              <td class="muted">{{ categoryLabel(ingredient.category) }}</td>
               <td class="num">{{ ingredient.currentStock }}</td>
               <td class="num">{{ ingredient.projectedStock?.toFixed(2) }}</td>
               <td class="num">{{ ingredient.minimumStock }}</td>
@@ -97,7 +97,7 @@
         <div class="field">
           <label for="category">{{ $t('ingredients.form.category') }}</label>
           <select id="category" v-model="form.category">
-            <option v-for="cat in CATEGORIES" :key="cat" :value="cat">{{ cat }}</option>
+            <option v-for="cat in CATEGORIES" :key="cat.value" :value="cat.value">{{ $t(`ingredients.categories.${cat.key}`) }}</option>
           </select>
         </div>
         <div class="field">
@@ -128,7 +128,14 @@ import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
 import { currency, errorMessage } from '@yper/i18n';
 
-const CATEGORIES = ['Dry Goods', 'Dairy', 'Chocolate', 'Spices', 'Packaging', 'Other'];
+const CATEGORIES = [
+  { value: 'Dry Goods', key: 'dryGoods' },
+  { value: 'Dairy', key: 'dairy' },
+  { value: 'Chocolate', key: 'chocolate' },
+  { value: 'Spices', key: 'spices' },
+  { value: 'Packaging', key: 'packaging' },
+  { value: 'Other', key: 'other' },
+];
 const UNITS = ['kg', 'g', 'un', 'L', 'ml', 'dz'];
 const EMPTY = { name: '', category: 'Other', unit: 'kg', costPerUnit: 0, currentStock: 0, minimumStock: 0 };
 
@@ -163,6 +170,10 @@ export default {
     await this.load();
   },
   methods: {
+    categoryLabel(value) {
+      const category = CATEGORIES.find((c) => c.value === value);
+      return category ? this.$t(`ingredients.categories.${category.key}`) : value;
+    },
     currency,
     stockStatus(ingredient) {
       if (ingredient.projectedStock < 0) return 'critical';

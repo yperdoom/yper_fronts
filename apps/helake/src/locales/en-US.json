@@ -78,6 +78,14 @@
       "cost": "Cost per unit (R$)",
       "currentStock": "Current Stock",
       "minimumStock": "Minimum Stock (alert)"
+    },
+    "categories": {
+      "dryGoods": "Dry goods",
+      "dairy": "Dairy",
+      "chocolate": "Chocolate",
+      "spices": "Spices",
+      "packaging": "Packaging",
+      "other": "Other"
     }
   },
   "settings": {

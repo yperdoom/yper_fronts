@@ -71,7 +71,7 @@ describe('Ingredients', () => {
 
     const cellsA = rows[0].findAll('td');
     expect(cellsA[0].text()).toContain('Farinha de Trigo');
-    expect(cellsA[1].text()).toContain('Dry Goods');
+    expect(cellsA[1].text()).toContain('Secos');
     expect(cellsA[2].text()).toContain('20');
     expect(cellsA[3].text()).toContain('18.00');
     expect(cellsA[4].text()).toContain('5');
@@ -89,7 +89,7 @@ describe('Ingredients', () => {
   it('filtra por categoria', async () => {
     const { wrapper } = await mountIngredients();
 
-    await findButtonByText(wrapper, 'Dairy').trigger('click');
+    await findButtonByText(wrapper, 'Laticínios').trigger('click');
 
     const rows = wrapper.findAll('tbody tr');
     expect(rows).toHaveLength(1);
@@ -201,5 +201,22 @@ describe('Ingredients', () => {
     await flushPromises();
 
     expect(window.alert).toHaveBeenCalledWith('Nome invalido');
+  });
+});
+
+describe('Ingredients - rotulos de categoria', () => {
+  afterEach(cleanupPages);
+
+  it('mostra a categoria traduzida e mantem o valor salvo em ingles', async () => {
+    api.get.mockResolvedValue({ ingredients: INGREDIENTS });
+    const { wrapper, body } = await mountIngredients();
+
+    expect(wrapper.text()).toContain('Secos');
+    expect(wrapper.text()).toContain('Laticínios');
+    expect(wrapper.findAll('button').some((b) => b.text() === 'Dry Goods')).toBe(false);
+
+    await wrapper.findAll('button').find((b) => b.text().includes('Novo ingrediente')).trigger('click');
+    const option = body.findAll('#category option').find((o) => o.text() === 'Secos');
+    expect(option.attributes('value')).toBe('Dry Goods');
   });
 });

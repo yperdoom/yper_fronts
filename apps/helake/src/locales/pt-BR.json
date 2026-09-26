@@ -78,6 +78,14 @@
       "cost": "Custo por unidade (R$)",
       "currentStock": "Estoque atual",
       "minimumStock": "Estoque mínimo (alerta)"
+    },
+    "categories": {
+      "dryGoods": "Secos",
+      "dairy": "Laticínios",
+      "chocolate": "Chocolate",
+      "spices": "Especiarias",
+      "packaging": "Embalagens",
+      "other": "Outros"
     }
   },
   "settings": {
