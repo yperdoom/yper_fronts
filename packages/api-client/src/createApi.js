@@ -166,5 +166,5 @@ export function createApi({
 
   const session = { getToken, getUser, isAuthenticated, isAdmin };
 
-  return { api, auth, session };
+  return { app, api, auth, session };
 }

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkLocales } from '@yper/test-utils';
+import { checkLocales, flattenKeys } from '@yper/test-utils';
 import { createAppI18n } from '@yper/i18n';
 
 import appPtBR from '../src/locales/pt-BR.json';
@@ -9,19 +9,6 @@ import appEnUS from '../src/locales/en-US.json';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SRC_DIR = path.join(__dirname, '..', 'src');
-
-function flattenKeys(obj, prefix = '') {
-  const keys = [];
-  for (const [key, value] of Object.entries(obj)) {
-    const fullKey = prefix ? `${prefix}.${key}` : key;
-    if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
-      keys.push(...flattenKeys(value, fullKey));
-    } else {
-      keys.push(fullKey);
-    }
-  }
-  return keys;
-}
 
 describe('locales', () => {
   const { missingKeys, uncompiled, templateLeaks, staticAttrs } = checkLocales({

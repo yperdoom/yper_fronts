@@ -1,0 +1,342 @@
+{
+  "app": {
+    "tagline": "Workouts and nutrition"
+  },
+  "nav": {
+    "today": "Today",
+    "workouts": "Workouts",
+    "exercises": "Exercises",
+    "history": "History",
+    "nutrition": "Nutrition",
+    "foods": "Foods",
+    "measurements": "Progress",
+    "profile": "Goals"
+  },
+  "today": {
+    "pageTitle": "Today",
+    "actions": {
+      "meal": "Meal",
+      "workout": "Workout"
+    },
+    "macros": {
+      "title": "Today's macros",
+      "mealsCount": "{count} meal(s) logged",
+      "types": {
+        "calories": "Calories",
+        "protein": "Protein",
+        "carbs": "Carbs",
+        "fat": "Fat"
+      },
+      "consumedTarget": "{consumed} / {target}{unit}",
+      "remaining": "{amount}{unit} to go",
+      "over": "{amount}{unit} over target"
+    },
+    "workoutToday": {
+      "title": "Today's workout",
+      "weekCount": "{done} / {target} this week",
+      "empty": "No workout scheduled for today.",
+      "setsReps": "{sets}x{reps}",
+      "itemWeight": " · {weight}kg"
+    },
+    "recentWorkouts": {
+      "title": "Recent workouts",
+      "viewAll": "view all",
+      "empty": "No workouts logged yet.",
+      "table": {
+        "date": "Date",
+        "workout": "Workout",
+        "duration": "Duration",
+        "volume": "Volume"
+      },
+      "freeWorkout": "Freestyle",
+      "durationMinutes": "{minutes} min",
+      "volumeValue": "{value} kg"
+    },
+    "lastWeight": {
+      "label": "Last weight:",
+      "value": "{weight} kg",
+      "at": "on {date}"
+    }
+  },
+  "workouts": {
+    "title": "Workouts",
+    "newWorkout": "New workout",
+    "empty": "Build your first workout to start logging sessions.",
+    "noFocus": "No focus set",
+    "noItems": "No exercises added.",
+    "card": {
+      "setsReps": "{sets}x{reps}",
+      "itemWeight": " · {weight}kg"
+    },
+    "form": {
+      "editTitle": "Edit workout",
+      "name": "Name",
+      "namePlaceholder": "Workout A",
+      "focus": "Focus",
+      "focusPlaceholder": "Chest and triceps",
+      "weekdays": "Weekdays"
+    },
+    "items": {
+      "title": "Exercises",
+      "addButton": "Exercise",
+      "emptyBefore": "Add exercises in",
+      "emptyAfter": "to build the workout.",
+      "selectPlaceholder": "Exercise",
+      "setsPlaceholder": "Sets",
+      "repsPlaceholder": "Reps",
+      "weightPlaceholder": "kg"
+    },
+    "weekdays": {
+      "0": "Sun",
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat"
+    }
+  },
+  "exercises": {
+    "title": "Exercises",
+    "newExercise": "New exercise",
+    "search": {
+      "placeholder": "Name or equipment"
+    },
+    "filters": {
+      "allGroups": "All groups"
+    },
+    "count": "{shown} of {total}",
+    "empty": {
+      "filtered": "No exercises match this filter.",
+      "first": "Add your first exercise."
+    },
+    "table": {
+      "exercise": "Exercise",
+      "group": "Group",
+      "equipment": "Equipment"
+    },
+    "actions": {
+      "watchVideo": "Watch video"
+    },
+    "form": {
+      "editTitle": "Edit exercise",
+      "name": "Name",
+      "muscleGroup": "Muscle group",
+      "equipment": "Equipment",
+      "equipmentPlaceholder": "Barbell, dumbbell, machine...",
+      "videoUrl": "Video link",
+      "optionalPlaceholder": "optional",
+      "notes": "Notes"
+    },
+    "muscleGroups": {
+      "chest": "Chest",
+      "back": "Back",
+      "legs": "Legs",
+      "glutes": "Glutes",
+      "shoulders": "Shoulders",
+      "biceps": "Biceps",
+      "triceps": "Triceps",
+      "abs": "Abs",
+      "calves": "Calves",
+      "cardio": "Cardio",
+      "fullBody": "Full body",
+      "other": "Other"
+    }
+  },
+  "history": {
+    "title": "History",
+    "newLog": "Log workout",
+    "loggedSessions": "Logged sessions",
+    "count": "{count} session(s)",
+    "empty": "No workouts logged yet.",
+    "freeWorkout": "Freestyle workout",
+    "durationMinutes": "{minutes} min",
+    "volume": "{value} kg volume",
+    "entrySet": "{reps}x{weight}kg",
+    "noSets": "no sets",
+    "submitLabel": "Log",
+    "confirmRemove": "Remove this entry?",
+    "form": {
+      "workout": "Workout",
+      "freeOption": "Freestyle",
+      "date": "Date",
+      "duration": "Duration (min)",
+      "notes": "Notes"
+    },
+    "items": {
+      "title": "Exercises",
+      "addButton": "Exercise",
+      "empty": "Pick a workout above to bring in its exercises, or add them one by one.",
+      "selectPlaceholder": "Exercise",
+      "setNumber": "Set {number}",
+      "repsPlaceholder": "reps",
+      "weightPlaceholder": "kg",
+      "addSetButton": "Set"
+    }
+  },
+  "nutrition": {
+    "title": "Nutrition",
+    "newMealButton": "Meal",
+    "newMealTitle": "New meal",
+    "prevDay": "Previous day",
+    "nextDay": "Next day",
+    "mealsCount": "{count} meal(s)",
+    "macros": {
+      "types": {
+        "calories": "Calories",
+        "protein": "Protein",
+        "carbs": "Carbs",
+        "fat": "Fat"
+      },
+      "consumedTarget": "{value} / {target}{unit}"
+    },
+    "empty": "No meals logged on this day.",
+    "mealTypes": {
+      "breakfast": "Breakfast",
+      "morning_snack": "Morning snack",
+      "lunch": "Lunch",
+      "afternoon_snack": "Afternoon snack",
+      "dinner": "Dinner",
+      "supper": "Supper"
+    },
+    "caloriesValue": "{value} kcal",
+    "confirmRemove": "Remove {meal}?",
+    "table": {
+      "food": "Food",
+      "quantity": "Quantity",
+      "kcal": "Kcal",
+      "protein": "P",
+      "carbs": "C",
+      "fat": "F"
+    },
+    "itemQuantity": "{quantity} {unit}",
+    "total": "Total",
+    "form": {
+      "editTitle": "Edit meal",
+      "type": "Meal",
+      "date": "Date"
+    },
+    "items": {
+      "title": "Foods",
+      "addButton": "Food",
+      "emptyBefore": "Add foods in",
+      "emptyAfter": "to build the meal.",
+      "selectPlaceholder": "Food",
+      "foodOption": "{name} ({calories} kcal / {size}{unit})",
+      "quantityPlaceholder": "Qty"
+    }
+  },
+  "foods": {
+    "title": "Foods",
+    "newFood": "New food",
+    "search": {
+      "placeholder": "Name or brand"
+    },
+    "count": "{shown} of {total}",
+    "empty": {
+      "filtered": "No foods match this filter.",
+      "first": "Add your first food."
+    },
+    "table": {
+      "food": "Food",
+      "serving": "Serving",
+      "kcal": "Kcal",
+      "protein": "Protein",
+      "carbs": "Carbs",
+      "fat": "Fat"
+    },
+    "servingValue": "{size} {unit}",
+    "gramsValue": "{value} g",
+    "servingUnits": {
+      "g": "grams",
+      "ml": "milliliters",
+      "un": "unit"
+    },
+    "form": {
+      "editTitle": "Edit food",
+      "name": "Name",
+      "brand": "Brand",
+      "optionalPlaceholder": "optional",
+      "servingSize": "Reference serving",
+      "servingUnit": "Unit",
+      "noteBefore": "The values below are",
+      "noteEmphasis": "per reference serving",
+      "noteAfter": "When building a meal you enter the actual quantity and the macros are converted.",
+      "calories": "Calories",
+      "protein": "Protein (g)",
+      "carbs": "Carbs (g)",
+      "fat": "Fat (g)",
+      "fiber": "Fiber (g)"
+    }
+  },
+  "measurements": {
+    "title": "Progress",
+    "newMeasurement": "New measurement",
+    "confirmRemove": "Remove the measurement from {date}?",
+    "kpi": {
+      "currentWeight": "Current weight",
+      "weightValue": "{value} kg",
+      "totalVariation": "Total change",
+      "since": "since {date}",
+      "bodyFat": "Body fat",
+      "percentValue": "{value}%"
+    },
+    "chart": {
+      "title": "Weight over time",
+      "count": "{count} measurements",
+      "range": "{min} – {max} kg"
+    },
+    "list": {
+      "title": "Measurements",
+      "count": "{count} record(s)",
+      "empty": "Log your first measurement to track your progress."
+    },
+    "table": {
+      "date": "Date",
+      "weight": "Weight",
+      "fat": "Body fat",
+      "chest": "Chest",
+      "waist": "Waist",
+      "hip": "Hips",
+      "arm": "Arm",
+      "thigh": "Thigh"
+    },
+    "form": {
+      "editTitle": "Edit measurement",
+      "date": "Date",
+      "weight": "Weight (kg)",
+      "bodyFat": "Body fat (%)",
+      "chest": "Chest (cm)",
+      "waist": "Waist (cm)",
+      "hip": "Hips (cm)",
+      "arm": "Arm (cm)",
+      "thigh": "Thigh (cm)",
+      "notes": "Notes"
+    }
+  },
+  "profile": {
+    "pageTitle": "Goals",
+    "title": "Profile",
+    "savedMessage": "Goals saved.",
+    "form": {
+      "birthDate": "Date of birth",
+      "height": "Height (cm)",
+      "goal": "Goal",
+      "workoutDays": "Workouts per week"
+    },
+    "goals": {
+      "cut": "Lose fat",
+      "maintain": "Maintain",
+      "bulk": "Build muscle"
+    },
+    "dailyGoals": {
+      "title": "Daily goals",
+      "macroCaloriesBadge": "macros add up to {value} kcal",
+      "calories": "Calories",
+      "protein": "Protein (g)",
+      "carbs": "Carbs (g)",
+      "fat": "Fat (g)",
+      "note": "Protein and carbs provide 4 kcal per gram, fat provides 9. The sum above helps check whether the macros match the calorie goal."
+    }
+  }
+}

@@ -29,6 +29,20 @@
       </nav>
 
       <div :class="$style.sidebarFoot">
+        <div :class="$style.prefs">
+          <div role="group" :aria-label="$t('common.language')" :class="$style.segmented">
+            <button
+              v-for="locale in locales"
+              :key="locale"
+              type="button"
+              :class="[$style.segment, locale === $i18n.locale && $style.segmentActive]"
+              :aria-pressed="String(locale === $i18n.locale)"
+              @click="setLocale(locale)"
+            >
+              {{ locale.slice(0, 2).toUpperCase() }}
+            </button>
+          </div>
+        </div>
         <div :class="$style.user">
           <span class="material-symbols-outlined">account_circle</span>
           <span :class="$style.userEmail">{{ user?.email || '—' }}</span>
@@ -79,6 +93,7 @@
 </template>
 
 <script>
+import { SUPPORTED_LOCALES, saveLocale } from '@yper/i18n';
 import { SHELL_KEY } from './createShell.js';
 
 export default {
@@ -95,6 +110,7 @@ export default {
       user: this.shell.api.session.getUser(),
       isAdmin: this.shell.api.session.isAdmin(),
       logoFailed: false,
+      locales: SUPPORTED_LOCALES,
     };
   },
   async mounted() {
@@ -109,6 +125,10 @@ export default {
     this.isAdmin = this.shell.api.session.isAdmin();
   },
   methods: {
+    setLocale(locale) {
+      this.$i18n.locale = locale;
+      saveLocale(this.shell.api.app, locale);
+    },
     signOut() {
       this.shell.api.auth.logout();
       this.$router.push('/');
@@ -208,6 +228,46 @@ export default {
 .sidebarFoot {
   padding: 12px 10px 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.prefs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 11px 8px;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--sidebar-hover);
+}
+
+.segment {
+  padding: 3px 9px;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--sidebar-text);
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.segment:hover {
+  color: var(--sidebar-text-active);
+}
+
+.segmentActive {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.segmentActive:hover {
+  color: var(--accent-contrast);
 }
 
 .user {

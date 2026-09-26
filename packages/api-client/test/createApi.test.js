@@ -283,3 +283,11 @@ describe('createApi', () => {
     expect(onUnauthorized).not.toHaveBeenCalled();
   });
 });
+
+describe('identificacao do app', () => {
+  it('expoe o nome do app no client', () => {
+    const client = createApi({ app: 'movix', baseUrl: 'https://api.test', storage: {}, fetchFn: async () => ({}) });
+
+    expect(client.app).toBe('movix');
+  });
+});

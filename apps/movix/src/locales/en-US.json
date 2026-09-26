@@ -1,0 +1,221 @@
+{
+  "app": {
+    "tagline": "Inventory and invoice control"
+  },
+  "nav": {
+    "home": "Overview",
+    "products": "Products",
+    "movements": "Stock movements",
+    "invoices": "Invoices",
+    "suppliers": "Suppliers"
+  },
+  "dashboard": {
+    "title": "Overview",
+    "kpis": {
+      "activeProducts": "Active products",
+      "stockValue": "Stock value",
+      "stockValueHint": "at cost price",
+      "purchasesThisMonth": "Purchases this month",
+      "purchasesThisMonthHint": "{count} confirmed invoice(s)",
+      "salesThisMonth": "Sales this month"
+    },
+    "lowStock": {
+      "title": "Below minimum",
+      "empty": "No products below minimum.",
+      "table": {
+        "product": "Product",
+        "current": "Current",
+        "minimum": "Minimum",
+        "reorder": "Reorder"
+      }
+    },
+    "recentMovements": {
+      "title": "Recent movements",
+      "viewAll": "view all",
+      "empty": "No movements recorded.",
+      "table": {
+        "when": "When",
+        "product": "Product",
+        "delta": "Change",
+        "balance": "Balance"
+      }
+    }
+  },
+  "products": {
+    "title": "Products",
+    "newProduct": "New product",
+    "search": {
+      "placeholder": "Name, SKU or category"
+    },
+    "filters": {
+      "onlyLow": "Only below minimum"
+    },
+    "count": "{shown} of {total}",
+    "empty": {
+      "filtered": "No products match this filter.",
+      "first": "Add your first product."
+    },
+    "table": {
+      "product": "Product",
+      "category": "Category",
+      "supplier": "Supplier",
+      "stock": "Stock",
+      "cost": "Cost",
+      "sale": "Price",
+      "stockValue": "In stock"
+    },
+    "actions": {
+      "move": "Move stock"
+    },
+    "form": {
+      "editTitle": "Edit product",
+      "newTitle": "New product",
+      "name": "Name",
+      "sku": "SKU",
+      "optionalPlaceholder": "optional",
+      "barcode": "Barcode",
+      "category": "Category",
+      "unit": "Unit",
+      "supplier": "Supplier",
+      "costPrice": "Cost price",
+      "salePrice": "Sale price",
+      "minimumStock": "Minimum stock",
+      "currentStock": "Initial stock",
+      "note": "The balance is not edited here. To correct it, record an adjustment movement."
+    }
+  },
+  "movements": {
+    "title": "Stock movements",
+    "addButton": "Record",
+    "filters": {
+      "allProducts": "All products",
+      "allTypes": "All types"
+    },
+    "count": "{count} record(s)",
+    "empty": "No movements found.",
+    "table": {
+      "when": "When",
+      "product": "Product",
+      "type": "Type",
+      "delta": "Change",
+      "balance": "Balance",
+      "origin": "Source"
+    },
+    "types": {
+      "in": "In",
+      "out": "Out",
+      "adjustment": "Adjustment"
+    },
+    "invoiceRef": "Invoice {number}/{series}",
+    "form": {
+      "title": "New movement",
+      "product": "Product",
+      "selectProduct": "Select",
+      "productOption": "{name} — balance {balance} {unit}",
+      "type": "Type",
+      "adjustmentType": "Adjustment (final balance)",
+      "newBalance": "New balance",
+      "quantity": "Quantity",
+      "unitCost": "Unit cost",
+      "reason": "Reason",
+      "reasonPlaceholder": "purchase, loss, count...",
+      "noteAdjustment": "For an adjustment, enter the product's new balance. The difference is calculated and recorded.",
+      "noteDefault": "Movements cannot be edited or deleted. To correct one, record an adjustment."
+    }
+  },
+  "invoices": {
+    "title": "Invoices",
+    "newTitle": "New invoice",
+    "editTitle": "Edit invoice",
+    "filters": {
+      "allTypes": "Incoming and outgoing",
+      "onlyIn": "Incoming only",
+      "onlyOut": "Outgoing only",
+      "allStatus": "All statuses"
+    },
+    "status": {
+      "draft": "Draft",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled"
+    },
+    "count": "{count} invoice(s)",
+    "empty": "No invoices recorded.",
+    "table": {
+      "number": "Invoice",
+      "issueDate": "Issued",
+      "type": "Type",
+      "counterpart": "Counterparty",
+      "items": "Items",
+      "total": "Total",
+      "status": "Status"
+    },
+    "types": {
+      "in": "Incoming",
+      "out": "Outgoing"
+    },
+    "actions": {
+      "confirm": "Confirm and update stock"
+    },
+    "form": {
+      "number": "Number",
+      "series": "Series",
+      "type": "Type",
+      "types": {
+        "in": "Incoming (purchase)",
+        "out": "Outgoing (sale)"
+      },
+      "issueDate": "Issue date",
+      "supplier": "Supplier",
+      "counterpart": "Recipient",
+      "accessKey": "Access key",
+      "accessKeyPlaceholder": "44 digits (optional)"
+    },
+    "items": {
+      "title": "Items",
+      "addButton": "Item",
+      "empty": "Add at least one item — items generate the stock movements on confirmation.",
+      "productPlaceholder": "Product",
+      "quantityPlaceholder": "Qty",
+      "unitPricePlaceholder": "Unit price",
+      "total": "Total"
+    },
+    "confirmVerb": {
+      "in": "add",
+      "out": "subtract"
+    },
+    "confirmMessage": "Confirm invoice {number}/{series}? This will {verb} the items in stock.",
+    "cancelMessage": "Cancel invoice {number}/{series}? The generated movements will be reversed.",
+    "removeMessage": "Remove invoice {number}/{series}?"
+  },
+  "suppliers": {
+    "title": "Suppliers",
+    "newSupplier": "New supplier",
+    "search": {
+      "placeholder": "Name or tax ID"
+    },
+    "count": "{shown} of {total}",
+    "empty": {
+      "filtered": "No suppliers match this filter.",
+      "first": "Add your first supplier."
+    },
+    "table": {
+      "name": "Name",
+      "document": "Tax ID",
+      "contact": "Contact",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "form": {
+      "editTitle": "Edit supplier",
+      "name": "Name",
+      "document": "CNPJ / CPF",
+      "phone": "Phone",
+      "email": "Email",
+      "notes": "Notes",
+      "activeToggle": "Active supplier"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkLocales } from '../src/index.js';
+import { checkLocales, flattenKeys } from '../src/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SRC_DIR = path.join(__dirname, 'fixtures', 'locales-src');
@@ -36,5 +36,11 @@ describe('checkLocales', () => {
     );
 
     expect(flaggedFiles).not.toContain(path.join('pages', 'Clean.vue'));
+  });
+});
+
+describe('flattenKeys', () => {
+  it('achata objetos aninhados em chaves com ponto', () => {
+    expect(flattenKeys({ a: { b: 'x', c: { d: 'y' } }, e: 'z' })).toEqual(['a.b', 'a.c.d', 'e']);
   });
 });

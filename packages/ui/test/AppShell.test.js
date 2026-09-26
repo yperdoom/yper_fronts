@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import { createRouter, createMemoryHistory } from 'vue-router';
 import { createAppI18n } from '@yper/i18n';
@@ -26,6 +26,7 @@ function makeRouter() {
 function makeApi({ email = 'user@yper.dev', admin = false, meResolvesAdmin, meFails } = {}) {
   let currentAdmin = admin;
   return {
+    app: 'movix',
     auth: {
       logout: vi.fn(),
       me: vi.fn(async () => {
@@ -58,6 +59,11 @@ async function mountShell({ api = makeApi(), appName = 'Movix', slots } = {}) {
 }
 
 describe('AppShell', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    document.documentElement.lang = 'pt-BR';
+  });
+
   it('renderiza um router-link por item do nav com o label traduzido', async () => {
     const { wrapper } = await mountShell();
 
@@ -161,6 +167,40 @@ describe('AppShell', () => {
     await backdrop.trigger('click');
 
     expect(wrapper.vm.open).toBe(false);
+  });
+});
+
+describe('AppShell seletor de idioma', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    document.documentElement.lang = 'pt-BR';
+  });
+
+  function localeButtons(wrapper) {
+    return wrapper.find('[role="group"]').findAll('button');
+  }
+
+  it('renderiza PT e EN num grupo rotulado, com o locale ativo pressionado', async () => {
+    const { wrapper } = await mountShell();
+
+    const group = wrapper.find('[role="group"]');
+    expect(group.attributes('aria-label')).toBe('Idioma');
+    const buttons = localeButtons(wrapper);
+    expect(buttons.map((button) => button.text())).toEqual(['PT', 'EN']);
+    expect(buttons.map((button) => button.attributes('aria-pressed'))).toEqual(['true', 'false']);
+  });
+
+  it('trocar para EN traduz a tela, atualiza <html lang> e salva <app>_locale', async () => {
+    const { wrapper } = await mountShell();
+
+    await localeButtons(wrapper)[1].trigger('click');
+
+    expect(wrapper.text()).toContain('Log out');
+    expect(wrapper.text()).not.toContain('Sair');
+    expect(document.documentElement.lang).toBe('en-US');
+    expect(localStorage.getItem('movix_locale')).toBe('en-US');
+    expect(localeButtons(wrapper)[1].attributes('aria-pressed')).toBe('true');
+    expect(wrapper.find('[role="group"]').attributes('aria-label')).toBe('Language');
   });
 });
 

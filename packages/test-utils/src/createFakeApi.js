@@ -2,7 +2,7 @@ import { vi } from 'vitest';
 
 /**
  * Fake do client de api/auth/session usado pelas paginas, no formato de
- * `@yper/api-client` (`{ api, auth, session }`).
+ * `@yper/api-client` (`{ app, api, auth, session }`).
  *
  * Lookup de `responses`:
  * - `api.get(path)` resolve `responses[path]`, ou `[]` se ausente.
@@ -45,5 +45,5 @@ export function createFakeApi(responses = {}) {
     isAdmin: vi.fn(() => false),
   };
 
-  return { api, auth, session };
+  return { app: 'test', api, auth, session };
 }

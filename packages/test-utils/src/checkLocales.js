@@ -83,7 +83,7 @@ function listVueFiles(dir) {
     .map((entry) => path.join(dir, entry));
 }
 
-function flattenKeys(obj, prefix = '') {
+export function flattenKeys(obj, prefix = '') {
   const keys = [];
   for (const [key, value] of Object.entries(obj)) {
     const fullKey = prefix ? `${prefix}.${key}` : key;

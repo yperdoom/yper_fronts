@@ -72,3 +72,9 @@ describe('createFakeApi', () => {
     expect(session.isAdmin()).toBe(true);
   });
 });
+
+describe('createFakeApi app', () => {
+  it('expoe um nome de app como o client real', () => {
+    expect(createFakeApi().app).toBe('test');
+  });
+});

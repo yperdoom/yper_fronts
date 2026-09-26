@@ -5,6 +5,7 @@
     "saving": "Saving...",
     "loading": "Loading...",
     "logout": "Log out",
+    "language": "Language",
     "edit": "Edit",
     "remove": "Remove",
     "confirmRemove": "Remove \"{name}\"?"

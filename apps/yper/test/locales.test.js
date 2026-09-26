@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkLocales } from '@yper/test-utils';
+import { checkLocales, flattenKeys } from '@yper/test-utils';
+import { createAppI18n } from '@yper/i18n';
 
 import appPtBR from '../src/locales/pt-BR.json';
+import appEnUS from '../src/locales/en-US.json';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SRC_DIR = path.join(__dirname, '..', 'src');
@@ -25,5 +27,16 @@ describe('locales', () => {
   it('nenhuma pagina tem texto em pt-BR fora de $t()/atributos dinamicos', () => {
     expect(templateLeaks).toEqual([]);
     expect(staticAttrs).toEqual([]);
+  });
+
+  it('pt-BR e en-US tem o mesmo conjunto de chaves', () => {
+    expect(flattenKeys(appEnUS).sort()).toEqual(flattenKeys(appPtBR).sort());
+  });
+
+  it('toda mensagem do en-US.json do app compila e traduz', () => {
+    const i18n = createAppI18n({ messages: { 'en-US': appEnUS }, locale: 'en-US' });
+    for (const key of flattenKeys(appEnUS)) {
+      expect(i18n.global.t(key)).not.toBe(key);
+    }
   });
 });
