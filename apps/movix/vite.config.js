@@ -18,6 +18,10 @@ export default defineConfig(({ mode }) => ({
     environment: 'jsdom',
     coverage: {
       include: ['src/**/*.{js,vue}'],
+      exclude: ['src/main.js'],
+      thresholds: {
+        lines: 85,
+      },
     },
   },
 }));

@@ -1,37 +1,44 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mountPage } from '@yper/test-utils';
 
 import { routes } from '../src/router.js';
 import { NAV, APP_NAME } from '../src/nav.js';
 import ptBR from '../src/locales/pt-BR.json';
 
-const { fakeApi } = await vi.hoisted(async () => {
+vi.mock('@/api', async () => {
   const { createFakeApi } = await import('@yper/test-utils');
-  const fakeApi = createFakeApi({
-    '/dashboard': {
-      totalProducts: 0,
-      stockValue: 0,
-      purchasesThisMonth: 0,
-      salesThisMonth: 0,
-      invoicesThisMonth: 0,
-      lowStock: [],
-      recentMovements: [],
-    },
-    '/products': { products: [] },
-    '/movements': { movements: [] },
-    '/invoices': { invoices: [] },
-    '/suppliers': { suppliers: [] },
-  });
-  return { fakeApi };
+  const client = createFakeApi();
+  return { ...client, default: client };
 });
 
-vi.mock('@/api', () => ({ api: fakeApi.api, auth: fakeApi.auth, session: fakeApi.session, default: fakeApi }));
+import client, { api } from '@/api';
 
-const Dashboard = (await import('../src/pages/Dashboard.vue')).default;
-const Products = (await import('../src/pages/Products.vue')).default;
-const Movements = (await import('../src/pages/Movements.vue')).default;
-const Invoices = (await import('../src/pages/Invoices.vue')).default;
-const Suppliers = (await import('../src/pages/Suppliers.vue')).default;
+import Dashboard from '../src/pages/Dashboard.vue';
+import Products from '../src/pages/Products.vue';
+import Movements from '../src/pages/Movements.vue';
+import Invoices from '../src/pages/Invoices.vue';
+import Suppliers from '../src/pages/Suppliers.vue';
+
+const RESPONSES = {
+  '/dashboard': {
+    totalProducts: 0,
+    stockValue: 0,
+    purchasesThisMonth: 0,
+    salesThisMonth: 0,
+    invoicesThisMonth: 0,
+    lowStock: [],
+    recentMovements: [],
+  },
+  '/products': { products: [] },
+  '/movements': { movements: [] },
+  '/invoices': { invoices: [] },
+  '/suppliers': { suppliers: [] },
+};
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  api.get.mockImplementation(async (path) => RESPONSES[path] ?? []);
+});
 
 describe('pages (smoke)', () => {
   it.each([
@@ -43,12 +50,13 @@ describe('pages (smoke)', () => {
   ])('%s monta sem lancar erro', async (_name, Component) => {
     const { wrapper } = await mountPage(Component, {
       messages: ptBR,
-      api: fakeApi,
+      api: client,
       route: '/home',
       routes,
       appName: APP_NAME,
       nav: NAV,
     });
     expect(wrapper.exists()).toBe(true);
+    wrapper.unmount();
   });
 });
