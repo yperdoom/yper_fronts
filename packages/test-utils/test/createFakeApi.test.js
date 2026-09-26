@@ -51,4 +51,24 @@ describe('createFakeApi', () => {
     expect(session.getToken()).toBeTruthy();
     expect(session.getUser()).toEqual(expect.objectContaining({ email: expect.any(String) }));
   });
+
+  it('auth.users e auth.changePassword sao spies com respostas vazias por padrao', async () => {
+    const { auth } = createFakeApi();
+
+    await expect(auth.users.list()).resolves.toEqual({ users: [] });
+    for (const method of ['create', 'update', 'setPassword', 'remove']) {
+      expect(vi.isMockFunction(auth.users[method])).toBe(true);
+      await expect(auth.users[method]()).resolves.toEqual({});
+    }
+    await expect(auth.changePassword('old123', 'new123')).resolves.toEqual({});
+    expect(auth.changePassword).toHaveBeenCalledWith('old123', 'new123');
+  });
+
+  it('session.isAdmin e um spy que retorna false por padrao', () => {
+    const { session } = createFakeApi();
+
+    expect(session.isAdmin()).toBe(false);
+    session.isAdmin.mockReturnValue(true);
+    expect(session.isAdmin()).toBe(true);
+  });
 });

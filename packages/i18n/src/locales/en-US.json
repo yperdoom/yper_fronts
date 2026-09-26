@@ -23,5 +23,67 @@
   "errors": {
     "NETWORK": "Could not reach the server. Please try again.",
     "UNAUTHORIZED": "Session expired. Please log in again."
+  },
+  "users": {
+    "title": "Users",
+    "newUser": "New user",
+    "editTitle": "Edit user",
+    "empty": "No users yet.",
+    "you": "you",
+    "resetPassword": "Reset password",
+    "resetPasswordTitle": "Reset password for {name}",
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "apps": "Apps",
+      "status": "Status"
+    },
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "newPassword": "New password",
+      "role": "Role",
+      "apps": "Apps",
+      "adminAllApps": "Administrators access all apps.",
+      "activeToggle": "Active user"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "errors": {
+      "emailPasswordRequired": "Email and password are required.",
+      "passwordTooShort": "Password must have at least 6 characters.",
+      "validationFailed": "Invalid data. Please check the fields.",
+      "duplicateEmail": "A user with this email already exists.",
+      "selfDemote": "You cannot demote or deactivate yourself.",
+      "selfDelete": "You cannot remove yourself.",
+      "notFound": "User not found.",
+      "adminOnly": "Only administrators can do this."
+    }
+  },
+  "roles": {
+    "admin": "Administrator",
+    "manager": "Manager",
+    "employee": "Employee"
+  },
+  "apps": {
+    "helake": "Helake",
+    "movix": "Movix",
+    "yper": "Yper"
+  },
+  "account": {
+    "changePassword": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "success": "Password changed successfully.",
+    "errors": {
+      "mismatch": "The confirmation does not match the new password.",
+      "currentRequired": "Enter your current password.",
+      "currentIncorrect": "Current password is incorrect."
+    }
   }
 }

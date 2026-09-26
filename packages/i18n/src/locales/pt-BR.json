@@ -23,5 +23,67 @@
   "errors": {
     "NETWORK": "Não foi possível falar com o servidor. Tente de novo.",
     "UNAUTHORIZED": "Sessão expirada. Faça login novamente."
+  },
+  "users": {
+    "title": "Usuários",
+    "newUser": "Novo usuário",
+    "editTitle": "Editar usuário",
+    "empty": "Nenhum usuário cadastrado.",
+    "you": "você",
+    "resetPassword": "Redefinir senha",
+    "resetPasswordTitle": "Redefinir senha de {name}",
+    "table": {
+      "name": "Nome",
+      "email": "E-mail",
+      "role": "Papel",
+      "apps": "Apps",
+      "status": "Status"
+    },
+    "form": {
+      "name": "Nome",
+      "email": "E-mail",
+      "password": "Senha",
+      "newPassword": "Nova senha",
+      "role": "Papel",
+      "apps": "Apps",
+      "adminAllApps": "Administradores acessam todos os apps.",
+      "activeToggle": "Usuário ativo"
+    },
+    "status": {
+      "active": "Ativo",
+      "inactive": "Inativo"
+    },
+    "errors": {
+      "emailPasswordRequired": "E-mail e senha são obrigatórios.",
+      "passwordTooShort": "A senha precisa ter pelo menos 6 caracteres.",
+      "validationFailed": "Dados inválidos. Confira os campos.",
+      "duplicateEmail": "Já existe um usuário com este e-mail.",
+      "selfDemote": "Você não pode rebaixar nem desativar a si mesmo.",
+      "selfDelete": "Você não pode remover a si mesmo.",
+      "notFound": "Usuário não encontrado.",
+      "adminOnly": "Apenas administradores podem fazer isso."
+    }
+  },
+  "roles": {
+    "admin": "Administrador",
+    "manager": "Gerente",
+    "employee": "Funcionário"
+  },
+  "apps": {
+    "helake": "Helake",
+    "movix": "Movix",
+    "yper": "Yper"
+  },
+  "account": {
+    "changePassword": "Alterar senha",
+    "currentPassword": "Senha atual",
+    "newPassword": "Nova senha",
+    "confirmPassword": "Confirme a nova senha",
+    "success": "Senha alterada com sucesso.",
+    "errors": {
+      "mismatch": "A confirmação não confere com a nova senha.",
+      "currentRequired": "Informe a senha atual.",
+      "currentIncorrect": "Senha atual incorreta."
+    }
   }
 }

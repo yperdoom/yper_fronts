@@ -1,4 +1,9 @@
-export function createAuthGuard({ isAuthenticated, loginRoute = 'Login', homeRoute = 'Home' }) {
+export function createAuthGuard({
+  isAuthenticated,
+  isAdmin = () => false,
+  loginRoute = 'Login',
+  homeRoute = 'Home',
+}) {
   return (to) => {
     const logged = isAuthenticated();
 
@@ -7,6 +12,10 @@ export function createAuthGuard({ isAuthenticated, loginRoute = 'Login', homeRou
     }
 
     if (to.meta.public && logged) {
+      return { name: homeRoute };
+    }
+
+    if (to.meta.admin && !isAdmin()) {
       return { name: homeRoute };
     }
 

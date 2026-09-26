@@ -37,3 +37,29 @@ describe('mensagens comuns', () => {
     expect(t('common.confirmRemove', { name: 'Acme' })).toContain('Acme');
   });
 });
+
+describe('usuarios, papeis e conta', () => {
+  it.each(['pt-BR', 'en-US'])('traduz papeis, apps, usuarios e conta em %s', async (locale) => {
+    const { createAppI18n } = await import('../src/index.js');
+    const { t } = createAppI18n({ locale }).global;
+
+    for (const key of [
+      'roles.admin',
+      'roles.manager',
+      'roles.employee',
+      'users.title',
+      'users.errors.duplicateEmail',
+      'account.changePassword',
+      'account.errors.currentIncorrect',
+    ]) {
+      expect(t(key)).not.toBe(key);
+    }
+  });
+
+  it('nomes dos apps sao os nomes dos produtos nos dois locales', () => {
+    const expected = { helake: 'Helake', movix: 'Movix', yper: 'Yper' };
+
+    expect(ptBR.apps).toEqual(expected);
+    expect(enUS.apps).toEqual(expected);
+  });
+});
