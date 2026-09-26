@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { mountPage } from '@yper/test-utils';
-import { DOMWrapper, flushPromises } from '@vue/test-utils';
+import { mountPage, cleanupPages } from '@yper/test-utils';
+import { flushPromises } from '@vue/test-utils';
 import { currency, toDateInput } from '@yper/i18n';
 import ptBR from '../../src/locales/pt-BR.json';
 
@@ -37,12 +37,8 @@ const INVOICES = [
   },
 ];
 
-let activeWrapper;
-
 async function mountInvoices(route = '/notas') {
-  const ctx = await mountPage(Invoices, { messages: ptBR, api: client, route });
-  activeWrapper = ctx.wrapper;
-  return ctx;
+  return mountPage(Invoices, { messages: ptBR, api: client, route });
 }
 
 function findButtonByTitle(wrapper, title) {
@@ -55,10 +51,7 @@ function itemRows(body) {
   return body.findAll('[class*="_item_"]');
 }
 
-afterEach(() => {
-  activeWrapper?.unmount();
-  activeWrapper = undefined;
-});
+afterEach(cleanupPages);
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -180,8 +173,7 @@ describe('Invoices', () => {
   });
 
   it('alterna entre fornecedor e contraparte conforme o tipo', async () => {
-    const { wrapper } = await mountInvoices();
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountInvoices();
 
     await wrapper.findAll('button').find((btn) => btn.text().includes('Nova nota')).trigger('click');
 
@@ -195,8 +187,7 @@ describe('Invoices', () => {
   });
 
   it('cria uma nota nova com item e recarrega a lista', async () => {
-    const { wrapper } = await mountInvoices();
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountInvoices();
 
     await wrapper.findAll('button').find((btn) => btn.text().includes('Nova nota')).trigger('click');
 
@@ -226,8 +217,7 @@ describe('Invoices', () => {
   });
 
   it('edita uma nota existente com os itens pre-preenchidos', async () => {
-    const { wrapper } = await mountInvoices();
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountInvoices();
 
     await findButtonByTitle(wrapper.findAll('tbody tr')[0], 'Editar').trigger('click');
 
@@ -251,8 +241,7 @@ describe('Invoices', () => {
   });
 
   it('remove um item da nota antes de salvar', async () => {
-    const { wrapper } = await mountInvoices();
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountInvoices();
 
     await findButtonByTitle(wrapper.findAll('tbody tr')[0], 'Editar').trigger('click');
     expect(itemRows(body)).toHaveLength(1);

@@ -1,15 +1,21 @@
-import { mount, flushPromises } from '@vue/test-utils';
+import { mount, flushPromises, DOMWrapper } from '@vue/test-utils';
 import { createRouter, createMemoryHistory } from 'vue-router';
 import { createAppI18n } from '@yper/i18n';
 import { createShell } from '@yper/ui';
 
 import { createFakeApi } from './createFakeApi.js';
 
+const mountedWrappers = [];
+
 /**
  * Monta uma pagina com i18n, shell e router reais (router de memoria), mais
  * um client de api (real ou `createFakeApi()`, usado por padrao).
  *
  * Sem `routes`, o router usa uma rota catch-all para o proprio componente.
+ *
+ * `Modal` (`@yper/ui`) usa `<Teleport to="body">`, entao seu conteudo fica
+ * fora da arvore de `wrapper`; `body` e um `DOMWrapper` de `document.body`
+ * para consultar esse conteudo teleportado.
  */
 export async function mountPage(
   component,
@@ -30,5 +36,20 @@ export async function mountPage(
   });
   await flushPromises();
 
-  return { wrapper, api, router };
+  mountedWrappers.push(wrapper);
+  const body = new DOMWrapper(document.body);
+
+  return { wrapper, api, router, body };
+}
+
+/**
+ * Desmonta todos os wrappers criados por `mountPage` desde a ultima limpeza
+ * e limpa o `document.body` (inclusive conteudo teleportado por `Modal`).
+ * Chamar em `afterEach(cleanupPages)`.
+ */
+export function cleanupPages() {
+  while (mountedWrappers.length) {
+    mountedWrappers.pop().unmount();
+  }
+  document.body.innerHTML = '';
 }

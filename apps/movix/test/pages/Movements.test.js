@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { mountPage } from '@yper/test-utils';
-import { DOMWrapper, flushPromises } from '@vue/test-utils';
+import { mountPage, cleanupPages } from '@yper/test-utils';
+import { flushPromises } from '@vue/test-utils';
 import ptBR from '../../src/locales/pt-BR.json';
 
 vi.mock('@/api', async () => {
@@ -29,18 +29,11 @@ const MOVEMENTS = [
   },
 ];
 
-let activeWrapper;
-
 async function mountMovements(route = '/movimentacoes') {
-  const ctx = await mountPage(Movements, { messages: ptBR, api: client, route });
-  activeWrapper = ctx.wrapper;
-  return ctx;
+  return mountPage(Movements, { messages: ptBR, api: client, route });
 }
 
-afterEach(() => {
-  activeWrapper?.unmount();
-  activeWrapper = undefined;
-});
+afterEach(cleanupPages);
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -110,8 +103,7 @@ describe('Movements', () => {
   });
 
   it('ao chegar de /produtos com ?produto=X, filtra e abre o formulario com o produto selecionado', async () => {
-    const { wrapper } = await mountMovements('/movimentacoes?produto=p2');
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountMovements('/movimentacoes?produto=p2');
 
     expect(api.get).toHaveBeenCalledWith('/movements?product=p2');
     expect(body.find('[role="dialog"]').exists()).toBe(true);
@@ -120,8 +112,7 @@ describe('Movements', () => {
   });
 
   it('lanca uma movimentacao nova com os dados do formulario', async () => {
-    const { wrapper } = await mountMovements();
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountMovements();
 
     await wrapper.findAll('button').find((btn) => btn.text().includes('Lançar')).trigger('click');
 
@@ -140,8 +131,7 @@ describe('Movements', () => {
   });
 
   it('troca o rotulo e a nota ao selecionar o tipo ajuste', async () => {
-    const { wrapper } = await mountMovements();
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountMovements();
 
     await wrapper.findAll('button').find((btn) => btn.text().includes('Lançar')).trigger('click');
     await body.find('#type').setValue('adjustment');
@@ -162,8 +152,7 @@ describe('Movements', () => {
   });
 
   it('erro ao lancar mostra a mensagem do erro', async () => {
-    const { wrapper } = await mountMovements();
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountMovements();
     api.post.mockRejectedValueOnce({ message: 'Quantidade invalida' });
 
     await wrapper.findAll('button').find((btn) => btn.text().includes('Lançar')).trigger('click');

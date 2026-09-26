@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { flushPromises, DOMWrapper } from '@vue/test-utils';
-import { mountPage } from '@yper/test-utils';
+import { flushPromises } from '@vue/test-utils';
+import { mountPage, cleanupPages } from '@yper/test-utils';
 import { number, toDateInput } from '@yper/i18n';
 import ptBR from '../../src/locales/pt-BR.json';
 
@@ -12,10 +12,6 @@ vi.mock('@/api', async () => {
 
 import client, { api } from '@/api';
 import Nutrition from '../../src/pages/Nutrition.vue';
-
-function modal() {
-  return new DOMWrapper(document.body);
-}
 
 const FOOD = { _id: 'f1', name: 'Arroz', calories: 130, protein: 2.7, carbs: 28, fat: 0.3, servingSize: 100, servingUnit: 'g' };
 
@@ -47,8 +43,8 @@ async function mountNutrition(overrides) {
   return mountPage(Nutrition, { messages: ptBR, api: client });
 }
 
-async function submit() {
-  await modal().find('form').trigger('submit');
+async function submit(body) {
+  await body.find('form').trigger('submit');
   await flushPromises();
 }
 
@@ -61,7 +57,7 @@ describe('Nutrition', () => {
   afterEach(() => {
     vi.useRealTimers();
     vi.restoreAllMocks();
-    document.body.innerHTML = '';
+    cleanupPages();
   });
 
   it('carrega refeicoes do dia, macros e tabela com totais', async () => {
@@ -107,21 +103,21 @@ describe('Nutrition', () => {
   });
 
   it('cria uma refeicao escolhendo alimento e quantidade, envia o payload e recarrega no dia salvo', async () => {
-    const { wrapper } = await mountNutrition();
+    const { wrapper, body } = await mountNutrition();
 
     await wrapper.find('button.btn-primary').trigger('click');
     await flushPromises();
 
-    await modal().find('#type').setValue('breakfast');
-    const addItemButton = modal().findAll('button.btn').find((b) => b.text().includes('Alimento'));
+    await body.find('#type').setValue('breakfast');
+    const addItemButton = body.findAll('button.btn').find((b) => b.text().includes('Alimento'));
     await addItemButton.trigger('click');
 
-    await modal().find('select[required]').setValue('f1');
-    await modal().find('input[type="number"][step="0.1"]').setValue(150);
+    await body.find('select[required]').setValue('f1');
+    await body.find('input[type="number"][step="0.1"]').setValue(150);
 
-    expect(modal().text()).toContain(`${number(195)} kcal`);
+    expect(body.text()).toContain(`${number(195)} kcal`);
 
-    await submit();
+    await submit(body);
 
     expect(api.post).toHaveBeenCalledWith('/meals', {
       type: 'breakfast',
@@ -131,14 +127,14 @@ describe('Nutrition', () => {
   });
 
   it('edita uma refeicao existente pre-preenchendo o formulario e envia PUT', async () => {
-    const { wrapper } = await mountNutrition({ meals: { meals: [MEAL], totals: MEAL.totals } });
+    const { wrapper, body } = await mountNutrition({ meals: { meals: [MEAL], totals: MEAL.totals } });
 
     await wrapper.find('button[title="Editar"]').trigger('click');
     await flushPromises();
 
-    expect(modal().find('#type').element.value).toBe('lunch');
-    await modal().find('input[type="number"][step="0.1"]').setValue(100);
-    await submit();
+    expect(body.find('#type').element.value).toBe('lunch');
+    await body.find('input[type="number"][step="0.1"]').setValue(100);
+    await submit(body);
 
     expect(api.put).toHaveBeenCalledWith('/meals/m1', {
       type: 'lunch',

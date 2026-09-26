@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { mountPage } from '@yper/test-utils';
-import { DOMWrapper, flushPromises } from '@vue/test-utils';
+import { mountPage, cleanupPages } from '@yper/test-utils';
+import { flushPromises } from '@vue/test-utils';
 import ptBR from '../../src/locales/pt-BR.json';
 
 vi.mock('@/api', async () => {
@@ -24,22 +24,15 @@ const SUPPLIERS = [
   },
 ];
 
-let activeWrapper;
-
 async function mountSuppliers(route = '/fornecedores') {
-  const ctx = await mountPage(Suppliers, { messages: ptBR, api: client, route });
-  activeWrapper = ctx.wrapper;
-  return ctx;
+  return mountPage(Suppliers, { messages: ptBR, api: client, route });
 }
 
 function findButtonByTitle(wrapper, title) {
   return wrapper.findAll('.btn-icon').find((btn) => btn.attributes('title') === title);
 }
 
-afterEach(() => {
-  activeWrapper?.unmount();
-  activeWrapper = undefined;
-});
+afterEach(cleanupPages);
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -104,8 +97,7 @@ describe('Suppliers', () => {
   });
 
   it('cria um novo fornecedor e recarrega a lista', async () => {
-    const { wrapper } = await mountSuppliers();
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountSuppliers();
 
     await wrapper.findAll('button').find((btn) => btn.text().includes('Novo fornecedor')).trigger('click');
     expect(body.find('h3').text()).toBe('Novo fornecedor');
@@ -129,8 +121,7 @@ describe('Suppliers', () => {
   });
 
   it('edita um fornecedor existente', async () => {
-    const { wrapper } = await mountSuppliers();
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountSuppliers();
 
     await findButtonByTitle(wrapper.findAll('tbody tr')[0], 'Editar').trigger('click');
 
@@ -179,8 +170,7 @@ describe('Suppliers', () => {
   });
 
   it('erro ao salvar mostra a mensagem do erro', async () => {
-    const { wrapper } = await mountSuppliers();
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountSuppliers();
     api.post.mockRejectedValueOnce({ message: 'Documento invalido' });
 
     await wrapper.findAll('button').find((btn) => btn.text().includes('Novo fornecedor')).trigger('click');

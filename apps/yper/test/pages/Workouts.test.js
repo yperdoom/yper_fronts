@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { flushPromises, DOMWrapper } from '@vue/test-utils';
-import { mountPage } from '@yper/test-utils';
+import { flushPromises } from '@vue/test-utils';
+import { mountPage, cleanupPages } from '@yper/test-utils';
 import { number } from '@yper/i18n';
 import ptBR from '../../src/locales/pt-BR.json';
 
@@ -12,12 +12,6 @@ vi.mock('@/api', async () => {
 
 import client, { api } from '@/api';
 import Workouts from '../../src/pages/Workouts.vue';
-
-// O Modal usa <Teleport to="body">, entao seu conteudo fica fora da arvore
-// de `wrapper` no DOM real; precisamos consultar `document.body` para ele.
-function modal() {
-  return new DOMWrapper(document.body);
-}
 
 const EXERCISES = [{ _id: 'e1', name: 'Supino' }, { _id: 'e2', name: 'Agachamento' }];
 
@@ -42,15 +36,15 @@ async function mountWorkouts(overrides) {
   return mountPage(Workouts, { messages: ptBR, api: client });
 }
 
-async function submit() {
-  await modal().find('form').trigger('submit');
+async function submit(body) {
+  await body.find('form').trigger('submit');
   await flushPromises();
 }
 
 describe('Workouts', () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    document.body.innerHTML = '';
+    cleanupPages();
   });
 
   it('carrega treinos e exercicios, e renderiza dias, itens e foco', async () => {
@@ -76,25 +70,25 @@ describe('Workouts', () => {
   });
 
   it('cria um novo treino preenchendo dias e itens, envia o payload correto e recarrega', async () => {
-    const { wrapper } = await mountWorkouts();
+    const { wrapper, body } = await mountWorkouts();
 
     await wrapper.find('button.btn-primary').trigger('click');
     await flushPromises();
 
-    await modal().find('#name').setValue('Treino B');
-    await modal().find('#focus').setValue('Costas');
+    await body.find('#name').setValue('Treino B');
+    await body.find('#focus').setValue('Costas');
 
-    const mondayToggle = modal().findAll('button.badge').find((b) => b.text() === 'Seg');
+    const mondayToggle = body.findAll('button.badge').find((b) => b.text() === 'Seg');
     await mondayToggle.trigger('click');
 
-    const addItemButton = modal().findAll('button.btn').find((b) => b.text().includes('Exercício'));
+    const addItemButton = body.findAll('button.btn').find((b) => b.text().includes('Exercício'));
     await addItemButton.trigger('click');
 
-    await modal().find('select').setValue('e2');
-    await modal().find('input[type="number"][min="1"]').setValue(5);
-    await modal().find('input[type="number"][step="0.5"]').setValue(40);
+    await body.find('select').setValue('e2');
+    await body.find('input[type="number"][min="1"]').setValue(5);
+    await body.find('input[type="number"][step="0.5"]').setValue(40);
 
-    await submit();
+    await submit(body);
 
     expect(api.post).toHaveBeenCalledWith('/workouts', {
       name: 'Treino B',
@@ -108,16 +102,16 @@ describe('Workouts', () => {
   });
 
   it('edita um treino existente pre-preenchendo o formulario e envia PUT', async () => {
-    const { wrapper } = await mountWorkouts({ '/workouts': { workouts: [WORKOUT] } });
+    const { wrapper, body } = await mountWorkouts({ '/workouts': { workouts: [WORKOUT] } });
 
     await wrapper.find('button[title="Editar"]').trigger('click');
     await flushPromises();
 
-    expect(modal().find('#name').element.value).toBe('Treino A');
-    expect(modal().find('#focus').element.value).toBe('Peito');
+    expect(body.find('#name').element.value).toBe('Treino A');
+    expect(body.find('#focus').element.value).toBe('Peito');
 
-    await modal().find('#focus').setValue('Peito e tríceps');
-    await submit();
+    await body.find('#focus').setValue('Peito e tríceps');
+    await submit(body);
 
     expect(api.put).toHaveBeenCalledWith('/workouts/w1', {
       name: 'Treino A',

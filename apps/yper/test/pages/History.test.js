@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { flushPromises, DOMWrapper } from '@vue/test-utils';
-import { mountPage } from '@yper/test-utils';
+import { flushPromises } from '@vue/test-utils';
+import { mountPage, cleanupPages } from '@yper/test-utils';
 import { number, date, toDateInput } from '@yper/i18n';
 import ptBR from '../../src/locales/pt-BR.json';
 
@@ -12,10 +12,6 @@ vi.mock('@/api', async () => {
 
 import client, { api } from '@/api';
 import History from '../../src/pages/History.vue';
-
-function modal() {
-  return new DOMWrapper(document.body);
-}
 
 const WORKOUT = {
   _id: 'w1',
@@ -46,8 +42,8 @@ async function mountHistory(overrides) {
   return mountPage(History, { messages: ptBR, api: client });
 }
 
-async function submit() {
-  await modal().find('form').trigger('submit');
+async function submit(body) {
+  await body.find('form').trigger('submit');
   await flushPromises();
 }
 
@@ -60,7 +56,7 @@ describe('History', () => {
   afterEach(() => {
     vi.useRealTimers();
     vi.restoreAllMocks();
-    document.body.innerHTML = '';
+    cleanupPages();
   });
 
   it('carrega sessoes e renderiza series, duracao, volume e notas', async () => {
@@ -93,13 +89,13 @@ describe('History', () => {
   });
 
   it('escolher um treino no formulario preenche os exercicios com as series planejadas', async () => {
-    const { wrapper } = await mountHistory({ '/workouts': { workouts: [WORKOUT] }, '/exercises': { exercises: EXERCISES } });
+    const { wrapper, body } = await mountHistory({ '/workouts': { workouts: [WORKOUT] }, '/exercises': { exercises: EXERCISES } });
 
     await wrapper.find('button.btn-primary').trigger('click');
     await flushPromises();
 
-    await modal().find('#workout').setValue('w1');
-    await submit();
+    await body.find('#workout').setValue('w1');
+    await submit(body);
 
     expect(api.post).toHaveBeenCalledWith('/logs', {
       workout: 'w1',
@@ -112,21 +108,21 @@ describe('History', () => {
   });
 
   it('permite adicionar exercicios e series manualmente antes de salvar', async () => {
-    const { wrapper } = await mountHistory({ '/exercises': { exercises: EXERCISES } });
+    const { wrapper, body } = await mountHistory({ '/exercises': { exercises: EXERCISES } });
 
     await wrapper.find('button.btn-primary').trigger('click');
     await flushPromises();
 
-    const addEntry = modal().findAll('button.btn').find((b) => b.text().includes('Exercício'));
+    const addEntry = body.findAll('button.btn').find((b) => b.text().includes('Exercício'));
     await addEntry.trigger('click');
 
-    await modal().find('select[required]').setValue('e1');
-    const addSet = modal().findAll('button.btn').find((b) => b.text().includes('Série'));
+    await body.find('select[required]').setValue('e1');
+    const addSet = body.findAll('button.btn').find((b) => b.text().includes('Série'));
     await addSet.trigger('click');
 
-    await modal().find('input[placeholder="reps"]').setValue(12);
+    await body.find('input[placeholder="reps"]').setValue(12);
 
-    await submit();
+    await submit(body);
 
     expect(api.post).toHaveBeenCalledWith('/logs', {
       workout: null,

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { flushPromises, DOMWrapper } from '@vue/test-utils';
-import { mountPage } from '@yper/test-utils';
+import { flushPromises } from '@vue/test-utils';
+import { mountPage, cleanupPages } from '@yper/test-utils';
 import { number, date, toDateInput } from '@yper/i18n';
 import ptBR from '../../src/locales/pt-BR.json';
 
@@ -13,10 +13,6 @@ vi.mock('@/api', async () => {
 import client, { api } from '@/api';
 import Measurements from '../../src/pages/Measurements.vue';
 
-function modal() {
-  return new DOMWrapper(document.body);
-}
-
 const M1 = { _id: 'm1', date: '2024-03-10', weightKg: 79.5, bodyFatPercentage: 15.2, chestCm: 100, waistCm: 80, hipCm: 95, armCm: 35, thighCm: 55, notes: '' };
 const M2 = { _id: 'm2', date: '2024-02-10', weightKg: 81, bodyFatPercentage: 16, chestCm: 99, waistCm: 82, hipCm: 96, armCm: 34, thighCm: 54, notes: '' };
 const M3 = { _id: 'm3', date: '2024-01-10', weightKg: 83, bodyFatPercentage: null, chestCm: null, waistCm: null, hipCm: null, armCm: null, thighCm: null, notes: 'primeira medicao' };
@@ -27,8 +23,8 @@ async function mountMeasurements(measurements = [M1, M2, M3]) {
   return mountPage(Measurements, { messages: ptBR, api: client });
 }
 
-async function submit() {
-  await modal().find('form').trigger('submit');
+async function submit(body) {
+  await body.find('form').trigger('submit');
   await flushPromises();
 }
 
@@ -41,7 +37,7 @@ describe('Measurements', () => {
   afterEach(() => {
     vi.useRealTimers();
     vi.restoreAllMocks();
-    document.body.innerHTML = '';
+    cleanupPages();
   });
 
   it('carrega medicoes e renderiza kpis, grafico e tabela', async () => {
@@ -77,21 +73,21 @@ describe('Measurements', () => {
   });
 
   it('cria uma medicao com os campos preenchidos e envia o payload correto', async () => {
-    const { wrapper } = await mountMeasurements([]);
+    const { wrapper, body } = await mountMeasurements([]);
 
     await wrapper.find('button.btn-primary').trigger('click');
     await flushPromises();
 
-    await modal().find('#weightKg').setValue(78.2);
-    await modal().find('#bodyFat').setValue(14.5);
-    await modal().find('#chest').setValue(98);
-    await modal().find('#waist').setValue(79);
-    await modal().find('#hip').setValue(94);
-    await modal().find('#arm').setValue(33);
-    await modal().find('#thigh').setValue(53);
-    await modal().find('#notes').setValue('boa evolucao');
+    await body.find('#weightKg').setValue(78.2);
+    await body.find('#bodyFat').setValue(14.5);
+    await body.find('#chest').setValue(98);
+    await body.find('#waist').setValue(79);
+    await body.find('#hip').setValue(94);
+    await body.find('#arm').setValue(33);
+    await body.find('#thigh').setValue(53);
+    await body.find('#notes').setValue('boa evolucao');
 
-    await submit();
+    await submit(body);
 
     expect(api.post).toHaveBeenCalledWith('/measurements', {
       date: toDateInput(),
@@ -108,15 +104,15 @@ describe('Measurements', () => {
   });
 
   it('edita uma medicao existente pre-preenchendo o formulario e envia PUT', async () => {
-    const { wrapper } = await mountMeasurements();
+    const { wrapper, body } = await mountMeasurements();
 
     const editButtons = wrapper.findAll('button[title="Editar"]');
     await editButtons[0].trigger('click');
     await flushPromises();
 
-    expect(modal().find('#weightKg').element.value).toBe('79.5');
-    await modal().find('#weightKg').setValue(79);
-    await submit();
+    expect(body.find('#weightKg').element.value).toBe('79.5');
+    await body.find('#weightKg').setValue(79);
+    await submit(body);
 
     expect(api.put).toHaveBeenCalledWith('/measurements/m1', {
       _id: 'm1',

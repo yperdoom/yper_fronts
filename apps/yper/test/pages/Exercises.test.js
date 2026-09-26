@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { flushPromises, DOMWrapper } from '@vue/test-utils';
-import { mountPage } from '@yper/test-utils';
+import { flushPromises } from '@vue/test-utils';
+import { mountPage, cleanupPages } from '@yper/test-utils';
 import ptBR from '../../src/locales/pt-BR.json';
 
 vi.mock('@/api', async () => {
@@ -11,10 +11,6 @@ vi.mock('@/api', async () => {
 
 import client, { api } from '@/api';
 import Exercises from '../../src/pages/Exercises.vue';
-
-function modal() {
-  return new DOMWrapper(document.body);
-}
 
 const EXERCISES = [
   { _id: 'e1', name: 'Supino reto', muscleGroup: 'Peito', equipment: 'Barra', notes: '', videoUrl: 'https://vid/1' },
@@ -27,15 +23,15 @@ async function mountExercises(exercises = EXERCISES) {
   return mountPage(Exercises, { messages: ptBR, api: client });
 }
 
-async function submit() {
-  await modal().find('form').trigger('submit');
+async function submit(body) {
+  await body.find('form').trigger('submit');
   await flushPromises();
 }
 
 describe('Exercises', () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    document.body.innerHTML = '';
+    cleanupPages();
   });
 
   it('carrega exercicios e mostra grupo muscular, equipamento e link de video', async () => {
@@ -73,18 +69,18 @@ describe('Exercises', () => {
   });
 
   it('cria um novo exercicio e envia o payload correto', async () => {
-    const { wrapper } = await mountExercises([]);
+    const { wrapper, body } = await mountExercises([]);
 
     await wrapper.find('button.btn-primary').trigger('click');
     await flushPromises();
 
-    await modal().find('#name').setValue('Remada curvada');
-    await modal().find('#muscleGroup').setValue('Costas');
-    await modal().find('#equipment').setValue('Barra');
-    await modal().find('#videoUrl').setValue('https://vid/2');
-    await modal().find('#notes').setValue('cuidado com a lombar');
+    await body.find('#name').setValue('Remada curvada');
+    await body.find('#muscleGroup').setValue('Costas');
+    await body.find('#equipment').setValue('Barra');
+    await body.find('#videoUrl').setValue('https://vid/2');
+    await body.find('#notes').setValue('cuidado com a lombar');
 
-    await submit();
+    await submit(body);
 
     expect(api.post).toHaveBeenCalledWith('/exercises', {
       name: 'Remada curvada',
@@ -97,15 +93,15 @@ describe('Exercises', () => {
   });
 
   it('edita um exercicio existente pre-preenchendo o formulario e envia PUT', async () => {
-    const { wrapper } = await mountExercises();
+    const { wrapper, body } = await mountExercises();
 
     const editButtons = wrapper.findAll('button[title="Editar"]');
     await editButtons[0].trigger('click');
     await flushPromises();
 
-    expect(modal().find('#name').element.value).toBe('Supino reto');
-    await modal().find('#equipment').setValue('Halteres');
-    await submit();
+    expect(body.find('#name').element.value).toBe('Supino reto');
+    await body.find('#equipment').setValue('Halteres');
+    await submit(body);
 
     expect(api.put).toHaveBeenCalledWith('/exercises/e1', {
       _id: 'e1',

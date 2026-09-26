@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { mountPage } from '@yper/test-utils';
+import { mountPage, cleanupPages } from '@yper/test-utils';
 import { currency } from '@yper/i18n';
 import ptBR from '../../src/locales/pt-BR.json';
 
@@ -29,18 +29,11 @@ const DATA = {
   ],
 };
 
-let activeWrapper;
-
 async function mountDashboard(route = '/home') {
-  const ctx = await mountPage(Dashboard, { messages: ptBR, api: client, route });
-  activeWrapper = ctx.wrapper;
-  return ctx;
+  return mountPage(Dashboard, { messages: ptBR, api: client, route });
 }
 
-afterEach(() => {
-  activeWrapper?.unmount();
-  activeWrapper = undefined;
-});
+afterEach(cleanupPages);
 
 beforeEach(() => {
   vi.clearAllMocks();

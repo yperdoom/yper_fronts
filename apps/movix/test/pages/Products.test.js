@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { mountPage } from '@yper/test-utils';
-import { DOMWrapper, flushPromises } from '@vue/test-utils';
+import { mountPage, cleanupPages } from '@yper/test-utils';
+import { flushPromises } from '@vue/test-utils';
 import { currency } from '@yper/i18n';
 import ptBR from '../../src/locales/pt-BR.json';
 
@@ -34,22 +34,15 @@ const PRODUCTS = [
 
 const SUPPLIERS = [{ _id: 's1', name: 'Fornecedor A' }, { _id: 's2', name: 'Fornecedor B' }];
 
-let activeWrapper;
-
 async function mountProducts(route = '/produtos') {
-  const ctx = await mountPage(Products, { messages: ptBR, api: client, route });
-  activeWrapper = ctx.wrapper;
-  return ctx;
+  return mountPage(Products, { messages: ptBR, api: client, route });
 }
 
 function findButtonByTitle(wrapper, title) {
   return wrapper.findAll('.btn-icon').find((btn) => btn.attributes('title') === title);
 }
 
-afterEach(() => {
-  activeWrapper?.unmount();
-  activeWrapper = undefined;
-});
+afterEach(cleanupPages);
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -128,8 +121,7 @@ describe('Products', () => {
   });
 
   it('cria um novo produto e recarrega a lista', async () => {
-    const { wrapper } = await mountProducts();
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountProducts();
 
     await wrapper.findAll('button').find((btn) => btn.text().includes('Novo produto')).trigger('click');
     expect(body.find('[role="dialog"]').exists()).toBe(true);
@@ -158,8 +150,7 @@ describe('Products', () => {
   });
 
   it('edita um produto existente sem o campo de estoque inicial', async () => {
-    const { wrapper } = await mountProducts();
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountProducts();
 
     await findButtonByTitle(wrapper, 'Editar').trigger('click');
 
@@ -222,8 +213,7 @@ describe('Products', () => {
   });
 
   it('erro ao salvar mostra a mensagem do erro', async () => {
-    const { wrapper } = await mountProducts();
-    const body = new DOMWrapper(document.body);
+    const { wrapper, body } = await mountProducts();
     api.post.mockRejectedValueOnce({ message: 'Nome invalido' });
 
     await wrapper.findAll('button').find((btn) => btn.text().includes('Novo produto')).trigger('click');
