@@ -258,7 +258,12 @@ export default {
     },
     openForm(item = null) {
       this.editingId = item?._id || null;
-      this.form = item ? { ...empty(), ...item, date: toDateInput(item.date) } : empty();
+      this.form = item
+        ? {
+            ...Object.fromEntries(Object.keys(empty()).map((key) => [key, item[key] ?? empty()[key]])),
+            date: toDateInput(item.date),
+          }
+        : empty();
       this.showForm = true;
     },
     async save() {

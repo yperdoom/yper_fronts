@@ -13,8 +13,14 @@ import client, { api } from '@/api';
 import Exercises from '../../src/pages/Exercises.vue';
 
 const EXERCISES = [
-  { _id: 'e1', name: 'Supino reto', muscleGroup: 'Peito', equipment: 'Barra', notes: '', videoUrl: 'https://vid/1' },
-  { _id: 'e2', name: 'Agachamento', muscleGroup: 'Pernas', equipment: 'Barra', notes: '' },
+  {
+    _id: 'e1', name: 'Supino reto', muscleGroup: 'Peito', equipment: 'Barra', notes: '', videoUrl: 'https://vid/1',
+    createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-02T00:00:00.000Z',
+  },
+  {
+    _id: 'e2', name: 'Agachamento', muscleGroup: 'Pernas', equipment: 'Barra', notes: '',
+    createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-02T00:00:00.000Z',
+  },
 ];
 
 async function mountExercises(exercises = EXERCISES) {
@@ -104,7 +110,6 @@ describe('Exercises', () => {
     await submit(body);
 
     expect(api.put).toHaveBeenCalledWith('/exercises/e1', {
-      _id: 'e1',
       name: 'Supino reto',
       muscleGroup: 'Peito',
       equipment: 'Halteres',

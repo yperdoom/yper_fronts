@@ -13,9 +13,10 @@ vi.mock('@/api', async () => {
 import client, { api } from '@/api';
 import Measurements from '../../src/pages/Measurements.vue';
 
-const M1 = { _id: 'm1', date: '2024-03-10', weightKg: 79.5, bodyFatPercentage: 15.2, chestCm: 100, waistCm: 80, hipCm: 95, armCm: 35, thighCm: 55, notes: '' };
-const M2 = { _id: 'm2', date: '2024-02-10', weightKg: 81, bodyFatPercentage: 16, chestCm: 99, waistCm: 82, hipCm: 96, armCm: 34, thighCm: 54, notes: '' };
-const M3 = { _id: 'm3', date: '2024-01-10', weightKg: 83, bodyFatPercentage: null, chestCm: null, waistCm: null, hipCm: null, armCm: null, thighCm: null, notes: 'primeira medicao' };
+const SERVER_FIELDS = { createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-02T00:00:00.000Z' };
+const M1 = { _id: 'm1', date: '2024-03-10', weightKg: 79.5, bodyFatPercentage: 15.2, chestCm: 100, waistCm: 80, hipCm: 95, armCm: 35, thighCm: 55, notes: '', ...SERVER_FIELDS };
+const M2 = { _id: 'm2', date: '2024-02-10', weightKg: 81, bodyFatPercentage: 16, chestCm: 99, waistCm: 82, hipCm: 96, armCm: 34, thighCm: 54, notes: '', ...SERVER_FIELDS };
+const M3 = { _id: 'm3', date: '2024-01-10', weightKg: 83, bodyFatPercentage: null, chestCm: null, waistCm: null, hipCm: null, armCm: null, thighCm: null, notes: 'primeira medicao', ...SERVER_FIELDS };
 
 async function mountMeasurements(measurements = [M1, M2, M3]) {
   api.get.mockReset();
@@ -115,7 +116,6 @@ describe('Measurements', () => {
     await submit(body);
 
     expect(api.put).toHaveBeenCalledWith('/measurements/m1', {
-      _id: 'm1',
       date: toDateInput('2024-03-10'),
       weightKg: 79,
       bodyFatPercentage: 15.2,

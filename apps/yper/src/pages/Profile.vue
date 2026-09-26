@@ -113,8 +113,7 @@ export default {
     try {
       const { profile } = await api.get('/profile');
       this.form = {
-        ...DEFAULT,
-        ...profile,
+        ...Object.fromEntries(Object.keys(DEFAULT).map((key) => [key, profile[key] ?? DEFAULT[key]])),
         birthDate: profile.birthDate ? toDateInput(profile.birthDate) : '',
       };
     } catch (err) {

@@ -173,7 +173,9 @@ export default {
     },
     openForm(food = null) {
       this.editingId = food?._id || null;
-      this.form = food ? { ...EMPTY, ...food } : { ...EMPTY };
+      this.form = food
+        ? Object.fromEntries(Object.keys(EMPTY).map((key) => [key, food[key] ?? EMPTY[key]]))
+        : { ...EMPTY };
       this.showForm = true;
     },
     async save() {

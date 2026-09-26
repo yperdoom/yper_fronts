@@ -177,7 +177,9 @@ export default {
     },
     openForm(exercise = null) {
       this.editingId = exercise?._id || null;
-      this.form = exercise ? { ...EMPTY, ...exercise } : { ...EMPTY };
+      this.form = exercise
+        ? Object.fromEntries(Object.keys(EMPTY).map((key) => [key, exercise[key] ?? EMPTY[key]]))
+        : { ...EMPTY };
       this.showForm = true;
     },
     async save() {

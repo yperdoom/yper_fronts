@@ -14,8 +14,14 @@ import client, { api } from '@/api';
 import Foods from '../../src/pages/Foods.vue';
 
 const FOODS = [
-  { _id: 'f1', name: 'Arroz branco', brand: '', servingSize: 100, servingUnit: 'g', calories: 130, protein: 2.7, carbs: 28, fat: 0.3, fiber: 0.4 },
-  { _id: 'f2', name: 'Whey isolado', brand: 'Marca X', servingSize: 30, servingUnit: 'g', calories: 120, protein: 25, carbs: 2, fat: 1, fiber: 0 },
+  {
+    _id: 'f1', name: 'Arroz branco', brand: '', servingSize: 100, servingUnit: 'g', calories: 130, protein: 2.7, carbs: 28, fat: 0.3, fiber: 0.4,
+    createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-02T00:00:00.000Z',
+  },
+  {
+    _id: 'f2', name: 'Whey isolado', brand: 'Marca X', servingSize: 30, servingUnit: 'g', calories: 120, protein: 25, carbs: 2, fat: 1, fiber: 0,
+    createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-02T00:00:00.000Z',
+  },
 ];
 
 async function mountFoods(foods = FOODS) {
@@ -111,7 +117,6 @@ describe('Foods', () => {
     await submit(body);
 
     expect(api.put).toHaveBeenCalledWith('/foods/f1', {
-      _id: 'f1',
       name: 'Arroz branco',
       brand: '',
       servingSize: 100,

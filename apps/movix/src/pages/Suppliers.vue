@@ -150,7 +150,9 @@ export default {
     },
     openForm(supplier = null) {
       this.editingId = supplier?._id || null;
-      this.form = supplier ? { ...EMPTY, ...supplier } : { ...EMPTY };
+      this.form = supplier
+        ? Object.fromEntries(Object.keys(EMPTY).map((key) => [key, supplier[key] ?? EMPTY[key]]))
+        : { ...EMPTY };
       this.showForm = true;
     },
     async save() {

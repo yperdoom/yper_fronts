@@ -13,6 +13,7 @@ import client, { api } from '@/api';
 import Profile from '../../src/pages/Profile.vue';
 
 const PROFILE = {
+  _id: 'u1',
   birthDate: '1990-05-20',
   heightCm: 180,
   goal: 'bulk',
@@ -21,6 +22,8 @@ const PROFILE = {
   carbsTarget: 100,
   fatTarget: 50,
   workoutDaysPerWeek: 5,
+  createdAt: '2024-01-01T00:00:00.000Z',
+  updatedAt: '2024-01-02T00:00:00.000Z',
 };
 
 async function mountProfile(profile = PROFILE) {

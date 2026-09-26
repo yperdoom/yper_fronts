@@ -17,10 +17,12 @@ const SUPPLIERS = [
   {
     _id: 's1', name: 'Fornecedor A', document: '11.111.111/0001-11',
     phone: '11999999999', email: 'a@x.com', notes: 'entrega rapida', active: true,
+    createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-02T00:00:00.000Z',
   },
   {
     _id: 's2', name: 'Fornecedor B', document: '22.222.222/0001-22',
     phone: null, email: null, notes: null, active: false,
+    createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-02T00:00:00.000Z',
   },
 ];
 
@@ -133,7 +135,7 @@ describe('Suppliers', () => {
     await flushPromises();
 
     expect(api.put).toHaveBeenCalledWith('/suppliers/s1', {
-      _id: 's1', name: 'Fornecedor A', document: '11.111.111/0001-11',
+      name: 'Fornecedor A', document: '11.111.111/0001-11',
       phone: '11999999999', email: 'novo@x.com', notes: 'entrega rapida', active: true,
     });
   });
