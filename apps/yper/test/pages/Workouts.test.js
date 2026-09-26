@@ -13,12 +13,18 @@ vi.mock('@/api', async () => {
 import client, { api } from '@/api';
 import Workouts from '../../src/pages/Workouts.vue';
 
-const EXERCISES = [{ _id: 'e1', name: 'Supino' }, { _id: 'e2', name: 'Agachamento' }];
+const EXERCISES = [
+  { _id: 'e1', name: 'Supino', muscleGroup: 'chest' },
+  { _id: 'e2', name: 'Agachamento', muscleGroup: 'legs' },
+  { _id: 'e3', name: 'Elevação lateral', muscleGroup: 'shoulders' },
+  { _id: 'e4', name: 'Tríceps francês', muscleGroup: 'triceps' },
+  { _id: 'e5', name: 'Rosca scott', muscleGroup: 'biceps' },
+];
 
 const WORKOUT = {
   _id: 'w1',
   name: 'Treino A',
-  focus: 'Peito',
+  focus: 'Foco antigo',
   weekdays: [1, 3],
   notes: '',
   active: true,
@@ -54,6 +60,7 @@ describe('Workouts', () => {
     expect(api.get).toHaveBeenCalledWith('/exercises');
     expect(wrapper.text()).toContain('Treino A');
     expect(wrapper.text()).toContain('Peito');
+    expect(wrapper.text()).not.toContain('Foco antigo');
     expect(wrapper.text()).toContain('Supino');
     expect(wrapper.text()).toContain('4x8');
     expect(wrapper.text()).toContain(`${number(60, 1)}kg`);
@@ -76,7 +83,6 @@ describe('Workouts', () => {
     await flushPromises();
 
     await body.find('#name').setValue('Treino B');
-    await body.find('#focus').setValue('Costas');
 
     const mondayToggle = body.findAll('button.badge').find((b) => b.text() === 'Seg');
     await mondayToggle.trigger('click');
@@ -92,7 +98,7 @@ describe('Workouts', () => {
 
     expect(api.post).toHaveBeenCalledWith('/workouts', {
       name: 'Treino B',
-      focus: 'Costas',
+      focus: 'Pernas',
       weekdays: [1],
       notes: '',
       active: true,
@@ -109,18 +115,46 @@ describe('Workouts', () => {
 
     expect(body.find('#name').element.value).toBe('Treino A');
     expect(body.find('#focus').element.value).toBe('Peito');
+    expect(body.find('#focus').attributes('readonly')).toBeDefined();
 
-    await body.find('#focus').setValue('Peito e tríceps');
     await submit(body);
 
     expect(api.put).toHaveBeenCalledWith('/workouts/w1', {
       name: 'Treino A',
-      focus: 'Peito e tríceps',
+      focus: 'Peito',
       weekdays: [1, 3],
       notes: '',
       active: true,
       items: [{ exercise: 'e1', sets: 4, reps: '8', weight: 60, restSeconds: 90 }],
     });
+  });
+
+  it('calcula o foco listando ate 3 grupos e classificando acima disso', async () => {
+    const { wrapper, body } = await mountWorkouts();
+
+    await wrapper.find('button.btn-primary').trigger('click');
+    await flushPromises();
+    const addItemButton = body.findAll('button.btn').find((b) => b.text().includes('Exercício'));
+
+    for (const id of ['e1', 'e3', 'e4']) {
+      await addItemButton.trigger('click');
+      await body.findAll('select').at(-1).setValue(id);
+    }
+    expect(body.find('#focus').element.value).toBe('Peito, Ombros e Tríceps');
+
+    await addItemButton.trigger('click');
+    await body.findAll('select').at(-1).setValue('e5');
+    expect(body.find('#focus').element.value).toBe('Superior');
+
+    await addItemButton.trigger('click');
+    await body.findAll('select').at(-1).setValue('e2');
+    expect(body.find('#focus').element.value).toBe('Full body');
+  });
+
+  it('usa o foco salvo quando os exercicios do treino nao tem grupo conhecido', async () => {
+    const legacy = { ...WORKOUT, items: [{ ...WORKOUT.items[0], exercise: { _id: 'x', name: 'Removido' } }] };
+    const { wrapper } = await mountWorkouts({ '/workouts': { workouts: [legacy] } });
+    expect(wrapper.text()).toContain('Foco antigo');
   });
 
   it('remove um treino apenas quando o usuario confirma', async () => {
