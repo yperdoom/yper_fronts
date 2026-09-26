@@ -45,6 +45,10 @@ export function createApi({
     return Boolean(getToken());
   }
 
+  function isAdmin() {
+    return getUser()?.role === 'admin';
+  }
+
   function startSession({ token, user }) {
     storage.setItem(TOKEN_KEY, token);
     if (user) storage.setItem(USER_KEY, JSON.stringify(user));
@@ -124,10 +128,23 @@ export function createApi({
     },
 
     me: () => request('GET', '/auth/me'),
+
+    changePassword: (currentPassword, newPassword) =>
+      request('PUT', '/auth/me/password', { currentPassword, newPassword }),
+
+    /** Gestao de usuarios; a api so aceita admin. */
+    users: {
+      list: () => request('GET', '/auth/users'),
+      create: (user) => request('POST', '/auth/users', user),
+      update: (id, user) => request('PUT', `/auth/users/${id}`, user),
+      setPassword: (id, password) => request('PUT', `/auth/users/${id}/password`, { password }),
+      remove: (id) => request('DELETE', `/auth/users/${id}`),
+    },
+
     logout,
   };
 
-  const session = { getToken, getUser, isAuthenticated };
+  const session = { getToken, getUser, isAuthenticated, isAdmin };
 
   return { api, auth, session };
 }

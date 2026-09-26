@@ -144,4 +144,55 @@ describe('createApi', () => {
 
     expect(session.getUser()).toBeNull();
   });
+
+  it('auth.users chama as rotas de gestao de usuarios sem prefixo do app', async () => {
+    fetchFn.mockResolvedValue(jsonResponse({ users: [] }));
+    const { auth } = createApi({ app: 'movix', baseUrl: 'https://api.test', storage, fetchFn });
+    const input = { name: 'Ana', email: 'ana@yper.dev', role: 'employee', apps: ['movix'] };
+
+    await expect(auth.users.list()).resolves.toEqual({ users: [] });
+    await auth.users.create({ ...input, password: 'secret' });
+    await auth.users.update('u1', { ...input, active: false });
+    await auth.users.setPassword('u1', 'newsecret');
+    await auth.users.remove('u1');
+
+    const calls = fetchFn.mock.calls.map(([url, options]) => [url, options.method, options.body]);
+    expect(calls).toEqual([
+      ['https://api.test/auth/users', 'GET', undefined],
+      ['https://api.test/auth/users', 'POST', JSON.stringify({ ...input, password: 'secret' })],
+      ['https://api.test/auth/users/u1', 'PUT', JSON.stringify({ ...input, active: false })],
+      ['https://api.test/auth/users/u1/password', 'PUT', JSON.stringify({ password: 'newsecret' })],
+      ['https://api.test/auth/users/u1', 'DELETE', undefined],
+    ]);
+  });
+
+  it('auth.changePassword faz PUT em /auth/me/password e nao mexe na sessao', async () => {
+    storage.setItem('movix_token', 'tok');
+    storage.setItem('movix_user', JSON.stringify({ email: 'a@a.com' }));
+    fetchFn.mockResolvedValue(jsonResponse({ user: { email: 'a@a.com' } }));
+    const { auth } = createApi({ app: 'movix', baseUrl: 'https://api.test', storage, fetchFn });
+
+    await auth.changePassword('old123', 'new123');
+
+    expect(fetchFn).toHaveBeenCalledWith(
+      'https://api.test/auth/me/password',
+      expect.objectContaining({
+        method: 'PUT',
+        body: JSON.stringify({ currentPassword: 'old123', newPassword: 'new123' }),
+      }),
+    );
+    expect(storage.getItem('movix_token')).toBe('tok');
+    expect(storage.getItem('movix_user')).toBe(JSON.stringify({ email: 'a@a.com' }));
+  });
+
+  it.each([
+    [{ role: 'admin' }, true],
+    [{ role: 'employee' }, false],
+    [null, false],
+  ])('session.isAdmin com usuario %j retorna %s', (user, expected) => {
+    if (user) storage.setItem('movix_user', JSON.stringify(user));
+    const { session } = createApi({ app: 'movix', baseUrl: 'https://api.test', storage, fetchFn });
+
+    expect(session.isAdmin()).toBe(expected);
+  });
 });
