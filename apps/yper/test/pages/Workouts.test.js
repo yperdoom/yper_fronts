@@ -1,0 +1,151 @@
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { flushPromises, DOMWrapper } from '@vue/test-utils';
+import { mountPage } from '@yper/test-utils';
+import { number } from '@yper/i18n';
+import ptBR from '../../src/locales/pt-BR.json';
+
+vi.mock('@/api', async () => {
+  const { createFakeApi } = await import('@yper/test-utils');
+  const client = createFakeApi();
+  return { ...client, default: client };
+});
+
+import client, { api } from '@/api';
+import Workouts from '../../src/pages/Workouts.vue';
+
+// O Modal usa <Teleport to="body">, entao seu conteudo fica fora da arvore
+// de `wrapper` no DOM real; precisamos consultar `document.body` para ele.
+function modal() {
+  return new DOMWrapper(document.body);
+}
+
+const EXERCISES = [{ _id: 'e1', name: 'Supino' }, { _id: 'e2', name: 'Agachamento' }];
+
+const WORKOUT = {
+  _id: 'w1',
+  name: 'Treino A',
+  focus: 'Peito',
+  weekdays: [1, 3],
+  notes: '',
+  active: true,
+  items: [{ exercise: { _id: 'e1', name: 'Supino' }, sets: 4, reps: '8', weight: 60, restSeconds: 90 }],
+};
+
+function respond(overrides = {}) {
+  const responses = { '/workouts': { workouts: [] }, '/exercises': { exercises: EXERCISES }, ...overrides };
+  return async (path) => responses[path];
+}
+
+async function mountWorkouts(overrides) {
+  api.get.mockReset();
+  api.get.mockImplementation(respond(overrides));
+  return mountPage(Workouts, { messages: ptBR, api: client });
+}
+
+async function submit() {
+  await modal().find('form').trigger('submit');
+  await flushPromises();
+}
+
+describe('Workouts', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    document.body.innerHTML = '';
+  });
+
+  it('carrega treinos e exercicios, e renderiza dias, itens e foco', async () => {
+    const { wrapper } = await mountWorkouts({ '/workouts': { workouts: [WORKOUT] } });
+
+    expect(api.get).toHaveBeenCalledWith('/workouts');
+    expect(api.get).toHaveBeenCalledWith('/exercises');
+    expect(wrapper.text()).toContain('Treino A');
+    expect(wrapper.text()).toContain('Peito');
+    expect(wrapper.text()).toContain('Supino');
+    expect(wrapper.text()).toContain('4x8');
+    expect(wrapper.text()).toContain(`${number(60, 1)}kg`);
+
+    const monday = wrapper.findAll('span.badge').find((b) => b.text() === 'Seg');
+    expect(monday.classes()).toContain('badge-accent');
+    const sunday = wrapper.findAll('span.badge').find((b) => b.text() === 'Dom');
+    expect(sunday.classes()).not.toContain('badge-accent');
+  });
+
+  it('mostra mensagem vazia quando nao ha treinos', async () => {
+    const { wrapper } = await mountWorkouts();
+    expect(wrapper.text()).toContain('Monte seu primeiro treino para começar a registrar as sessões.');
+  });
+
+  it('cria um novo treino preenchendo dias e itens, envia o payload correto e recarrega', async () => {
+    const { wrapper } = await mountWorkouts();
+
+    await wrapper.find('button.btn-primary').trigger('click');
+    await flushPromises();
+
+    await modal().find('#name').setValue('Treino B');
+    await modal().find('#focus').setValue('Costas');
+
+    const mondayToggle = modal().findAll('button.badge').find((b) => b.text() === 'Seg');
+    await mondayToggle.trigger('click');
+
+    const addItemButton = modal().findAll('button.btn').find((b) => b.text().includes('Exercício'));
+    await addItemButton.trigger('click');
+
+    await modal().find('select').setValue('e2');
+    await modal().find('input[type="number"][min="1"]').setValue(5);
+    await modal().find('input[type="number"][step="0.5"]').setValue(40);
+
+    await submit();
+
+    expect(api.post).toHaveBeenCalledWith('/workouts', {
+      name: 'Treino B',
+      focus: 'Costas',
+      weekdays: [1],
+      notes: '',
+      active: true,
+      items: [{ exercise: 'e2', sets: 5, reps: '10', weight: 40, restSeconds: 60 }],
+    });
+    expect(api.get.mock.calls.filter((call) => call[0] === '/workouts')).toHaveLength(2);
+  });
+
+  it('edita um treino existente pre-preenchendo o formulario e envia PUT', async () => {
+    const { wrapper } = await mountWorkouts({ '/workouts': { workouts: [WORKOUT] } });
+
+    await wrapper.find('button[title="Editar"]').trigger('click');
+    await flushPromises();
+
+    expect(modal().find('#name').element.value).toBe('Treino A');
+    expect(modal().find('#focus').element.value).toBe('Peito');
+
+    await modal().find('#focus').setValue('Peito e tríceps');
+    await submit();
+
+    expect(api.put).toHaveBeenCalledWith('/workouts/w1', {
+      name: 'Treino A',
+      focus: 'Peito e tríceps',
+      weekdays: [1, 3],
+      notes: '',
+      active: true,
+      items: [{ exercise: 'e1', sets: 4, reps: '8', weight: 60, restSeconds: 90 }],
+    });
+  });
+
+  it('remove um treino apenas quando o usuario confirma', async () => {
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValueOnce(false).mockReturnValueOnce(true);
+    const { wrapper } = await mountWorkouts({ '/workouts': { workouts: [WORKOUT] } });
+
+    await wrapper.find('button[title="Remover"]').trigger('click');
+    expect(confirmSpy).toHaveBeenCalledWith('Remover "Treino A"?');
+    expect(api.del).not.toHaveBeenCalled();
+
+    await wrapper.find('button[title="Remover"]').trigger('click');
+    await flushPromises();
+    expect(api.del).toHaveBeenCalledWith('/workouts/w1');
+  });
+
+  it('mostra alerta de erro quando o carregamento de treinos falha', async () => {
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    await mountWorkouts({ '/workouts': Promise.reject(new Error('sem conexao')) });
+
+    expect(alertSpy).toHaveBeenCalledWith('sem conexao');
+  });
+});
