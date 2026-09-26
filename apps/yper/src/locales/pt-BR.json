@@ -1,0 +1,15 @@
+{
+  "app": {
+    "tagline": "Treinos e nutrição"
+  },
+  "nav": {
+    "today": "Hoje",
+    "workouts": "Treinos",
+    "exercises": "Exercícios",
+    "history": "Histórico",
+    "nutrition": "Nutrição",
+    "foods": "Alimentos",
+    "measurements": "Evolução",
+    "profile": "Metas"
+  }
+}
