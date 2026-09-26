@@ -2,4 +2,16 @@
   --accent: #059669;
   --accent-strong: #047857;
   --accent-soft: #d1fae5;
+
+  --macro-protein: #2563eb;
+  --macro-carbs: #d97706;
+  --macro-fat: #db2777;
+}
+
+:root[data-theme="dark"] {
+  --accent-soft: #022c22;
+
+  --macro-protein: #60a5fa;
+  --macro-carbs: #fbbf24;
+  --macro-fat: #f472b6;
 }

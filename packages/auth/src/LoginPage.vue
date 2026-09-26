@@ -134,7 +134,7 @@ export default {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 14px;
-  box-shadow: 0 12px 34px rgba(15, 23, 42, 0.09);
+  box-shadow: var(--shadow-md);
 }
 
 .brand {

@@ -6,6 +6,10 @@
     "loading": "Carregando...",
     "logout": "Sair",
     "language": "Idioma",
+    "theme": {
+      "dark": "Ativar tema escuro",
+      "light": "Ativar tema claro"
+    },
     "edit": "Editar",
     "remove": "Remover",
     "confirmRemove": "Remover \"{name}\"?"

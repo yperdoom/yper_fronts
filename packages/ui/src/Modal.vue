@@ -68,7 +68,7 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(15, 23, 42, 0.5);
+  background: var(--overlay);
   overflow-y: auto;
 }
 
@@ -77,7 +77,7 @@ export default {
   max-width: 560px;
   background: var(--surface);
   border-radius: var(--radius);
-  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+  box-shadow: var(--shadow-lg);
   margin: auto;
 }
 

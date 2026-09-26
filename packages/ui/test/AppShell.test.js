@@ -204,6 +204,45 @@ describe('AppShell seletor de idioma', () => {
   });
 });
 
+describe('AppShell botao de tema', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    delete document.documentElement.dataset.theme;
+  });
+
+  function themeButton(wrapper) {
+    return wrapper.find('[data-test="theme-toggle"]');
+  }
+
+  it('no tema claro mostra dark_mode com rotulo traduzido', async () => {
+    const { wrapper } = await mountShell();
+
+    const button = themeButton(wrapper);
+    expect(button.text()).toBe('dark_mode');
+    expect(button.attributes('aria-label')).toBe('Ativar tema escuro');
+    expect(button.attributes('title')).toBe('Ativar tema escuro');
+  });
+
+  it('clique alterna para escuro, marca data-theme e salva <app>_theme', async () => {
+    const { wrapper } = await mountShell();
+
+    await themeButton(wrapper).trigger('click');
+
+    expect(document.documentElement.dataset.theme).toBe('dark');
+    expect(localStorage.getItem('movix_theme')).toBe('dark');
+    expect(themeButton(wrapper).text()).toBe('light_mode');
+    expect(themeButton(wrapper).attributes('aria-label')).toBe('Ativar tema claro');
+  });
+
+  it('inicia no tema salvo', async () => {
+    localStorage.setItem('movix_theme', 'dark');
+
+    const { wrapper } = await mountShell();
+
+    expect(themeButton(wrapper).text()).toBe('light_mode');
+  });
+});
+
 function footLinks(wrapper) {
   return wrapper
     .findAllComponents({ name: 'RouterLink' })

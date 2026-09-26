@@ -147,9 +147,9 @@ export default {
     macros() {
       const spec = [
         { key: 'calories', unit: ' kcal', color: 'var(--accent)' },
-        { key: 'protein', unit: 'g', color: '#2563eb' },
-        { key: 'carbs', unit: 'g', color: '#d97706' },
-        { key: 'fat', unit: 'g', color: '#db2777' },
+        { key: 'protein', unit: 'g', color: 'var(--macro-protein)' },
+        { key: 'carbs', unit: 'g', color: 'var(--macro-carbs)' },
+        { key: 'fat', unit: 'g', color: 'var(--macro-fat)' },
       ];
       return spec.map((macro) => ({
         ...macro,

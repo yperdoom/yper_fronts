@@ -2,6 +2,7 @@
  * Base visual compartilhada entre os apps yper.
  * --accent, --accent-strong e --accent-soft vem com um cinza neutro aqui;
  * cada app sobrescreve esses tokens no proprio theme.css.
+ * Tema escuro: :root[data-theme="dark"] redefine os tokens de pagina; a sidebar ja e escura e nao muda.
  */
 
 :root {
@@ -21,6 +22,8 @@
   --sidebar-text: #94a3b8;
   --sidebar-text-active: #ffffff;
   --sidebar-hover: #1e293b;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-logo-bg: #ffffff;
 
   --success: #16a34a;
   --success-soft: #dcfce7;
@@ -32,9 +35,37 @@
   --radius: 10px;
   --radius-sm: 6px;
   --shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 12px 34px rgba(15, 23, 42, 0.09);
+  --shadow-lg: 0 20px 45px rgba(15, 23, 42, 0.25);
+  --overlay: rgba(15, 23, 42, 0.5);
   --sidebar-width: 236px;
 
   color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --accent-soft: #1e293b;
+
+  --bg: #0b1220;
+  --surface: #151e2e;
+  --surface-2: #1b2638;
+  --border: #293548;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+
+  --success: #4ade80;
+  --success-soft: #12301f;
+  --warning: #fbbf24;
+  --warning-soft: #36270a;
+  --danger: #f87171;
+  --danger-soft: #3b1619;
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 12px 34px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 20px 45px rgba(0, 0, 0, 0.6);
+  --overlay: rgba(2, 6, 23, 0.65);
+
+  color-scheme: dark;
 }
 
 *,
@@ -393,6 +424,11 @@ textarea {
 .badge-accent {
   background: var(--accent-soft);
   color: var(--accent-strong);
+}
+
+/* No escuro o accent-strong some sobre o accent-soft escuro. */
+:root[data-theme="dark"] .badge-accent {
+  color: var(--text);
 }
 
 /* ---------- barra de progresso ---------- */

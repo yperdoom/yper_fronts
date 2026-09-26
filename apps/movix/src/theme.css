@@ -3,3 +3,9 @@
   --accent-strong: #1d4ed8;
   --accent-soft: #dbeafe;
 }
+
+:root[data-theme="dark"] {
+  --accent: #3b82f6;
+  --accent-strong: #2563eb;
+  --accent-soft: #172554;
+}

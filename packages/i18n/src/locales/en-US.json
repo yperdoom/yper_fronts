@@ -6,6 +6,10 @@
     "loading": "Loading...",
     "logout": "Log out",
     "language": "Language",
+    "theme": {
+      "dark": "Switch to dark theme",
+      "light": "Switch to light theme"
+    },
     "edit": "Edit",
     "remove": "Remove",
     "confirmRemove": "Remove \"{name}\"?"

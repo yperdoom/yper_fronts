@@ -42,6 +42,16 @@
               {{ locale.slice(0, 2).toUpperCase() }}
             </button>
           </div>
+          <button
+            type="button"
+            data-test="theme-toggle"
+            :class="$style.themeBtn"
+            :aria-label="themeLabel"
+            :title="themeLabel"
+            @click="switchTheme"
+          >
+            <span class="material-symbols-outlined">{{ theme === 'dark' ? 'light_mode' : 'dark_mode' }}</span>
+          </button>
         </div>
         <div :class="$style.user">
           <span class="material-symbols-outlined">account_circle</span>
@@ -95,6 +105,7 @@
 <script>
 import { SUPPORTED_LOCALES, saveLocale } from '@yper/i18n';
 import { SHELL_KEY } from './createShell.js';
+import { loadTheme, toggleTheme } from './theme.js';
 
 export default {
   name: 'AppShell',
@@ -111,7 +122,13 @@ export default {
       isAdmin: this.shell.api.session.isAdmin(),
       logoFailed: false,
       locales: SUPPORTED_LOCALES,
+      theme: loadTheme(this.shell.api.app),
     };
+  },
+  computed: {
+    themeLabel() {
+      return this.$t(this.theme === 'dark' ? 'common.theme.light' : 'common.theme.dark');
+    },
   },
   async mounted() {
     // Atualiza papel/apps/nome ao abrir o app, sem exigir relogin apos mudanca.
@@ -125,6 +142,9 @@ export default {
     this.isAdmin = this.shell.api.session.isAdmin();
   },
   methods: {
+    switchTheme() {
+      this.theme = toggleTheme(this.shell.api.app, this.theme);
+    },
     setLocale(locale) {
       this.$i18n.locale = locale;
       saveLocale(this.shell.api.app, locale);
@@ -169,7 +189,7 @@ export default {
   padding: 3px;
   object-fit: contain;
   border-radius: 7px;
-  background: #fff;
+  background: var(--sidebar-logo-bg);
 }
 
 .brandMark {
@@ -184,7 +204,7 @@ export default {
 }
 
 .brandName {
-  color: #fff;
+  color: var(--sidebar-text-active);
   font-weight: 600;
   font-size: 1.02rem;
   letter-spacing: -0.01em;
@@ -227,7 +247,7 @@ export default {
 
 .sidebarFoot {
   padding: 12px 10px 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--sidebar-border);
 }
 
 .prefs {
@@ -270,6 +290,23 @@ export default {
   color: var(--accent-contrast);
 }
 
+.themeBtn {
+  display: grid;
+  place-items: center;
+  margin-left: auto;
+  padding: 4px;
+  color: var(--sidebar-text);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.themeBtn:hover {
+  background: var(--sidebar-hover);
+  color: var(--sidebar-text-active);
+}
+
 .user {
   display: flex;
   align-items: center;
@@ -310,7 +347,7 @@ export default {
   position: fixed;
   inset: 0;
   z-index: 35;
-  background: rgba(15, 23, 42, 0.45);
+  background: var(--overlay);
 }
 
 .main {

@@ -3,3 +3,10 @@
   --accent-strong: #5e1f8c;
   --accent-soft: #f2edf7;
 }
+
+/* O roxo da marca fica escuro demais sobre o fundo escuro; clareia para links e foco. */
+:root[data-theme="dark"] {
+  --accent: #9d4edd;
+  --accent-strong: #8a3cc9;
+  --accent-soft: #2a1540;
+}
