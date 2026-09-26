@@ -1,0 +1,31 @@
+{
+  "app": {
+    "tagline": "Bakery management"
+  },
+  "nav": {
+    "home": "Dashboard",
+    "orders": "Orders",
+    "ingredients": "Ingredients",
+    "recipes": "Recipes",
+    "customers": "Customers",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "title": "Dashboard"
+  },
+  "orders": {
+    "title": "Orders"
+  },
+  "recipes": {
+    "title": "Recipes"
+  },
+  "customers": {
+    "title": "Customers"
+  },
+  "ingredients": {
+    "title": "Ingredients"
+  },
+  "settings": {
+    "title": "Settings"
+  }
+}
