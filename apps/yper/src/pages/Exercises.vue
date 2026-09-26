@@ -15,7 +15,7 @@
           </div>
           <select v-model="filterGroup" :class="$style.filter">
             <option value="">{{ $t('exercises.filters.allGroups') }}</option>
-            <option v-for="group in MUSCLE_GROUPS" :key="group" :value="group">{{ group }}</option>
+            <option v-for="group in MUSCLE_GROUPS" :key="group.value" :value="group.value">{{ $t(`exercises.muscleGroups.${group.key}`) }}</option>
           </select>
         </div>
         <span class="muted">{{ $t('exercises.count', { shown: filtered.length, total: exercises.length }) }}</span>
@@ -44,7 +44,7 @@
                 <strong>{{ exercise.name }}</strong>
                 <div v-if="exercise.notes" class="muted">{{ exercise.notes }}</div>
               </td>
-              <td><span class="badge badge-accent">{{ exercise.muscleGroup }}</span></td>
+              <td><span class="badge badge-accent">{{ muscleGroupLabel(exercise.muscleGroup) }}</span></td>
               <td class="muted">{{ exercise.equipment || '—' }}</td>
               <td>
                 <div class="row" :class="$style.actions">
@@ -87,7 +87,7 @@
         <div class="field">
           <label for="muscleGroup">{{ $t('exercises.form.muscleGroup') }}</label>
           <select id="muscleGroup" v-model="form.muscleGroup">
-            <option v-for="group in MUSCLE_GROUPS" :key="group" :value="group">{{ group }}</option>
+            <option v-for="group in MUSCLE_GROUPS" :key="group.value" :value="group.value">{{ $t(`exercises.muscleGroups.${group.key}`) }}</option>
           </select>
         </div>
         <div class="field">
@@ -113,9 +113,18 @@ import { api } from '@/api';
 import { errorMessage } from '@yper/i18n';
 
 const MUSCLE_GROUPS = [
-  'Peito', 'Costas', 'Pernas', 'Gluteos', 'Ombros',
-  'Biceps', 'Triceps', 'Abdomen', 'Panturrilha',
-  'Cardio', 'Corpo inteiro', 'Outro',
+  { value: 'Peito', key: 'chest' },
+  { value: 'Costas', key: 'back' },
+  { value: 'Pernas', key: 'legs' },
+  { value: 'Gluteos', key: 'glutes' },
+  { value: 'Ombros', key: 'shoulders' },
+  { value: 'Biceps', key: 'biceps' },
+  { value: 'Triceps', key: 'triceps' },
+  { value: 'Abdomen', key: 'abs' },
+  { value: 'Panturrilha', key: 'calves' },
+  { value: 'Cardio', key: 'cardio' },
+  { value: 'Corpo inteiro', key: 'fullBody' },
+  { value: 'Outro', key: 'other' },
 ];
 
 const EMPTY = { name: '', muscleGroup: 'Outro', equipment: '', videoUrl: '', notes: '' };
@@ -151,6 +160,10 @@ export default {
     await this.load();
   },
   methods: {
+    muscleGroupLabel(value) {
+      const group = MUSCLE_GROUPS.find((g) => g.value === value);
+      return group ? this.$t(`exercises.muscleGroups.${group.key}`) : value;
+    },
     async load() {
       this.loading = true;
       try {

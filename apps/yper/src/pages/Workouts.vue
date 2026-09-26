@@ -35,12 +35,12 @@
         <div class="card-body">
           <div class="row" :class="$style.days">
             <span
-              v-for="(day, index) in WEEKDAYS"
-              :key="index"
+              v-for="day in WEEKDAYS"
+              :key="day"
               class="badge"
-              :class="workout.weekdays.includes(index) ? 'badge-accent' : ''"
+              :class="workout.weekdays.includes(day) ? 'badge-accent' : ''"
             >
-              {{ day }}
+              {{ $t(`workouts.weekdays.${day}`) }}
             </span>
           </div>
 
@@ -78,15 +78,15 @@
           <label>{{ $t('workouts.form.weekdays') }}</label>
           <div class="row">
             <button
-              v-for="(day, index) in WEEKDAYS"
-              :key="index"
+              v-for="day in WEEKDAYS"
+              :key="day"
               type="button"
               class="badge"
-              :class="form.weekdays.includes(index) ? 'badge-accent' : ''"
+              :class="form.weekdays.includes(day) ? 'badge-accent' : ''"
               :style="{ cursor: 'pointer', border: 'none', font: 'inherit', fontWeight: 600 }"
-              @click="toggleDay(index)"
+              @click="toggleDay(day)"
             >
-              {{ day }}
+              {{ $t(`workouts.weekdays.${day}`) }}
             </button>
           </div>
         </div>
@@ -129,7 +129,7 @@ import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
 import { number, errorMessage } from '@yper/i18n';
 
-const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+const WEEKDAYS = [0, 1, 2, 3, 4, 5, 6];
 const empty = () => ({ name: '', focus: '', weekdays: [], items: [], notes: '', active: true });
 
 export default {

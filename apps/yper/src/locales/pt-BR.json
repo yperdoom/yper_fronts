@@ -85,6 +85,15 @@
       "setsPlaceholder": "Séries",
       "repsPlaceholder": "Reps",
       "weightPlaceholder": "kg"
+    },
+    "weekdays": {
+      "0": "Dom",
+      "1": "Seg",
+      "2": "Ter",
+      "3": "Qua",
+      "4": "Qui",
+      "5": "Sex",
+      "6": "Sáb"
     }
   },
   "exercises": {
@@ -118,6 +127,20 @@
       "videoUrl": "Link do vídeo",
       "optionalPlaceholder": "opcional",
       "notes": "Observações"
+    },
+    "muscleGroups": {
+      "chest": "Peito",
+      "back": "Costas",
+      "legs": "Pernas",
+      "glutes": "Glúteos",
+      "shoulders": "Ombros",
+      "biceps": "Bíceps",
+      "triceps": "Tríceps",
+      "abs": "Abdômen",
+      "calves": "Panturrilha",
+      "cardio": "Cardio",
+      "fullBody": "Corpo inteiro",
+      "other": "Outro"
     }
   },
   "history": {
