@@ -73,7 +73,7 @@
       "name": "Name",
       "namePlaceholder": "Workout A",
       "focus": "Focus",
-      "focusPlaceholder": "Chest and triceps",
+      "focusPlaceholder": "Based on the exercises",
       "weekdays": "Weekdays"
     },
     "items": {
@@ -94,6 +94,11 @@
       "4": "Thu",
       "5": "Fri",
       "6": "Sat"
+    },
+    "focus": {
+      "upper": "Upper body",
+      "lower": "Lower body",
+      "full": "Full body"
     }
   },
   "exercises": {

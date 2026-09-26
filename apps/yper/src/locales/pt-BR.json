@@ -73,7 +73,7 @@
       "name": "Nome",
       "namePlaceholder": "Treino A",
       "focus": "Foco",
-      "focusPlaceholder": "Peito e tríceps",
+      "focusPlaceholder": "Calculado pelos exercícios",
       "weekdays": "Dias da semana"
     },
     "items": {
@@ -94,6 +94,11 @@
       "4": "Qui",
       "5": "Sex",
       "6": "Sáb"
+    },
+    "focus": {
+      "upper": "Superior",
+      "lower": "Inferior",
+      "full": "Full body"
     }
   },
   "exercises": {
