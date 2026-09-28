@@ -72,7 +72,7 @@
         </div>
         <div class="field">
           <label for="focus">{{ $t('workouts.form.focus') }}</label>
-          <input id="focus" :value="focusLabel(form.items)" readonly :placeholder="$t('workouts.form.focusPlaceholder')" />
+          <input id="focus" :value="formFocus" readonly :placeholder="$t('workouts.form.focusPlaceholder')" />
         </div>
         <div class="field full">
           <label>{{ $t('workouts.form.weekdays') }}</label>
@@ -128,10 +128,10 @@
 import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
 import { number, errorMessage } from '@yper/i18n';
-import { workoutFocus } from '@/muscleGroups';
+import { workoutFocusLabel } from '@/muscleGroups';
 
 const WEEKDAYS = [0, 1, 2, 3, 4, 5, 6];
-const empty = () => ({ name: '', weekdays: [], items: [], notes: '', active: true });
+const empty = () => ({ name: '', focus: '', weekdays: [], items: [], notes: '', active: true });
 
 export default {
   name: 'Workouts',
@@ -145,8 +145,16 @@ export default {
       saving: false,
       showForm: false,
       editingId: null,
+      originalItemCount: 0,
       form: empty(),
     };
+  },
+  computed: {
+    formFocus() {
+      const items = this.form.items.filter((item) => item.exercise);
+      if (this.originalItemCount > 0 && !items.length) return '';
+      return this.focusLabel(items) || this.form.focus;
+    },
   },
   async mounted() {
     await Promise.all([this.load(), this.loadExercises()]);
@@ -173,15 +181,11 @@ export default {
       }
     },
     focusLabel(items) {
-      const groups = items.map((item) => {
-        const id = item.exercise?._id || item.exercise;
-        return this.exercises.find((exercise) => exercise._id === id)?.muscleGroup;
+      return workoutFocusLabel(items, {
+        exercises: this.exercises,
+        t: this.$t,
+        locale: this.$i18n.locale,
       });
-      const focus = workoutFocus(groups);
-      if (!focus) return '';
-      if (focus.type !== 'groups') return this.$t(`workouts.focus.${focus.type}`);
-      const names = focus.groups.map((group) => this.$t(`exercises.muscleGroups.${group}`));
-      return new Intl.ListFormat(this.$i18n.locale, { type: 'conjunction' }).format(names);
     },
     toggleDay(index) {
       const position = this.form.weekdays.indexOf(index);
@@ -193,9 +197,11 @@ export default {
     },
     openForm(workout = null) {
       this.editingId = workout?._id || null;
+      this.originalItemCount = workout?.items.filter((item) => item.exercise).length || 0;
       this.form = workout
         ? {
             name: workout.name,
+            focus: workout.focus || '',
             weekdays: [...workout.weekdays],
             notes: workout.notes,
             active: workout.active,
@@ -214,7 +220,7 @@ export default {
       this.saving = true;
       try {
         const items = this.form.items.filter((item) => item.exercise);
-        const body = { ...this.form, focus: this.focusLabel(items), items };
+        const body = { ...this.form, focus: this.formFocus, items };
         if (this.editingId) {
           await api.put(`/workouts/${this.editingId}`, body);
         } else {

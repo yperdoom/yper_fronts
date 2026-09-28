@@ -82,6 +82,26 @@ describe('Today', () => {
     expect(wrapper.text()).toContain(date('2024-03-01T00:00:00Z'));
   });
 
+  it('recalcula o foco com o grupo atual do exercicio populado', async () => {
+    const { wrapper } = await mountToday(async () => ({
+      ...DASHBOARD,
+      todaysWorkouts: [{
+        ...DASHBOARD.todaysWorkouts[0],
+        items: [{ exercise: { _id: 'e1', name: 'Remada', muscleGroup: 'back' }, sets: 3, reps: '10' }],
+      }],
+    }));
+    expect(wrapper.text()).toContain('Costas');
+    expect(wrapper.text()).not.toContain('Peito');
+  });
+
+  it('mantem o foco legado quando nao ha exercicios para calcular', async () => {
+    const { wrapper } = await mountToday(async () => ({
+      ...DASHBOARD,
+      todaysWorkouts: [{ ...DASHBOARD.todaysWorkouts[0], items: [] }],
+    }));
+    expect(wrapper.text()).toContain('Peito');
+  });
+
   it('mostra estados vazios quando nao ha treino do dia, historico ou medicao', async () => {
     const { wrapper } = await mountToday(async () => ({
       ...DASHBOARD,

@@ -57,7 +57,7 @@
             <div v-for="workout in data.todaysWorkouts" :key="workout._id">
               <div class="row">
                 <strong>{{ workout.name }}</strong>
-                <span v-if="workout.focus" class="badge">{{ workout.focus }}</span>
+                <span v-if="focusLabel(workout)" class="badge">{{ focusLabel(workout) }}</span>
               </div>
               <ul :class="$style.list">
                 <li v-for="(item, index) in workout.items" :key="index">
@@ -121,6 +121,7 @@
 import { AppShell } from '@yper/ui';
 import { api } from '@/api';
 import { number, date, errorMessage } from '@yper/i18n';
+import { workoutFocusLabel } from '@/muscleGroups';
 
 const EMPTY_TOTALS = { calories: 0, protein: 0, carbs: 0, fat: 0 };
 
@@ -169,6 +170,9 @@ export default {
     }
   },
   methods: {
+    focusLabel(workout) {
+      return workoutFocusLabel(workout.items, { t: this.$t, locale: this.$i18n.locale }) || workout.focus;
+    },
     number,
     date,
     percent(macro) {

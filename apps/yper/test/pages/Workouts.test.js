@@ -157,6 +157,38 @@ describe('Workouts', () => {
     expect(wrapper.text()).toContain('Foco antigo');
   });
 
+  it('preserva o foco legado ao renomear um treino sem itens', async () => {
+    const legacy = { ...WORKOUT, items: [] };
+    const { wrapper, body } = await mountWorkouts({ '/workouts': { workouts: [legacy] } });
+    await wrapper.find('button[title="Editar"]').trigger('click');
+    expect(body.find('#focus').element.value).toBe('Foco antigo');
+    await body.find('#name').setValue('Novo nome');
+    await submit(body);
+    expect(api.put).toHaveBeenCalledWith('/workouts/w1', expect.objectContaining({
+      name: 'Novo nome', focus: 'Foco antigo', items: [],
+    }));
+  });
+
+  it('preserva o foco salvo quando o catalogo nao esta disponivel', async () => {
+    const { wrapper, body } = await mountWorkouts({
+      '/workouts': { workouts: [WORKOUT] }, '/exercises': { exercises: [] },
+    });
+    await wrapper.find('button[title="Editar"]').trigger('click');
+    expect(body.find('#focus').element.value).toBe('Foco antigo');
+    await submit(body);
+    expect(api.put).toHaveBeenCalledWith('/workouts/w1', expect.objectContaining({ focus: 'Foco antigo' }));
+  });
+
+  it('limpa o foco quando todos os exercicios sao removidos intencionalmente', async () => {
+    const { wrapper, body } = await mountWorkouts({ '/workouts': { workouts: [WORKOUT] } });
+    await wrapper.find('button[title="Editar"]').trigger('click');
+    await body.find('select').element.parentElement.querySelector('button').click();
+    await flushPromises();
+    expect(body.find('#focus').element.value).toBe('');
+    await submit(body);
+    expect(api.put).toHaveBeenCalledWith('/workouts/w1', expect.objectContaining({ focus: '', items: [] }));
+  });
+
   it('remove um treino apenas quando o usuario confirma', async () => {
     const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValueOnce(false).mockReturnValueOnce(true);
     const { wrapper } = await mountWorkouts({ '/workouts': { workouts: [WORKOUT] } });
