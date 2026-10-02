@@ -84,7 +84,13 @@
       "selectPlaceholder": "Exercise",
       "setsPlaceholder": "Sets",
       "repsPlaceholder": "Reps",
-      "weightPlaceholder": "kg"
+      "weightPlaceholder": "kg",
+      "groupPlaceholder": "Select a muscle group",
+      "emptyGroup": "No exercises registered in this group.",
+      "registerExercise": "Register an exercise in another tab",
+      "refreshExercises": "Refresh exercises",
+      "unavailable": "The original exercise is unavailable. Select a replacement or remove this item.",
+      "incomplete": "Select a group and a valid exercise for every item before saving."
     },
     "weekdays": {
       "0": "Sun",

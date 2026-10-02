@@ -84,7 +84,13 @@
       "selectPlaceholder": "Exercício",
       "setsPlaceholder": "Séries",
       "repsPlaceholder": "Reps",
-      "weightPlaceholder": "kg"
+      "weightPlaceholder": "kg",
+      "groupPlaceholder": "Selecione o grupo muscular",
+      "emptyGroup": "Nenhum exercício cadastrado neste grupo.",
+      "registerExercise": "Cadastrar exercício em outra aba",
+      "refreshExercises": "Atualizar exercícios",
+      "unavailable": "O exercício original não está disponível. Selecione um substituto ou remova este item.",
+      "incomplete": "Selecione o grupo e um exercício válido para cada item antes de salvar."
     },
     "weekdays": {
       "0": "Dom",

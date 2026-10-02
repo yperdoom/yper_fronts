@@ -56,6 +56,17 @@ describe('Exercises', () => {
     expect(wrapper.text()).toContain('Cadastre seu primeiro exercício.');
   });
 
+  it('classifica legado em Outros na listagem e permite corrigir no cadastro', async () => {
+    const { wrapper, body } = await mountExercises([{ _id: 'e1', name: 'Legado', muscleGroup: null }]);
+    await wrapper.find('select').setValue('other');
+    expect(wrapper.text()).toContain('Legado');
+    await wrapper.find('button[title="Editar"]').trigger('click');
+    expect(body.find('#muscleGroup').element.value).toBe('other');
+    await body.find('#muscleGroup').setValue('biceps');
+    await submit(body);
+    expect(api.put).toHaveBeenCalledWith('/exercises/e1', expect.objectContaining({ muscleGroup: 'biceps' }));
+  });
+
   it('filtra por texto de busca e por grupo muscular', async () => {
     const { wrapper } = await mountExercises();
 

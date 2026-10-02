@@ -10,7 +10,9 @@ const MAX_LISTED_GROUPS = 3;
 export function workoutFocusLabel(items, { exercises = [], t, locale }) {
   const groups = items.map(({ exercise }) => {
     const id = exercise?._id || exercise;
-    return exercises.find((entry) => entry._id === id)?.muscleGroup || exercise?.muscleGroup;
+    const entry = exercises.find((entry) => entry._id === id);
+    const value = entry?.muscleGroup || exercise?.muscleGroup;
+    return entry || value ? (MUSCLE_GROUPS.includes(value) ? value : 'other') : undefined;
   });
   const focus = workoutFocus(groups);
   if (!focus) return '';

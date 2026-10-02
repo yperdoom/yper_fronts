@@ -330,6 +330,16 @@ textarea {
   padding-left: 34px;
 }
 
+/* Avoid focus zoom on touch devices while preserving pinch zoom. */
+@media (max-width: 640px), (pointer: coarse) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+    min-width: 0;
+  }
+}
+
 /* ---------- botões ---------- */
 
 .btn {

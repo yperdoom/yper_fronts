@@ -76,6 +76,70 @@ describe('Workouts', () => {
     expect(wrapper.text()).toContain('Monte seu primeiro treino para começar a registrar as sessões.');
   });
 
+  it('exige grupo antes do exercicio e nao descarta linhas incompletas', async () => {
+    const { wrapper, body } = await mountWorkouts();
+    await wrapper.find('button.btn-primary').trigger('click');
+    await body.find('#name').setValue('Treino');
+    await body.findAll('button.btn').find(b => b.text().includes('Exercício')).trigger('click');
+    expect(body.find('#exercise-0').attributes('disabled')).toBeDefined();
+    expect(body.find('#exercise-0').findAll('option')).toHaveLength(1);
+    await body.find('#group-0').setValue('biceps');
+    expect(body.find('#exercise-0').text()).toContain('Rosca scott');
+    expect(body.find('#exercise-0').text()).not.toContain('Supino');
+    await body.find('#exercise-0').setValue('e5');
+    await body.find('#group-0').setValue('legs');
+    expect(body.find('#exercise-0').element.value).toBe('');
+    expect(body.find('input[min="1"]').element.value).toBe('3');
+    await submit(body);
+    expect(api.post).not.toHaveBeenCalled();
+    expect(body.find('[role=alert]').text()).toContain('Selecione o grupo');
+    await body.find('#group-0').setValue('calves');
+    expect(body.text()).toContain('Nenhum exercício cadastrado neste grupo');
+    expect(body.find('a[href="/exercises"]').attributes('target')).toBe('_blank');
+  });
+
+  it('edita varios grupos e preserva notas e valores dos itens', async () => {
+    const workout = { ...WORKOUT, items: [
+      { ...WORKOUT.items[0], notes: 'Pausa de dois segundos' },
+      { exercise: { _id: 'e2' }, sets: 3, reps: '8-12', weight: 20, restSeconds: 120 },
+    ] };
+    const { wrapper, body } = await mountWorkouts({ '/workouts': { workouts: [workout] } });
+    await wrapper.find('button[title="Editar"]').trigger('click');
+    expect(body.find('#group-0').element.value).toBe('chest');
+    expect(body.find('#group-1').element.value).toBe('legs');
+    await submit(body);
+    expect(api.put.mock.calls[0][1].items).toEqual([
+      { exercise: 'e1', sets: 4, reps: '8', weight: 60, restSeconds: 90, notes: 'Pausa de dois segundos' },
+      { exercise: 'e2', sets: 3, reps: '8-12', weight: 20, restSeconds: 120 },
+    ]);
+  });
+
+  it('permite editar exercicio legado em Outros sem perder o vinculo', async () => {
+    const { wrapper, body } = await mountWorkouts({
+      '/workouts': { workouts: [WORKOUT] },
+      '/exercises': { exercises: [{ _id: 'e1', name: 'Supino', muscleGroup: 'legado' }] },
+    });
+    await wrapper.find('button[title="Editar"]').trigger('click');
+    expect(body.find('#group-0').element.value).toBe('other');
+    expect(body.find('#exercise-0').element.value).toBe('e1');
+    await submit(body);
+    expect(api.put.mock.calls[0][1].items[0].exercise).toBe('e1');
+  });
+
+  it('exige substituicao ou remocao de exercicio indisponivel', async () => {
+    const workout = { ...WORKOUT, items: [{ ...WORKOUT.items[0], exercise: null }] };
+    const { wrapper, body } = await mountWorkouts({ '/workouts': { workouts: [workout] } });
+    await wrapper.find('button[title="Editar"]').trigger('click');
+    expect(body.text()).toContain('O exercício original não está disponível');
+    await submit(body);
+    expect(api.put).not.toHaveBeenCalled();
+    await body.find('#group-0').setValue('chest');
+    await body.find('#exercise-0').setValue('e1');
+    expect(body.text()).not.toContain('O exercício original não está disponível');
+    await submit(body);
+    expect(api.put.mock.calls[0][1].items[0].exercise).toBe('e1');
+  });
+
   it('cria um novo treino preenchendo dias e itens, envia o payload correto e recarrega', async () => {
     const { wrapper, body } = await mountWorkouts();
 
@@ -90,7 +154,8 @@ describe('Workouts', () => {
     const addItemButton = body.findAll('button.btn').find((b) => b.text().includes('Exercício'));
     await addItemButton.trigger('click');
 
-    await body.find('select').setValue('e2');
+    await body.find('#group-0').setValue('legs');
+    await body.find('#exercise-0').setValue('e2');
     await body.find('input[type="number"][min="1"]').setValue(5);
     await body.find('input[type="number"][step="0.5"]').setValue(40);
 
@@ -138,16 +203,19 @@ describe('Workouts', () => {
 
     for (const id of ['e1', 'e3', 'e4']) {
       await addItemButton.trigger('click');
-      await body.findAll('select').at(-1).setValue(id);
+      await body.findAll('select[id^=group-]').at(-1).setValue(EXERCISES.find(e => e._id === id).muscleGroup);
+      await body.findAll('select[id^=exercise-]').at(-1).setValue(id);
     }
     expect(body.find('#focus').element.value).toBe('Peito, Ombros e Tríceps');
 
     await addItemButton.trigger('click');
-    await body.findAll('select').at(-1).setValue('e5');
+    await body.findAll('select[id^=group-]').at(-1).setValue('biceps');
+    await body.findAll('select[id^=exercise-]').at(-1).setValue('e5');
     expect(body.find('#focus').element.value).toBe('Superior');
 
     await addItemButton.trigger('click');
-    await body.findAll('select').at(-1).setValue('e2');
+    await body.findAll('select[id^=group-]').at(-1).setValue('legs');
+    await body.findAll('select[id^=exercise-]').at(-1).setValue('e2');
     expect(body.find('#focus').element.value).toBe('Full body');
   });
 
@@ -176,7 +244,8 @@ describe('Workouts', () => {
     await wrapper.find('button[title="Editar"]').trigger('click');
     expect(body.find('#focus').element.value).toBe('Foco antigo');
     await submit(body);
-    expect(api.put).toHaveBeenCalledWith('/workouts/w1', expect.objectContaining({ focus: 'Foco antigo' }));
+    expect(api.put).not.toHaveBeenCalled();
+    expect(body.find('[role=alert]').text()).toContain('Selecione o grupo');
   });
 
   it('limpa o foco quando todos os exercicios sao removidos intencionalmente', async () => {

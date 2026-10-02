@@ -102,23 +102,36 @@
         </div>
 
         <p v-if="!exercises.length" class="muted" :class="$style.note">
-          {{ $t('workouts.items.emptyBefore') }} <router-link to="/exercises">{{ $t('nav.exercises') }}</router-link> {{ $t('workouts.items.emptyAfter') }}
+          {{ $t('workouts.items.emptyBefore') }} <router-link to="/exercises" target="_blank" rel="noopener">{{ $t('nav.exercises') }}</router-link> {{ $t('workouts.items.emptyAfter') }}
         </p>
 
         <div v-for="(item, index) in form.items" :key="index" :class="$style.item">
-          <select v-model="item.exercise" required>
+          <label :for="`group-${index}`" :class="$style.full">{{ $t('exercises.form.muscleGroup') }}</label>
+          <select :id="`group-${index}`" v-model="item.group" :class="$style.full" required @change="changeGroup(item)">
+            <option value="" disabled>{{ $t('workouts.items.groupPlaceholder') }}</option>
+            <option v-for="group in MUSCLE_GROUPS" :key="group" :value="group">{{ $t(`exercises.muscleGroups.${group}`) }}</option>
+          </select>
+          <label :for="`exercise-${index}`" :class="$style.full">{{ $t('exercises.table.exercise') }}</label>
+          <select :id="`exercise-${index}`" v-model="item.exercise" :disabled="!item.group" required @change="item.unavailable = false">
             <option value="" disabled>{{ $t('workouts.items.selectPlaceholder') }}</option>
-            <option v-for="exercise in exercises" :key="exercise._id" :value="exercise._id">
+            <option v-for="exercise in exercisesFor(item.group)" :key="exercise._id" :value="exercise._id">
               {{ exercise.name }}
             </option>
           </select>
-          <input v-model.number="item.sets" type="number" min="1" :placeholder="$t('workouts.items.setsPlaceholder')" required />
+          <input v-model.number="item.sets" type="number" inputmode="numeric" min="1" :placeholder="$t('workouts.items.setsPlaceholder')" required />
           <input v-model="item.reps" :placeholder="$t('workouts.items.repsPlaceholder')" required />
-          <input v-model.number="item.weight" type="number" step="0.5" min="0" :placeholder="$t('workouts.items.weightPlaceholder')" />
+          <input v-model.number="item.weight" type="number" inputmode="decimal" step="0.5" min="0" :placeholder="$t('workouts.items.weightPlaceholder')" />
           <button type="button" class="btn-icon" @click="form.items.splice(index, 1)">
             <span class="material-symbols-outlined">close</span>
           </button>
+          <p v-if="item.unavailable" :class="$style.full" class="alert alert-error">{{ $t('workouts.items.unavailable') }}</p>
+          <p v-if="item.group && !exercisesFor(item.group).length" :class="$style.full" class="muted">
+            {{ $t('workouts.items.emptyGroup') }}
+            <router-link to="/exercises" target="_blank" rel="noopener">{{ $t('workouts.items.registerExercise') }}</router-link>
+            <button type="button" class="btn" @click="loadExercises">{{ $t('workouts.items.refreshExercises') }}</button>
+          </p>
         </div>
+        <p v-if="formError" role="alert" class="alert alert-error">{{ formError }}</p>
       </div>
     </Modal>
   </AppShell>
@@ -128,7 +141,7 @@
 import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
 import { number, errorMessage } from '@yper/i18n';
-import { workoutFocusLabel } from '@/muscleGroups';
+import { MUSCLE_GROUPS, workoutFocusLabel } from '@/muscleGroups';
 
 const WEEKDAYS = [0, 1, 2, 3, 4, 5, 6];
 const empty = () => ({ name: '', focus: '', weekdays: [], items: [], notes: '', active: true });
@@ -139,6 +152,8 @@ export default {
   data() {
     return {
       WEEKDAYS,
+      MUSCLE_GROUPS,
+      formError: '',
       workouts: [],
       exercises: [],
       loading: true,
@@ -161,6 +176,16 @@ export default {
   },
   methods: {
     number,
+    groupOf(exercise) {
+      return MUSCLE_GROUPS.includes(exercise?.muscleGroup) ? exercise.muscleGroup : 'other';
+    },
+    exercisesFor(group) {
+      return this.exercises.filter((exercise) => this.groupOf(exercise) === group)
+        .sort((a, b) => a.name.localeCompare(b.name, this.$i18n.locale));
+    },
+    changeGroup(item) {
+      if (!this.exercisesFor(item.group).some((exercise) => exercise._id === item.exercise)) item.exercise = '';
+    },
     async load() {
       this.loading = true;
       try {
@@ -193,9 +218,10 @@ export default {
       else this.form.weekdays.splice(position, 1);
     },
     addItem() {
-      this.form.items.push({ exercise: '', sets: 3, reps: '10', weight: 0, restSeconds: 60 });
+      this.form.items.push({ group: '', exercise: '', sets: 3, reps: '10', weight: 0, restSeconds: 60 });
     },
     openForm(workout = null) {
+      this.formError = '';
       this.editingId = workout?._id || null;
       this.originalItemCount = workout?.items.filter((item) => item.exercise).length || 0;
       this.form = workout
@@ -206,20 +232,28 @@ export default {
             notes: workout.notes,
             active: workout.active,
             items: workout.items.map((item) => ({
+              group: item.exercise ? this.groupOf(this.exercises.find((exercise) => exercise._id === (item.exercise?._id || item.exercise))) : '',
+              unavailable: !this.exercises.some((exercise) => exercise._id === (item.exercise?._id || item.exercise)),
               exercise: item.exercise?._id || item.exercise,
               sets: item.sets,
               reps: item.reps,
               weight: item.weight,
               restSeconds: item.restSeconds,
+              ...(item.notes !== undefined ? { notes: item.notes } : {}),
             })),
           }
         : empty();
       this.showForm = true;
     },
     async save() {
+      this.formError = '';
+      if (this.form.items.some((item) => !this.exercisesFor(item.group).some((exercise) => exercise._id === item.exercise))) {
+        this.formError = this.$t('workouts.items.incomplete');
+        return;
+      }
       this.saving = true;
       try {
-        const items = this.form.items.filter((item) => item.exercise);
+        const items = this.form.items.map(({ group, unavailable, ...item }) => item);
         const body = { ...this.form, focus: this.formFocus, items };
         if (this.editingId) {
           await api.put(`/workouts/${this.editingId}`, body);
@@ -251,7 +285,7 @@ export default {
 .grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
   align-items: start;
 }
 
@@ -290,7 +324,7 @@ export default {
 
 .item {
   display: grid;
-  grid-template-columns: 1fr 74px 82px 74px auto;
+  grid-template-columns: minmax(0, 1fr) 74px 82px 74px auto;
   gap: 8px;
   align-items: center;
   margin-top: 8px;
@@ -301,9 +335,22 @@ export default {
   font-size: 0.82rem;
 }
 
+.full {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
 @media (max-width: 560px) {
   .item {
-    grid-template-columns: 1fr 1fr 1fr auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) 44px;
+  }
+
+  .item > * {
+    min-width: 0;
+  }
+
+  .item > button {
+    min-height: 44px;
   }
 
   .item > select {

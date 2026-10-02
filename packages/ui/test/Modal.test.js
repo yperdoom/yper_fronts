@@ -1,4 +1,5 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { nextTick } from 'vue';
 import { mount, DOMWrapper } from '@vue/test-utils';
 import { createAppI18n } from '@yper/i18n';
 import Modal from '../src/Modal.vue';
@@ -13,6 +14,7 @@ afterEach(() => {
     // ja desmontado pelo proprio teste
   }
   activeWrapper = undefined;
+  vi.unstubAllGlobals();
 });
 
 function mountModal(props = {}) {
@@ -25,6 +27,60 @@ function mountModal(props = {}) {
 }
 
 describe('Modal', () => {
+  it('acompanha o teclado e o deslocamento da viewport, restaurando ao fechar', async () => {
+    const viewport = Object.assign(new EventTarget(), {
+      width: 390, height: 800, offsetTop: 0, offsetLeft: 0, scale: 1,
+    });
+    vi.stubGlobal('visualViewport', viewport);
+    const { wrapper, body } = mountModal();
+    const overlay = body.find('[role="dialog"]').element.parentElement;
+    expect(document.body.style.overflow).toBe('hidden');
+    expect(overlay.style.height).toBe('800px');
+
+    viewport.height = 360;
+    viewport.dispatchEvent(new Event('resize'));
+    viewport.offsetTop = 40;
+    viewport.dispatchEvent(new Event('scroll'));
+    await nextTick();
+    expect(overlay.style.height).toBe('360px');
+    expect(overlay.style.top).toBe('40px');
+    await body.find('form').trigger('submit');
+    expect(wrapper.emitted('submit')).toHaveLength(1);
+
+    viewport.scale = 2;
+    viewport.height = 180;
+    viewport.dispatchEvent(new Event('resize'));
+    await nextTick();
+    expect(overlay.style.height).toBe('360px');
+
+    viewport.scale = 1;
+    viewport.height = 800;
+    viewport.offsetTop = 0;
+    viewport.dispatchEvent(new Event('resize'));
+    await nextTick();
+    expect(overlay.style.height).toBe('800px');
+    expect(overlay.style.top).toBe('0px');
+
+    await wrapper.setProps({ show: false });
+    viewport.height = 300;
+    viewport.dispatchEvent(new Event('resize'));
+    await nextTick();
+    expect(wrapper.vm.viewportStyle).toEqual({});
+    expect(document.body.style.overflow).toBe('');
+  });
+
+  it('remove os listeners da viewport ao desmontar', () => {
+    const viewport = Object.assign(new EventTarget(), {
+      width: 390, height: 800, offsetTop: 0, offsetLeft: 0, scale: 1,
+    });
+    const remove = vi.spyOn(viewport, 'removeEventListener');
+    vi.stubGlobal('visualViewport', viewport);
+    const { wrapper } = mountModal();
+    wrapper.unmount();
+    expect(remove).toHaveBeenCalledWith('resize', expect.any(Function));
+    expect(remove).toHaveBeenCalledWith('scroll', expect.any(Function));
+  });
+
   it('nao renderiza nada quando show e false', () => {
     const { body } = mountModal({ show: false });
 

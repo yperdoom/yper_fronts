@@ -86,7 +86,7 @@
         </div>
         <div class="field">
           <label for="muscleGroup">{{ $t('exercises.form.muscleGroup') }}</label>
-          <select id="muscleGroup" v-model="form.muscleGroup">
+          <select id="muscleGroup" v-model="form.muscleGroup" required>
             <option v-for="group in MUSCLE_GROUPS" :key="group" :value="group">{{ $t(`exercises.muscleGroups.${group}`) }}</option>
           </select>
         </div>
@@ -135,7 +135,7 @@ export default {
     filtered() {
       const term = this.search.trim().toLowerCase();
       return this.exercises.filter((exercise) => {
-        if (this.filterGroup && exercise.muscleGroup !== this.filterGroup) return false;
+        if (this.filterGroup && this.groupOf(exercise.muscleGroup) !== this.filterGroup) return false;
         if (!term) return true;
         return [exercise.name, exercise.equipment]
           .some((value) => (value || '').toLowerCase().includes(term));
@@ -146,8 +146,11 @@ export default {
     await this.load();
   },
   methods: {
+    groupOf(value) {
+      return MUSCLE_GROUPS.includes(value) ? value : 'other';
+    },
     muscleGroupLabel(value) {
-      return MUSCLE_GROUPS.includes(value) ? this.$t(`exercises.muscleGroups.${value}`) : value;
+      return this.$t(`exercises.muscleGroups.${this.groupOf(value)}`);
     },
     async load() {
       this.loading = true;
@@ -165,6 +168,7 @@ export default {
       this.form = exercise
         ? Object.fromEntries(Object.keys(EMPTY).map((key) => [key, exercise[key] ?? EMPTY[key]]))
         : { ...EMPTY };
+      this.form.muscleGroup = this.groupOf(this.form.muscleGroup);
       this.showForm = true;
     },
     async save() {
