@@ -94,6 +94,7 @@ describe('Exercises', () => {
     await body.find('#name').setValue('Remada curvada');
     await body.find('#muscleGroup').setValue('back');
     await body.find('#equipment').setValue('Barra');
+    await body.find('#weight').setValue(25);
     await body.find('#videoUrl').setValue('https://vid/2');
     await body.find('#notes').setValue('cuidado com a lombar');
 
@@ -103,6 +104,7 @@ describe('Exercises', () => {
       name: 'Remada curvada',
       muscleGroup: 'back',
       equipment: 'Barra',
+      weight: 25,
       videoUrl: 'https://vid/2',
       notes: 'cuidado com a lombar',
     });
@@ -124,6 +126,7 @@ describe('Exercises', () => {
       name: 'Supino reto',
       muscleGroup: 'chest',
       equipment: 'Halteres',
+      weight: 0,
       notes: '',
       videoUrl: 'https://vid/1',
     });

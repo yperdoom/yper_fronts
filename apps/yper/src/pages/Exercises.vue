@@ -95,6 +95,10 @@
           <input id="equipment" v-model="form.equipment" :placeholder="$t('exercises.form.equipmentPlaceholder')" />
         </div>
         <div class="field full">
+          <label for="weight">{{ $t('exercises.form.weight') }}</label>
+          <input id="weight" v-model.number="form.weight" type="number" min="0" step="any" inputmode="decimal" required />
+        </div>
+        <div class="field full">
           <label for="videoUrl">{{ $t('exercises.form.videoUrl') }}</label>
           <input id="videoUrl" v-model="form.videoUrl" type="url" :placeholder="$t('exercises.form.optionalPlaceholder')" />
         </div>
@@ -113,7 +117,7 @@ import { api } from '@/api';
 import { errorMessage } from '@yper/i18n';
 import { MUSCLE_GROUPS } from '@/muscleGroups';
 
-const EMPTY = { name: '', muscleGroup: 'other', equipment: '', videoUrl: '', notes: '' };
+const EMPTY = { name: '', muscleGroup: 'other', equipment: '', weight: 0, videoUrl: '', notes: '' };
 
 export default {
   name: 'Exercises',

@@ -4,7 +4,7 @@
       <router-link to="/nutrition" class="btn">
         <span class="material-symbols-outlined">restaurant</span> {{ $t('today.actions.meal') }}
       </router-link>
-      <router-link to="/history" class="btn btn-primary">
+      <router-link to="/workouts" class="btn btn-primary">
         <span class="material-symbols-outlined">fitness_center</span> {{ $t('today.actions.workout') }}
       </router-link>
     </template>
@@ -12,6 +12,7 @@
     <div v-if="loading" class="loading">{{ $t('common.loading') }}</div>
 
     <div v-else class="stack">
+      <WorkoutCalendar weekly />
       <section class="card">
         <div class="card-head">
           <h2>{{ $t('today.macros.title') }}</h2>
@@ -43,9 +44,6 @@
         <section class="card">
           <div class="card-head">
             <h2>{{ $t('today.workoutToday.title') }}</h2>
-            <span class="badge badge-accent">
-              {{ $t('today.workoutToday.weekCount', { done: data.workoutsThisWeek, target: data.workoutTargetPerWeek }) }}
-            </span>
           </div>
 
           <div v-if="!data.todaysWorkouts.length" class="empty">
@@ -58,13 +56,13 @@
               <div class="row">
                 <strong>{{ workout.name }}</strong>
                 <span v-if="focusLabel(workout)" class="badge">{{ focusLabel(workout) }}</span>
+                <router-link :to="{ path: '/workouts', query: { open: workout._id } }" class="btn">{{ $t('workouts.session.open') }}</router-link>
               </div>
               <ul :class="$style.list">
                 <li v-for="(item, index) in workout.items" :key="index">
                   <span>{{ item.exercise?.name || '—' }}</span>
                   <span class="muted">
-                    {{ $t('today.workoutToday.setsReps', { sets: item.sets, reps: item.reps }) }}
-                    <template v-if="item.weight">{{ $t('today.workoutToday.itemWeight', { weight: number(item.weight, 1) }) }}</template>
+                    {{ $t('workouts.session.weight', { weight: number(item.exercise?.weight ?? item.weight ?? 0, 1) }) }}
                   </span>
                 </li>
               </ul>
@@ -118,6 +116,7 @@
 </template>
 
 <script>
+import WorkoutCalendar from '@/components/WorkoutCalendar.vue';
 import { AppShell } from '@yper/ui';
 import { api } from '@/api';
 import { number, date, errorMessage } from '@yper/i18n';
@@ -127,7 +126,7 @@ const EMPTY_TOTALS = { calories: 0, protein: 0, carbs: 0, fat: 0 };
 
 export default {
   name: 'Today',
-  components: { AppShell },
+  components: { AppShell, WorkoutCalendar },
   data() {
     return {
       loading: true,
@@ -215,7 +214,7 @@ export default {
 .split {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
   align-items: start;
 }
 
@@ -243,5 +242,8 @@ export default {
   gap: 8px;
   padding: 13px 18px;
   border-top: 1px solid var(--border);
+}
+@media (max-width: 640px) {
+  .list { display: none; }
 }
 </style>

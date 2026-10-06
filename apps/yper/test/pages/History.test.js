@@ -33,7 +33,7 @@ const LOG = {
 
 function respond(overrides = {}) {
   const responses = { '/logs': { logs: [] }, '/workouts': { workouts: [] }, '/exercises': { exercises: [] }, ...overrides };
-  return async (path) => responses[path];
+  return async (path) => path.startsWith('/workouts/activity') ? { activity: [] } : responses[path];
 }
 
 async function mountHistory(overrides) {
@@ -85,7 +85,7 @@ describe('History', () => {
 
   it('mostra mensagem vazia quando nao ha sessoes registradas', async () => {
     const { wrapper } = await mountHistory();
-    expect(wrapper.text()).toContain('Nenhum treino registrado ainda.');
+    expect(wrapper.text()).toContain('As atividades diárias aparecem no calendário. Nenhuma sessão detalhada registrada.');
   });
 
   it('escolher um treino no formulario preenche os exercicios com as series planejadas', async () => {

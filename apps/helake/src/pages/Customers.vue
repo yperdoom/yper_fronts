@@ -31,6 +31,8 @@
               <th class="num">{{ $t('customers.table.orders') }}</th>
               <th class="num">{{ $t('customers.table.spent') }}</th>
               <th>{{ $t('customers.table.lastOrder') }}</th>
+              <th class="num">{{ $t('customers.table.completed') }}</th>
+              <th class="num">{{ $t('customers.table.cancelled') }}</th>
               <th></th>
             </tr>
           </thead>
@@ -47,6 +49,8 @@
               <td class="num">{{ number(customer.totalOrders) }}</td>
               <td class="num">{{ currency(customer.totalSpent) }}</td>
               <td class="muted">{{ date(customer.lastOrder) }}</td>
+              <td class="num">{{ number(customer.completedOrders || 0) }}</td>
+              <td class="num">{{ number(customer.cancelledOrders || 0) }}</td>
               <td>
                 <div class="row" :class="$style.actions">
                   <button class="btn-icon" :title="$t('common.edit')" @click="openForm(customer)">

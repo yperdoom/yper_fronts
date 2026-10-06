@@ -67,18 +67,34 @@
 
     <Modal
       :show="showForm"
-      :title="editingId ? $t('orders.form.editTitle') : $t('orders.newOrder')"
+      :title="creatingCustomer ? $t('customers.newCustomer') : editingId ? $t('orders.form.editTitle') : $t('orders.newOrder')"
       :saving="saving"
-      @close="showForm = false"
-      @submit="save"
+      @close="closeForm"
+      @submit="creatingCustomer ? saveCustomer() : save()"
     >
-      <div class="form-grid">
+      <div v-if="creatingCustomer" class="form-grid">
+        <div class="field full">
+          <label for="newCustomerName">{{ $t('customers.form.name') }}</label>
+          <input id="newCustomerName" v-model="customerForm.name" required />
+        </div>
+        <div class="field full">
+          <label for="newCustomerPhone">{{ $t('customers.form.phone') }}</label>
+          <input id="newCustomerPhone" v-model="customerForm.phone" type="tel" />
+        </div>
+        <div class="field full">
+          <label for="newCustomerNotes">{{ $t('customers.form.notes') }}</label>
+          <textarea id="newCustomerNotes" v-model="customerForm.notes"></textarea>
+        </div>
+        <p class="muted">{{ $t('orders.form.returnToOrder') }}</p>
+      </div>
+      <div v-else class="form-grid">
         <div class="field full">
           <label for="customer">{{ $t('orders.form.customer') }}</label>
           <select id="customer" v-model="form.customer" required>
             <option value="">{{ $t('orders.form.customerPlaceholder') }}</option>
             <option v-for="customer in customers" :key="customer._id" :value="customer._id">{{ customer.name }}</option>
           </select>
+          <button type="button" class="btn" @click="startCustomer">{{ $t('customers.newCustomer') }}</button>
         </div>
         <div class="field full">
           <label for="recipe">{{ $t('orders.form.recipe') }}</label>
@@ -131,6 +147,8 @@ export default {
       showForm: false,
       editingId: null,
       form: { ...EMPTY },
+      creatingCustomer: false,
+      customerForm: { name: '', phone: '', notes: '' },
     };
   },
   async mounted() {
@@ -139,6 +157,29 @@ export default {
   methods: {
     currency,
     date,
+    startCustomer() {
+      this.customerForm = { name: '', phone: '', notes: '' };
+      this.creatingCustomer = true;
+    },
+    closeForm() {
+      if (this.saving) return;
+      if (this.creatingCustomer) this.creatingCustomer = false;
+      else this.showForm = false;
+    },
+    async saveCustomer() {
+      if (this.saving) return;
+      this.saving = true;
+      try {
+        const { customer } = await api.post('/customers', this.customerForm);
+        this.customers = [...this.customers, customer].sort((a, b) => a.name.localeCompare(b.name));
+        this.form.customer = customer._id;
+        this.creatingCustomer = false;
+      } catch (err) {
+        alert(errorMessage(this.$t, err));
+      } finally {
+        this.saving = false;
+      }
+    },
     initials(name) {
       return (name || '?').slice(0, 2).toUpperCase();
     },
@@ -170,6 +211,7 @@ export default {
       }
     },
     openForm(order = null) {
+      this.creatingCustomer = false;
       this.editingId = order?._id || null;
       this.form = order
         ? {

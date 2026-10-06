@@ -6,6 +6,7 @@
       </button>
     </template>
 
+    <WorkoutCalendar ref="calendar" />
     <div class="card">
       <div class="card-head">
         <h2>{{ $t('history.loggedSessions') }}</h2>
@@ -126,6 +127,7 @@
 </template>
 
 <script>
+import WorkoutCalendar from '@/components/WorkoutCalendar.vue';
 import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
 import { number, date, toDateInput, errorMessage } from '@yper/i18n';
@@ -140,7 +142,7 @@ const empty = () => ({
 
 export default {
   name: 'History',
-  components: { AppShell, Modal },
+  components: { AppShell, Modal, WorkoutCalendar },
   data() {
     return {
       logs: [],
@@ -198,7 +200,7 @@ export default {
         exercise: item.exercise?._id || item.exercise,
         sets: Array.from({ length: item.sets || 1 }, () => ({
           reps: Number.parseInt(item.reps, 10) || 0,
-          weight: item.weight || 0,
+          weight: this.exercises.find(exercise => exercise._id === (item.exercise?._id || item.exercise))?.weight ?? item.exercise?.weight ?? item.weight ?? 0,
         })),
       }));
     },
@@ -218,6 +220,7 @@ export default {
         });
         this.showForm = false;
         await this.load();
+        await this.$refs.calendar.load();
       } catch (err) {
         alert(errorMessage(this.$t, err));
       } finally {
@@ -229,6 +232,7 @@ export default {
       try {
         await api.del(`/logs/${log._id}`);
         await this.load();
+        await this.$refs.calendar.load();
       } catch (err) {
         alert(errorMessage(this.$t, err));
       }

@@ -58,7 +58,8 @@
       "deliveryDate": "Data de entrega",
       "paidPrice": "Valor pago (R$)",
       "notes": "Observações",
-      "notesPlaceholder": "Algum pedido especial..."
+      "notesPlaceholder": "Algum pedido especial...",
+      "returnToOrder": "Ao salvar, você volta à encomenda com este cliente selecionado."
     }
   },
   "recipes": {
@@ -122,7 +123,9 @@
       "phone": "Telefone",
       "orders": "Pedidos",
       "spent": "Total gasto",
-      "lastOrder": "Último pedido"
+      "lastOrder": "Último pedido",
+      "completed": "Concluídos",
+      "cancelled": "Cancelados"
     },
     "form": {
       "editTitle": "Editar cliente",

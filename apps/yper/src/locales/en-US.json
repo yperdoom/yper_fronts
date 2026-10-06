@@ -39,9 +39,9 @@
       "itemWeight": " · {weight}kg"
     },
     "recentWorkouts": {
-      "title": "Recent workouts",
+      "title": "Recent detailed sessions",
       "viewAll": "view all",
-      "empty": "No workouts logged yet.",
+      "empty": "No recent detailed sessions. See the calendar in History.",
       "table": {
         "date": "Date",
         "workout": "Workout",
@@ -90,7 +90,9 @@
       "registerExercise": "Register an exercise in another tab",
       "refreshExercises": "Refresh exercises",
       "unavailable": "The original exercise is unavailable. Select a replacement or remove this item.",
-      "incomplete": "Select a group and a valid exercise for every item before saving."
+      "incomplete": "Select a valid exercise for every item before saving.",
+      "optionalCounts": "Sets and reps (optional)",
+      "toFailure": "To failure, if preferred"
     },
     "weekdays": {
       "0": "Sun",
@@ -105,6 +107,15 @@
       "upper": "Upper body",
       "lower": "Lower body",
       "full": "Full body"
+    },
+    "session": {
+      "today": "Check the exercises completed today.",
+      "retry": "Try again",
+      "unavailable": "Unavailable exercise",
+      "sharedWeight": "This weight applies to this exercise in every workout.",
+      "open": "Open workout",
+      "close": "Collapse",
+      "weight": "{weight} kg"
     }
   },
   "exercises": {
@@ -137,7 +148,8 @@
       "equipmentPlaceholder": "Barbell, dumbbell, machine...",
       "videoUrl": "Video link",
       "optionalPlaceholder": "optional",
-      "notes": "Notes"
+      "notes": "Notes",
+      "weight": "Shared weight (kg)"
     },
     "muscleGroups": {
       "chest": "Chest",
@@ -157,9 +169,9 @@
   "history": {
     "title": "History",
     "newLog": "Log workout",
-    "loggedSessions": "Logged sessions",
+    "loggedSessions": "Detailed sessions",
     "count": "{count} session(s)",
-    "empty": "No workouts logged yet.",
+    "empty": "Daily activity appears in the calendar. No detailed sessions recorded.",
     "freeWorkout": "Freestyle workout",
     "durationMinutes": "{minutes} min",
     "volume": "{value} kg volume",
@@ -349,5 +361,17 @@
       "fat": "Fat (g)",
       "note": "Protein and carbs provide 4 kcal per gram, fat provides 9. The sum above helps check whether the macros match the calorie goal."
     }
+  },
+  "activity": {
+    "week": "Workouts this week",
+    "daysCount": "Training days: {count}",
+    "previous": "Previous month",
+    "next": "Next month",
+    "trained": "Training day",
+    "rest": "No training recorded",
+    "future": "Future day",
+    "legend": "✓ Training · — No record · · Future",
+    "completed": " · {count} exercises completed",
+    "loadError": "Could not load training days."
   }
 }

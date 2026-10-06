@@ -63,6 +63,39 @@ beforeEach(() => {
 });
 
 describe('Orders', () => {
+  it('cadastra e seleciona cliente sem perder o rascunho do pedido', async () => {
+    const { wrapper, body } = await mountOrders();
+    await openNewOrder(wrapper);
+    await body.find('#recipe').setValue('r2');
+    await body.find('#quantity').setValue(4);
+    await body.find('#notes').setValue('Entrega especial');
+    await body.findAll('button').find(b => b.text() === 'Novo cliente').trigger('click');
+    await body.find('#newCustomerName').setValue('Ana');
+    await body.find('#newCustomerPhone').setValue('12345');
+    api.post.mockResolvedValueOnce({ customer: { _id: 'c3', name: 'Ana', phone: '12345', notes: '' } });
+    await body.find('form').trigger('submit');
+    await flushPromises();
+    expect(api.post).toHaveBeenCalledWith('/customers', { name: 'Ana', phone: '12345', notes: '' });
+    expect(body.find('#customer').element.value).toBe('c3');
+    expect(body.find('#recipe').element.value).toBe('r2');
+    expect(body.find('#quantity').element.value).toBe('4');
+    expect(body.find('#notes').element.value).toBe('Entrega especial');
+    expect(api.post).not.toHaveBeenCalledWith('/orders', expect.anything());
+  });
+
+  it('cancelar ou falhar no cadastro de cliente preserva a encomenda', async () => {
+    const { wrapper, body } = await mountOrders();
+    await openNewOrder(wrapper);
+    await body.find('#notes').setValue('Rascunho');
+    await body.findAll('button').find(b => b.text() === 'Novo cliente').trigger('click');
+    await body.find('#newCustomerName').setValue('Ana');
+    api.post.mockRejectedValueOnce(new Error('Falha ao cadastrar'));
+    await body.find('form').trigger('submit');
+    await flushPromises();
+    expect(body.find('#newCustomerName').element.value).toBe('Ana');
+    await body.findAll('button').find(b => b.text() === 'Cancelar').trigger('click');
+    expect(body.find('#notes').element.value).toBe('Rascunho');
+  });
   it('carrega encomendas, clientes e receitas e renderiza a tabela', async () => {
     const { wrapper } = await mountOrders();
 

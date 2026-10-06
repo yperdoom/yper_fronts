@@ -34,26 +34,13 @@
 
         <div class="card-body">
           <div class="row" :class="$style.days">
-            <span
-              v-for="day in WEEKDAYS"
-              :key="day"
-              class="badge"
-              :class="workout.weekdays.includes(day) ? 'badge-accent' : ''"
-            >
-              {{ $t(`workouts.weekdays.${day}`) }}
-            </span>
+            <span v-for="day in workout.weekdays" :key="day" class="badge badge-accent">{{ $t(`workouts.weekdays.${day}`) }}</span>
+            <div class="spacer"></div>
+            <button type="button" class="btn" :aria-expanded="expandedId === workout._id" :aria-controls="'session-' + workout._id" @click="toggleWorkout(workout)">
+              {{ $t(expandedId === workout._id ? 'workouts.session.close' : 'workouts.session.open') }}
+            </button>
           </div>
-
-          <ul :class="$style.list">
-            <li v-for="(item, index) in workout.items" :key="index">
-              <span>{{ item.exercise?.name || '—' }}</span>
-              <span class="muted">
-                {{ $t('workouts.card.setsReps', { sets: item.sets, reps: item.reps }) }}
-                <template v-if="item.weight">{{ $t('workouts.card.itemWeight', { weight: number(item.weight, 1) }) }}</template>
-              </span>
-            </li>
-            <li v-if="!workout.items.length" class="muted">{{ $t('workouts.noItems') }}</li>
-          </ul>
+          <WorkoutSession v-if="expandedId === workout._id" :id="'session-' + workout._id" :workout="workout" :exercises="exercises" @weight-saved="updateWeight" @busy="sessionSaving = $event" />
         </div>
       </article>
     </div>
@@ -106,30 +93,30 @@
         </p>
 
         <div v-for="(item, index) in form.items" :key="index" :class="$style.item">
-          <label :for="`group-${index}`" :class="$style.full">{{ $t('exercises.form.muscleGroup') }}</label>
-          <select :id="`group-${index}`" v-model="item.group" :class="$style.full" required @change="changeGroup(item)">
-            <option value="" disabled>{{ $t('workouts.items.groupPlaceholder') }}</option>
-            <option v-for="group in MUSCLE_GROUPS" :key="group" :value="group">{{ $t(`exercises.muscleGroups.${group}`) }}</option>
-          </select>
           <label :for="`exercise-${index}`" :class="$style.full">{{ $t('exercises.table.exercise') }}</label>
-          <select :id="`exercise-${index}`" v-model="item.exercise" :disabled="!item.group" required @change="item.unavailable = false">
+          <select :id="`exercise-${index}`" v-model="item.exercise" required @change="item.unavailable = false">
             <option value="" disabled>{{ $t('workouts.items.selectPlaceholder') }}</option>
-            <option v-for="exercise in exercisesFor(item.group)" :key="exercise._id" :value="exercise._id">
-              {{ exercise.name }}
-            </option>
+            <optgroup v-for="group in availableGroups" :key="group" :label="$t(`exercises.muscleGroups.${group}`)">
+              <option v-for="exercise in exercisesFor(group)" :key="exercise._id" :value="exercise._id">{{ exercise.name }}</option>
+            </optgroup>
           </select>
-          <input v-model.number="item.sets" type="number" inputmode="numeric" min="1" :placeholder="$t('workouts.items.setsPlaceholder')" required />
-          <input v-model="item.reps" :placeholder="$t('workouts.items.repsPlaceholder')" required />
-          <input v-model.number="item.weight" type="number" inputmode="decimal" step="0.5" min="0" :placeholder="$t('workouts.items.weightPlaceholder')" />
           <button type="button" class="btn-icon" @click="form.items.splice(index, 1)">
             <span class="material-symbols-outlined">close</span>
           </button>
           <p v-if="item.unavailable" :class="$style.full" class="alert alert-error">{{ $t('workouts.items.unavailable') }}</p>
-          <p v-if="item.group && !exercisesFor(item.group).length" :class="$style.full" class="muted">
-            {{ $t('workouts.items.emptyGroup') }}
-            <router-link to="/exercises" target="_blank" rel="noopener">{{ $t('workouts.items.registerExercise') }}</router-link>
-            <button type="button" class="btn" @click="loadExercises">{{ $t('workouts.items.refreshExercises') }}</button>
-          </p>
+          <details :class="$style.full">
+            <summary class="muted">{{ $t('workouts.items.optionalCounts') }}</summary>
+            <div class="form-grid">
+              <div class="field">
+                <label :for="`sets-${index}`">{{ $t('workouts.items.setsPlaceholder') }}</label>
+                <input :id="`sets-${index}`" v-model.number="item.sets" type="number" min="1" inputmode="numeric" />
+              </div>
+              <div class="field">
+                <label :for="`reps-${index}`">{{ $t('workouts.items.repsPlaceholder') }}</label>
+                <input :id="`reps-${index}`" v-model="item.reps" :placeholder="$t('workouts.items.toFailure')" />
+              </div>
+            </div>
+          </details>
         </div>
         <p v-if="formError" role="alert" class="alert alert-error">{{ formError }}</p>
       </div>
@@ -142,17 +129,20 @@ import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
 import { number, errorMessage } from '@yper/i18n';
 import { MUSCLE_GROUPS, workoutFocusLabel } from '@/muscleGroups';
+import WorkoutSession from '@/components/WorkoutSession.vue';
 
 const WEEKDAYS = [0, 1, 2, 3, 4, 5, 6];
 const empty = () => ({ name: '', focus: '', weekdays: [], items: [], notes: '', active: true });
 
 export default {
   name: 'Workouts',
-  components: { AppShell, Modal },
+  components: { AppShell, Modal, WorkoutSession },
   data() {
     return {
       WEEKDAYS,
       MUSCLE_GROUPS,
+      expandedId: null,
+      sessionSaving: false,
       formError: '',
       workouts: [],
       exercises: [],
@@ -165,6 +155,7 @@ export default {
     };
   },
   computed: {
+    availableGroups() { return MUSCLE_GROUPS.filter(group => this.exercisesFor(group).length); },
     formFocus() {
       const items = this.form.items.filter((item) => item.exercise);
       if (this.originalItemCount > 0 && !items.length) return '';
@@ -173,6 +164,7 @@ export default {
   },
   async mounted() {
     await Promise.all([this.load(), this.loadExercises()]);
+    if (this.workouts.some(workout => workout._id === this.$route.query.open)) this.expandedId = this.$route.query.open;
   },
   methods: {
     number,
@@ -183,8 +175,12 @@ export default {
       return this.exercises.filter((exercise) => this.groupOf(exercise) === group)
         .sort((a, b) => a.name.localeCompare(b.name, this.$i18n.locale));
     },
-    changeGroup(item) {
-      if (!this.exercisesFor(item.group).some((exercise) => exercise._id === item.exercise)) item.exercise = '';
+    toggleWorkout(workout) {
+      if (this.sessionSaving) return;
+      this.expandedId = this.expandedId === workout._id ? null : workout._id;
+    },
+    updateWeight({ id, weight }) {
+      this.exercises = this.exercises.map(exercise => exercise._id === id ? { ...exercise, weight } : exercise);
     },
     async load() {
       this.loading = true;
@@ -218,7 +214,7 @@ export default {
       else this.form.weekdays.splice(position, 1);
     },
     addItem() {
-      this.form.items.push({ group: '', exercise: '', sets: 3, reps: '10', weight: 0, restSeconds: 60 });
+      this.form.items.push({ exercise: '', sets: null, reps: '', restSeconds: 60 });
     },
     openForm(workout = null) {
       this.formError = '';
@@ -232,7 +228,6 @@ export default {
             notes: workout.notes,
             active: workout.active,
             items: workout.items.map((item) => ({
-              group: item.exercise ? this.groupOf(this.exercises.find((exercise) => exercise._id === (item.exercise?._id || item.exercise))) : '',
               unavailable: !this.exercises.some((exercise) => exercise._id === (item.exercise?._id || item.exercise)),
               exercise: item.exercise?._id || item.exercise,
               sets: item.sets,
@@ -247,13 +242,13 @@ export default {
     },
     async save() {
       this.formError = '';
-      if (this.form.items.some((item) => !this.exercisesFor(item.group).some((exercise) => exercise._id === item.exercise))) {
+      if (this.form.items.some((item) => !this.exercises.some((exercise) => exercise._id === item.exercise))) {
         this.formError = this.$t('workouts.items.incomplete');
         return;
       }
       this.saving = true;
       try {
-        const items = this.form.items.map(({ group, unavailable, ...item }) => item);
+        const items = this.form.items.map(({ group, unavailable, ...item }) => ({ ...item, sets: item.sets === '' ? null : item.sets }));
         const body = { ...this.form, focus: this.formFocus, items };
         if (this.editingId) {
           await api.put(`/workouts/${this.editingId}`, body);
@@ -324,7 +319,7 @@ export default {
 
 .item {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 74px 82px 74px auto;
+  grid-template-columns: minmax(0, 1fr) 44px;
   gap: 8px;
   align-items: center;
   margin-top: 8px;
@@ -342,7 +337,7 @@ export default {
 
 @media (max-width: 560px) {
   .item {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) 44px;
+    grid-template-columns: minmax(0, 1fr) 44px;
   }
 
   .item > * {

@@ -39,9 +39,9 @@
       "itemWeight": " · {weight}kg"
     },
     "recentWorkouts": {
-      "title": "Últimos treinos",
+      "title": "Sessões detalhadas recentes",
       "viewAll": "ver tudo",
-      "empty": "Nenhum treino registrado ainda.",
+      "empty": "Nenhuma sessão detalhada recente. Consulte o calendário no Histórico.",
       "table": {
         "date": "Data",
         "workout": "Treino",
@@ -90,7 +90,9 @@
       "registerExercise": "Cadastrar exercício em outra aba",
       "refreshExercises": "Atualizar exercícios",
       "unavailable": "O exercício original não está disponível. Selecione um substituto ou remova este item.",
-      "incomplete": "Selecione o grupo e um exercício válido para cada item antes de salvar."
+      "incomplete": "Selecione um exercício válido para cada item antes de salvar.",
+      "optionalCounts": "Séries e repetições (opcional)",
+      "toFailure": "Até a falha, se preferir"
     },
     "weekdays": {
       "0": "Dom",
@@ -105,6 +107,15 @@
       "upper": "Superior",
       "lower": "Inferior",
       "full": "Full body"
+    },
+    "session": {
+      "today": "Marque os exercícios concluídos hoje.",
+      "retry": "Tentar novamente",
+      "unavailable": "Exercício indisponível",
+      "sharedWeight": "Esta carga vale para este exercício em todos os treinos.",
+      "open": "Abrir treino",
+      "close": "Recolher",
+      "weight": "{weight} kg"
     }
   },
   "exercises": {
@@ -137,7 +148,8 @@
       "equipmentPlaceholder": "Barra, halter, máquina...",
       "videoUrl": "Link do vídeo",
       "optionalPlaceholder": "opcional",
-      "notes": "Observações"
+      "notes": "Observações",
+      "weight": "Carga compartilhada (kg)"
     },
     "muscleGroups": {
       "chest": "Peito",
@@ -157,9 +169,9 @@
   "history": {
     "title": "Histórico",
     "newLog": "Registrar treino",
-    "loggedSessions": "Sessões registradas",
+    "loggedSessions": "Sessões detalhadas",
     "count": "{count} sessão(ões)",
-    "empty": "Nenhum treino registrado ainda.",
+    "empty": "As atividades diárias aparecem no calendário. Nenhuma sessão detalhada registrada.",
     "freeWorkout": "Treino avulso",
     "durationMinutes": "{minutes} min",
     "volume": "{value} kg de volume",
@@ -349,5 +361,17 @@
       "fat": "Gordura (g)",
       "note": "Proteína e carboidrato rendem 4 kcal por grama, gordura rende 9. A soma acima ajuda a conferir se os macros batem com a meta de calorias."
     }
+  },
+  "activity": {
+    "week": "Treinos nesta semana",
+    "daysCount": "Dias com treino: {count}",
+    "previous": "Mês anterior",
+    "next": "Próximo mês",
+    "trained": "Com treino",
+    "rest": "Sem treino registrado",
+    "future": "Dia futuro",
+    "legend": "✓ Com treino · — Sem registro · · Futuro",
+    "completed": " · {count} exercícios concluídos",
+    "loadError": "Não foi possível carregar os dias de treino."
   }
 }

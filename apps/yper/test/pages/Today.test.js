@@ -41,7 +41,7 @@ const DASHBOARD = {
 
 async function mountToday(responder) {
   api.get.mockReset();
-  api.get.mockImplementation(responder);
+  api.get.mockImplementation((path) => path.startsWith('/workouts/activity') ? { activity: [] } : responder(path));
   return mountPage(Today, { messages: ptBR, api: client });
 }
 
@@ -66,12 +66,12 @@ describe('Today', () => {
     const caloriesBar = wrapper.findAll('.bar span')[0];
     expect(caloriesBar.attributes('style')).toContain('width: 50%');
 
-    expect(wrapper.text()).toContain('3 / 4 na semana');
+    expect(wrapper.text()).toContain('Dias com treino: 0');
     expect(wrapper.text()).toContain('Treino A');
     expect(wrapper.text()).toContain('Peito');
     expect(wrapper.text()).toContain('Supino');
-    expect(wrapper.text()).toContain('3x10');
-    expect(wrapper.text()).toContain(`${number(50, 1)}kg`);
+    expect(wrapper.text()).not.toContain('3x10');
+    expect(wrapper.text()).toContain(`${number(50, 1)} kg`);
 
     expect(wrapper.text()).toContain(date('2024-03-05T10:00:00Z'));
     expect(wrapper.text()).toContain('45 min');
@@ -111,7 +111,7 @@ describe('Today', () => {
     }));
 
     expect(wrapper.text()).toContain('Nenhum treino marcado para hoje.');
-    expect(wrapper.text()).toContain('Nenhum treino registrado ainda.');
+    expect(wrapper.text()).toContain('Nenhuma sessão detalhada recente. Consulte o calendário no Histórico.');
     expect(wrapper.text()).not.toContain('Último peso:');
   });
 

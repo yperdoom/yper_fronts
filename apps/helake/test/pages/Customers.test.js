@@ -17,7 +17,7 @@ import Customers from '../../src/pages/Customers.vue';
 const CUSTOMERS = [
   {
     _id: 'c1', name: 'Maria Silva', phone: '11999990000', notes: 'Prefere entrega a tarde',
-    totalOrders: 12, totalSpent: 540.5, lastOrder: '2024-03-10T00:00:00.000Z',
+    totalOrders: 12, completedOrders: 8, cancelledOrders: 3, totalSpent: 540.5, lastOrder: '2024-03-10T00:00:00.000Z',
     createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-02T00:00:00.000Z',
   },
   {
@@ -67,6 +67,8 @@ describe('Customers', () => {
     expect(cellsA[2].text()).toContain('12');
     expect(cellsA[3].text()).toContain(currency(540.5));
     expect(cellsA[4].text()).toContain(date('2024-03-10T00:00:00.000Z'));
+    expect(cellsA[5].text()).toBe('8');
+    expect(cellsA[6].text()).toBe('3');
 
     const cellsB = rows[1].findAll('td');
     expect(cellsB[1].text()).toContain('—');
