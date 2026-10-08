@@ -10,6 +10,7 @@ import Nutrition from './pages/Nutrition.vue';
 import Foods from './pages/Foods.vue';
 import Measurements from './pages/Measurements.vue';
 import Profile from './pages/Profile.vue';
+import Notifications from './pages/Notifications.vue';
 import { session } from './api.js';
 
 export const routes = [
@@ -22,6 +23,7 @@ export const routes = [
   { path: '/foods', name: 'Foods', component: Foods },
   { path: '/measurements', name: 'Measurements', component: Measurements },
   { path: '/profile', name: 'Profile', component: Profile },
+  { path: '/notifications', name: 'Notifications', component: Notifications },
   { path: '/users', name: 'Users', component: UsersPage, meta: { admin: true } },
   { path: '/account/password', name: 'ChangePassword', component: ChangePasswordPage },
   { path: '/:pathMatch(.*)*', redirect: '/home' },

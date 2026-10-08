@@ -34,6 +34,7 @@ coverage
 # Env
 .env*
 !.env.example
+!.env.push.example
 
 # Monorepo
 .turbo

@@ -9,4 +9,5 @@ export const NAV = [
   { to: '/foods', labelKey: 'nav.foods', icon: 'nutrition' },
   { to: '/measurements', labelKey: 'nav.measurements', icon: 'monitoring' },
   { to: '/profile', labelKey: 'nav.profile', icon: 'flag' },
+  { to: '/notifications', labelKey: 'notifications.title', icon: 'notifications' },
 ];

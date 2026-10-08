@@ -288,7 +288,7 @@ export default {
 
 .set {
   display: grid;
-  grid-template-columns: 30px 1fr 1fr auto;
+  grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1fr) auto;
   gap: 8px;
   align-items: center;
   margin-top: 8px;

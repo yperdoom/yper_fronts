@@ -160,7 +160,7 @@ export default {
 .split {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
   align-items: start;
 }
 

@@ -125,6 +125,7 @@
         <div class="field">
           <label for="date">{{ $t('measurements.form.date') }}</label>
           <input id="date" v-model="form.date" type="date" required />
+          <small class="muted">{{ $t('measurements.form.pastDateHint') }}</small>
         </div>
         <div class="field">
           <label for="weightKg">{{ $t('measurements.form.weight') }}</label>
@@ -166,7 +167,8 @@
 <script>
 import { AppShell, Modal } from '@yper/ui';
 import { api } from '@/api';
-import { number, date, toDateInput, errorMessage } from '@yper/i18n';
+import { number, errorMessage } from '@yper/i18n';
+import { measurementDate as date, measurementDateInput as toDateInput } from '@/measurementDates';
 
 const CHART_WIDTH = 600;
 const CHART_HEIGHT = 140;

@@ -1,4 +1,23 @@
 {
+  "notifications": {
+    "title": "Notificações", "deviceTitle": "Notificações neste aparelho",
+    "ready": "Ative para receber lembretes mesmo com o Yper fechado.",
+    "install": "No iPhone/iPad, abra o Yper pelo ícone da tela inicial. Requer iOS 16.4 ou posterior.",
+    "unsupported": "Este navegador não oferece notificações neste contexto. Use HTTPS e um navegador compatível.",
+    "unconfigured": "As notificações ainda precisam ser configuradas no servidor e no app.",
+    "denied": "As notificações estão bloqueadas. Libere a permissão nas configurações do aparelho ou navegador.",
+    "dismissed": "Permissão não concedida. Você pode tentar novamente quando quiser.",
+    "active": "Este aparelho está cadastrado para receber notificações.",
+    "enable": "Ativar neste aparelho", "disable": "Desativar", "test": "Enviar teste",
+    "schedule": "Meus lembretes", "scheduleHint": "Os horários abaixo começam a valer ao ativar este aparelho. Você pode alterar os dias e horários ou pausar cada lembrete. Se já registrou o peso ou aquela refeição no dia, o lembrete não será enviado.",
+    "timezone": "Fuso horário", "enabled": "Ativo", "time": "Horário",
+    "activated": "Aparelho ativado e horários salvos. Envie um teste para conferir o recebimento.",
+    "saved": "Horários salvos. É necessário ter um aparelho ativado para receber.",
+    "testSent": "Teste enviado ao serviço de notificações. Confira o aparelho.",
+    "devices": "Aparelhos cadastrados", "thisDevice": "Este aparelho", "otherDevice": "Aparelho {n}",
+    "kinds": { "weight": "Peso corporal", "breakfast": "Café da manhã", "morning_snack": "Lanche da manhã", "lunch": "Almoço", "afternoon_snack": "Lanche da tarde", "dinner": "Jantar", "supper": "Ceia" },
+    "days": { "0": "Dom", "1": "Seg", "2": "Ter", "3": "Qua", "4": "Qui", "5": "Sex", "6": "Sáb" }
+  },
   "app": {
     "tagline": "Treinos e nutrição"
   },
@@ -334,7 +353,8 @@
       "hip": "Quadril (cm)",
       "arm": "Braço (cm)",
       "thigh": "Coxa (cm)",
-      "notes": "Observações"
+      "notes": "Observações",
+      "pastDateHint": "Você também pode registrar pesos de dias anteriores."
     }
   },
   "profile": {

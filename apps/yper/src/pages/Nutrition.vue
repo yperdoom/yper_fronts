@@ -319,7 +319,7 @@ export default {
 .macros {
   display: grid;
   gap: 18px;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), minmax(0, 1fr)));
 }
 
 .macro {
@@ -347,7 +347,7 @@ export default {
 
 .item {
   display: grid;
-  grid-template-columns: 1fr 88px 26px auto;
+  grid-template-columns: minmax(0, 1fr) 88px 26px auto;
   gap: 8px;
   align-items: center;
   margin-top: 8px;
@@ -369,7 +369,7 @@ export default {
 
 @media (max-width: 520px) {
   .item {
-    grid-template-columns: 1fr 26px auto;
+    grid-template-columns: minmax(0, 1fr) 26px auto;
   }
 
   .item > select {

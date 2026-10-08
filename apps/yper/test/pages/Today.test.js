@@ -1,3 +1,4 @@
+import { measurementDate } from '../../src/measurementDates';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mountPage } from '@yper/test-utils';
 import { number, date } from '@yper/i18n';
@@ -79,7 +80,7 @@ describe('Today', () => {
 
     expect(wrapper.text()).toContain('Último peso:');
     expect(wrapper.text()).toContain(`${number(80.5, 1)} kg`);
-    expect(wrapper.text()).toContain(date('2024-03-01T00:00:00Z'));
+    expect(wrapper.text()).toContain(measurementDate('2024-03-01T00:00:00Z'));
   });
 
   it('recalcula o foco com o grupo atual do exercicio populado', async () => {
