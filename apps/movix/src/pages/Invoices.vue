@@ -339,7 +339,7 @@ export default {
 
 .item {
   display: grid;
-  grid-template-columns: 1fr 90px 110px auto;
+  grid-template-columns: minmax(0, 1fr) 90px 110px auto;
   gap: 8px;
   align-items: center;
   margin-top: 8px;
@@ -357,7 +357,7 @@ export default {
 
 @media (max-width: 520px) {
   .item {
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
   }
 
   .item > select {

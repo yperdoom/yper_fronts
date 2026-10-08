@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { flushPromises } from '@vue/test-utils';
 import { mountPage, cleanupPages } from '@yper/test-utils';
-import { number, date, toDateInput } from '@yper/i18n';
+import { number } from '@yper/i18n';
+import { measurementDate as date, measurementDateInput as toDateInput } from '../../src/measurementDates';
 import ptBR from '../../src/locales/pt-BR.json';
 
 vi.mock('@/api', async () => {

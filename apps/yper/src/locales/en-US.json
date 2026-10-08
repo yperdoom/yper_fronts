@@ -1,4 +1,23 @@
 {
+  "notifications": {
+    "title": "Notifications", "deviceTitle": "Notifications on this device",
+    "ready": "Enable reminders even when Yper is closed.",
+    "install": "On iPhone/iPad, open Yper from its Home Screen icon. Requires iOS 16.4 or later.",
+    "unsupported": "This browser does not support notifications in this context. Use HTTPS and a supported browser.",
+    "unconfigured": "Notifications still need to be configured on the server and in the app.",
+    "denied": "Notifications are blocked. Allow them in your device or browser settings.",
+    "dismissed": "Permission was not granted. You can try again later.",
+    "active": "This device is registered for notifications.",
+    "enable": "Enable on this device", "disable": "Disable", "test": "Send test",
+    "schedule": "My reminders", "scheduleHint": "These times apply when you enable this device. Change the days and times or pause each reminder. Reminders are skipped if you already logged your weight or that meal today.",
+    "timezone": "Time zone", "enabled": "Enabled", "time": "Time",
+    "activated": "Device enabled and schedule saved. Send a test to check delivery.",
+    "saved": "Schedule saved. An enabled device is required to receive reminders.",
+    "testSent": "Test sent to the notification service. Check your device.",
+    "devices": "Registered devices", "thisDevice": "This device", "otherDevice": "Device {n}",
+    "kinds": { "weight": "Body weight", "breakfast": "Breakfast", "morning_snack": "Morning snack", "lunch": "Lunch", "afternoon_snack": "Afternoon snack", "dinner": "Dinner", "supper": "Supper" },
+    "days": { "0": "Sun", "1": "Mon", "2": "Tue", "3": "Wed", "4": "Thu", "5": "Fri", "6": "Sat" }
+  },
   "app": {
     "tagline": "Workouts and nutrition"
   },
@@ -334,7 +353,8 @@
       "hip": "Hips (cm)",
       "arm": "Arm (cm)",
       "thigh": "Thigh (cm)",
-      "notes": "Notes"
+      "notes": "Notes",
+      "pastDateHint": "You can also record weights from previous days."
     }
   },
   "profile": {

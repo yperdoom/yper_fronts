@@ -106,7 +106,7 @@
             <span class="material-symbols-outlined">monitor_weight</span>
             <span>
               {{ $t('today.lastWeight.label') }} <strong>{{ $t('today.lastWeight.value', { weight: number(data.lastMeasurement.weightKg, 1) }) }}</strong>
-              <span class="muted"> {{ $t('today.lastWeight.at', { date: date(data.lastMeasurement.date) }) }}</span>
+              {{ ' ' }}<span class="muted">{{ $t('today.lastWeight.at', { date: measurementDate(data.lastMeasurement.date) }) }}</span>
             </span>
           </div>
         </section>
@@ -121,6 +121,7 @@ import { AppShell } from '@yper/ui';
 import { api } from '@/api';
 import { number, date, errorMessage } from '@yper/i18n';
 import { workoutFocusLabel } from '@/muscleGroups';
+import { measurementDate } from '@/measurementDates';
 
 const EMPTY_TOTALS = { calories: 0, protein: 0, carbs: 0, fat: 0 };
 
@@ -169,6 +170,7 @@ export default {
     }
   },
   methods: {
+    measurementDate,
     focusLabel(workout) {
       return workoutFocusLabel(workout.items, { t: this.$t, locale: this.$i18n.locale }) || workout.focus;
     },
@@ -186,7 +188,7 @@ export default {
 .macros {
   display: grid;
   gap: 18px;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
 }
 
 .macro {

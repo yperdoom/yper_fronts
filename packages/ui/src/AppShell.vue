@@ -170,6 +170,8 @@ export default {
   bottom: 0;
   z-index: 40;
   width: var(--sidebar-width);
+  max-width: 100vw;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   background: var(--sidebar-bg);
@@ -372,6 +374,8 @@ export default {
 }
 
 .topTitle {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: 1rem;
 }
 
@@ -414,7 +418,16 @@ export default {
   }
 
   .topbar {
-    padding: 0 14px;
+    padding: 8px 14px;
+    height: auto;
+    min-height: 58px;
+    flex-wrap: wrap;
+  }
+
+  .menuBtn {
+    flex-shrink: 0;
+    min-width: 44px;
+    min-height: 44px;
   }
 }
 </style>

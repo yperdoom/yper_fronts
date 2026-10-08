@@ -1,0 +1,11 @@
+{
+  "id": "/",
+  "name": "Yper — Treinos e Nutrição",
+  "short_name": "Yper",
+  "start_url": "/home",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
+  "icons": [{ "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }]
+}
