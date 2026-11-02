@@ -11,6 +11,8 @@ import Foods from './pages/Foods.vue';
 import Measurements from './pages/Measurements.vue';
 import Profile from './pages/Profile.vue';
 import Notifications from './pages/Notifications.vue';
+import Finance from './pages/Finance.vue';
+import Banking from './pages/Banking.vue';
 import { session } from './api.js';
 
 export const routes = [
@@ -24,6 +26,8 @@ export const routes = [
   { path: '/measurements', name: 'Measurements', component: Measurements },
   { path: '/profile', name: 'Profile', component: Profile },
   { path: '/notifications', name: 'Notifications', component: Notifications },
+  { path: '/finance', name: 'Finance', component: Finance },
+  { path: '/finance/banking', name: 'Banking', component: Banking },
   { path: '/users', name: 'Users', component: UsersPage, meta: { admin: true } },
   { path: '/account/password', name: 'ChangePassword', component: ChangePasswordPage },
   { path: '/:pathMatch(.*)*', redirect: '/home' },
