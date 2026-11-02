@@ -10,4 +10,5 @@ export const NAV = [
   { to: '/measurements', labelKey: 'nav.measurements', icon: 'monitoring' },
   { to: '/profile', labelKey: 'nav.profile', icon: 'flag' },
   { to: '/notifications', labelKey: 'notifications.title', icon: 'notifications' },
+  { to: '/finance', labelKey: 'finance.title', icon: 'account_balance_wallet' },
 ];
