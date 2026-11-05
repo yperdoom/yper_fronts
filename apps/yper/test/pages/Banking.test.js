@@ -57,4 +57,21 @@ describe('Banking', () => {
     expect(review.attributes('disabled')).toBeDefined();
     wrapper.unmount();
   });
+  it('categorizes an included page in one request without recreating amounts', async () => {
+    const { wrapper } = await mountPage(Banking, { messages: ptBR, api: client });
+    const accepted = [{ ...row, state: 'accepted', decision: 'auto' }, { ...row, _id: 'second', state: 'accepted', decision: 'auto' }];
+    wrapper.vm.openCategories(accepted); wrapper.vm.categoryForm.category = 'Saúde';
+    await wrapper.vm.saveCategories();
+    expect(api.post).toHaveBeenCalledWith('/finance/banking/categorize', { items: [{ id: 'movement', revision: 2 }, { id: 'second', revision: 2 }], category: 'Saúde', remember: false, scope: 'account' });
+    expect(wrapper.vm.categoryRows).toEqual([]); wrapper.unmount();
+  });
+  it('updates all accounts with one action and reports partial failures', async () => {
+    const { wrapper } = await mountPage(Banking, { messages: ptBR, api: client });
+    api.post.mockResolvedValueOnce({ results: [{ status: 'ok', imported: 7, updated: 2 }, { status: 'error' }] });
+    await wrapper.vm.syncAll();
+    expect(api.post).toHaveBeenCalledWith('/finance/banking/sync', {});
+    expect(wrapper.vm.syncMessage).toContain('7 incluído(s)');
+    expect(wrapper.vm.syncMessage).toContain(ptBR.banking.syncPartial);
+    wrapper.unmount();
+  });
 });

@@ -21,6 +21,17 @@ beforeEach(() => {
   api.post.mockResolvedValue({});
 });
 describe('Finance', () => {
+  it('displays the reported bank balance including zero rather than adding the ledger to it', async () => {
+    const get = api.get.getMockImplementation();
+    api.get.mockImplementation(async path => path.startsWith('/finance/projection')
+      ? { accounts: [{ ...account, currentBalanceCents: 99000, bankBalanceCents: 0, bankBalanceAt: '2026-11-04T12:00:00Z' }], months: [] }
+      : get(path));
+    const { wrapper } = await mountPage(Finance, { messages: ptBR, api: client });
+    expect(wrapper.find('.kpi-value').text()).toContain('0,00');
+    expect(wrapper.find('.kpi-hint').text()).toContain(ptBR.banking.reportedBalance);
+    expect(wrapper.text()).toContain(ptBR.banking.balanceHint);
+    wrapper.unmount();
+  });
   it('preserves cent precision and rejects ambiguous or fractional-cent amounts', () => {
     expect(moneyToCents('12,34')).toBe(1234);
     expect(moneyToCents('0.29')).toBe(29);
