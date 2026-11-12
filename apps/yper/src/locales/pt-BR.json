@@ -574,6 +574,8 @@
     "reason_special": "Fatura, estorno ou operação que requer conciliação específica.",
     "reason_limit": "Limite de lançamentos atingido.",
     "reason_changed": "O banco alterou um movimento vinculado.",
-    "balanceHint": "Nas contas conectadas, o resumo mostra o último saldo recebido do banco, com sua data. O extrato não é somado novamente a esse saldo. As projeções abaixo continuam calculadas pelo saldo inicial e pelos lançamentos."
+    "balanceHint": "Nas contas conectadas, o resumo mostra o último saldo recebido do banco, com sua data. O extrato não é somado novamente a esse saldo. As projeções abaixo continuam calculadas pelo saldo inicial e pelos lançamentos.",
+    "linkCard": "Vincular cartão",
+    "cardHint": "Cria uma conta do tipo cartão no financeiro. Pagamentos da fatura serão tratados como transferência."
   }
 }

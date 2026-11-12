@@ -74,4 +74,19 @@ describe('Banking', () => {
     expect(wrapper.vm.syncMessage).toContain(ptBR.banking.syncPartial);
     wrapper.unmount();
   });
+  it('links a discovered card without choosing an account', async () => {
+    const get = api.get.getMockImplementation();
+    api.get.mockImplementation(async path => path === '/finance/banking' ? { configured: true, links: [], rules: [], pending: 0 } : get(path));
+    api.post.mockImplementation(async path => path === '/finance/banking/discover'
+      ? { accounts: [{ externalId: 'card-1', name: 'Nubank · Cartão · 9876', kind: 'card' }, { externalId: 'acc-1', name: 'Nubank · Conta · 1234', kind: 'account' }] } : {});
+    const { wrapper } = await mountPage(Banking, { messages: ptBR, api: client });
+    await wrapper.vm.discover(); await flushPromises();
+    const [cardForm, accountForm] = wrapper.findAll('.link-form');
+    expect(cardForm.find('select').exists()).toBe(false);
+    expect(cardForm.text()).toContain(ptBR.banking.linkCard);
+    expect(accountForm.find('select').exists()).toBe(true);
+    await cardForm.trigger('submit'); await flushPromises();
+    expect(api.post).toHaveBeenCalledWith('/finance/banking/links', { externalId: 'card-1' });
+    wrapper.unmount();
+  });
 });

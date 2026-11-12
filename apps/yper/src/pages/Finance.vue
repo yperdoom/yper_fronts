@@ -36,7 +36,7 @@
       <div class="form-grid">
         <template v-if="modal === 'accounts'">
           <div class="field full"><label for="fa-name">{{ $t('finance.name') }}</label><input id="fa-name" v-model="form.name" required maxlength="160" /></div>
-          <div class="field"><label for="fa-kind">{{ $t('finance.kind') }}</label><select id="fa-kind" v-model="form.kind"><option value="operational">{{ $t('finance.operational') }}</option><option value="reserve">{{ $t('finance.reserve') }}</option></select></div>
+          <div class="field"><label for="fa-kind">{{ $t('finance.kind') }}</label><select id="fa-kind" v-model="form.kind"><option value="operational">{{ $t('finance.operational') }}</option><option value="reserve">{{ $t('finance.reserve') }}</option><option v-if="form.kind === 'card'" value="card">{{ $t('finance.card') }}</option></select></div>
           <div class="field"><label for="fa-date">{{ $t('finance.openingDate') }}</label><input id="fa-date" v-model="form.openingDate" type="date" required /></div>
           <div class="field"><label for="fa-balance">{{ $t('finance.openingBalance') }}</label><input id="fa-balance" v-model="form.amount" inputmode="decimal" /></div><p class="muted full">{{ $t('finance.openingHint') }}</p>
         </template>

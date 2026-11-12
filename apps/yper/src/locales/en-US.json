@@ -574,6 +574,8 @@
     "reason_special": "Bill, reversal or operation requiring dedicated reconciliation.",
     "reason_limit": "Entry limit reached.",
     "reason_changed": "The bank changed a linked transaction.",
-    "balanceHint": "Connected account summaries show the latest bank-reported balance and its date. Transactions are not added to that balance again. Projections below still use opening balances and ledger entries."
+    "balanceHint": "Connected account summaries show the latest bank-reported balance and its date. Transactions are not added to that balance again. Projections below still use opening balances and ledger entries.",
+    "linkCard": "Link card",
+    "cardHint": "Creates a card account in finance. Bill payments will be treated as transfers."
   }
 }

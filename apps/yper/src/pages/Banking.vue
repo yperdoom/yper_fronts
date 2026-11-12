@@ -14,10 +14,11 @@
           <p class="muted">{{ $t('banking.refreshHint') }}</p>
           <form v-for="external in available" :key="external.externalId" class="link-form" @submit.prevent="link(external)">
             <label :for="`account-${external.externalId}`">{{ external.name }}</label>
-            <select :id="`account-${external.externalId}`" v-model="accountChoices[external.externalId]" required>
+            <p v-if="external.kind === 'card'" class="muted">{{ $t('banking.cardHint') }}</p>
+            <select v-else :id="`account-${external.externalId}`" v-model="accountChoices[external.externalId]" required>
               <option value="">{{ $t('banking.chooseAccount') }}</option>
-              <option v-for="a in accounts" :key="a._id" :value="a._id">{{ a.name }}</option>
-            </select><button class="btn" :disabled="busy">{{ $t('banking.linkAccount') }}</button>
+              <option v-for="a in accounts.filter(a => a.kind !== 'card')" :key="a._id" :value="a._id">{{ a.name }}</option>
+            </select><button class="btn" :disabled="busy">{{ $t(external.kind === 'card' ? 'banking.linkCard' : 'banking.linkAccount') }}</button>
           </form>
           <p v-if="discovered && !available.length">{{ $t('banking.noAvailable') }}</p>
           <p v-if="discovered && !accounts.length"><RouterLink to="/finance">{{ $t('banking.createAccount') }}</RouterLink></p>
@@ -115,7 +116,7 @@ export default {
     },
     async run(work) { if (this.busy) return; this.busy = true; this.error = ''; try { await work(); await this.load(); } catch (e) { this.error = errorMessage(this.$t, e); } finally { this.busy = false; } },
     async discover() { await this.run(async () => { this.available = (await api.post('/finance/banking/discover', {})).accounts; this.discovered = true; }); },
-    async link(external) { await this.run(async () => { await api.post('/finance/banking/links', { externalId: external.externalId, account: this.accountChoices[external.externalId] }); this.available = this.available.filter(a => a.externalId !== external.externalId); }); },
+    async link(external) { await this.run(async () => { await api.post('/finance/banking/links', external.kind === 'card' ? { externalId: external.externalId } : { externalId: external.externalId, account: this.accountChoices[external.externalId] }); this.available = this.available.filter(a => a.externalId !== external.externalId); }); },
     async sync(c) { await this.run(async () => { const result = await api.post(`/finance/banking/links/${c._id}/sync`, {}); this.syncMessage = this.$t('banking.syncSummary', { imported: result.imported || 0, updated: result.updated || 0, transfers: result.transfers || 0 }); }); },
     async syncAll() { await this.run(async () => { const { results } = await api.post('/finance/banking/sync', {});
       this.syncMessage = this.$t('banking.syncSummary', { imported: results.reduce((s, r) => s + (r.imported || 0), 0), updated: results.reduce((s, r) => s + (r.updated || 0), 0), transfers: results.reduce((s, r) => s + (r.transfers || 0), 0) });
