@@ -27,6 +27,7 @@ describe('Finance', () => {
       ? { accounts: [{ ...account, currentBalanceCents: 99000, bankBalanceCents: 0, bankBalanceAt: '2026-11-04T12:00:00Z' }], months: [] }
       : get(path));
     const { wrapper } = await mountPage(Finance, { messages: ptBR, api: client });
+    await wrapper.findAll('.tabs .btn')[1].trigger('click');
     expect(wrapper.find('.kpi-value').text()).toContain('0,00');
     expect(wrapper.find('.kpi-hint').text()).toContain(ptBR.banking.reportedBalance);
     expect(wrapper.text()).toContain(ptBR.banking.balanceHint);
@@ -40,6 +41,7 @@ describe('Finance', () => {
   });
   it('loads accounts and a 12 month projection without writing records', async () => {
     const { wrapper } = await mountPage(Finance, { messages: ptBR, api: client });
+    await wrapper.findAll('.tabs .btn')[1].trigger('click');
     expect(wrapper.text()).toContain(ptBR.finance.coverage);
     expect(api.get).toHaveBeenCalledWith(expect.stringContaining('/finance/projection?from='));
     expect(api.post).not.toHaveBeenCalled();
@@ -108,12 +110,13 @@ describe('Finance', () => {
     const month = { month: '2026-11', incomeCents: 1, reimbursementsCents: 0, expenseCents: 2, paidExpenseCents: 0, estimateCents: 0, overdueCents: 0, transferCents: 0, resultCents: -1, operationalCents: null, reserveCents: null, balanceCents: 5, groups: {}, details: [] };
     api.get.mockImplementation(async path => path.startsWith('/finance/projection') ? { accounts: [account], months: [month], bankPending: 3 } : get(path));
     const { wrapper } = await mountPage(Finance, { messages: ptBR, api: client });
+    await wrapper.findAll('.tabs .btn')[1].trigger('click');
     const rows = () => wrapper.findAll('.comparison tbody th').map(th => th.text());
     expect(rows()).toEqual([ptBR.finance.incomeCents, ptBR.finance.expenseCents, ptBR.finance.resultCents, ptBR.finance.balanceCents]);
     await wrapper.find('.more-metrics').trigger('click');
     expect(rows()).toContain(ptBR.finance.overdueCents);
     expect(wrapper.find('.pending').exists()).toBe(true);
-    await wrapper.findAll('.tabs .btn')[2].trigger('click');
+    await wrapper.findAll('.tabs .btn')[3].trigger('click');
     expect(wrapper.find('.pending').exists()).toBe(false);
     wrapper.unmount();
   });
@@ -126,7 +129,7 @@ describe('Finance', () => {
     ];
     api.get.mockImplementation(async path => path === '/finance/entries' ? { entries } : get(path));
     const { wrapper } = await mountPage(Finance, { messages: ptBR, api: client });
-    await wrapper.findAll('.tabs .btn')[2].trigger('click');
+    await wrapper.findAll('.tabs .btn')[3].trigger('click');
     await wrapper.find('#entries-month').setValue('2026-10');
     const names = () => wrapper.findAll('.entries-list strong:first-child').map(n => n.text());
     expect(names()).toEqual(['Mercado', 'Aluguel']);
@@ -145,5 +148,37 @@ describe('Finance', () => {
     expect(activeIn({ repeat: 'installments', date: '2026-01-10', installment: 2, totalInstallments: 4 }, '2026-03')).toBe(true);
     expect(activeIn({ repeat: 'installments', date: '2026-01-10', installment: 2, totalInstallments: 4 }, '2026-04')).toBe(false);
     expect(activeIn({ repeat: 'once', date: '2026-10-05' }, '')).toBe(true);
+  });
+  it('opens on the month view with summary, account movements and card bills', async () => {
+    const card = { _id: 'card', revision: 0, name: 'Cartão Nubank', kind: 'card', openingDate: '2026-11-01', openingBalanceCents: null };
+    const previous = { month: '2026-10', balances: [{ id: 'account', kind: 'operational', balanceCents: 100000 }, { id: 'card', kind: 'card', balanceCents: -5000 }], details: [] };
+    const current = { month: '2026-11', incomeCents: 400000, reimbursementsCents: 0, expenseCents: 100000, resultCents: 300000, balances: [], details: [
+      { id: 'd1', description: 'Salário', type: 'income', account: 'account', amountCents: 400000, cashDate: '2026-11-05', category: '' },
+      { id: 'd2', description: 'Pagamento de fatura', type: 'transfer', account: 'account', toAccount: 'card', amountCents: 345692, cashDate: '2026-11-16', category: '' },
+      { id: 'd3', description: 'Compra no cartão', type: 'expense', account: 'card', amountCents: 31644, cashDate: '2026-11-03', category: 'Carro' },
+      { id: 'd4', description: 'Academia', type: 'expense', account: 'account', amountCents: 11500, cashDate: '2026-11-07', category: 'Pessoal' }] };
+    const cards = [{ id: 'l1', name: 'Cartão Nubank', bill: { closingDate: '2026-11-09', dueDate: '2026-11-16', totalCents: 345692 },
+      items: [{ id: 'i1', description: 'Pneu Store', category: 'Carro', date: '2026-11-03', installmentNumber: 3, totalInstallments: 10, amountCents: 31644, remainingCents: 221508 }] }];
+    api.get.mockImplementation(async path => {
+      if (path === '/finance/accounts') return { accounts: [account, card] };
+      if (path === '/finance/entries') return { entries: [] };
+      if (path === '/finance/estimates') return { estimates: [] };
+      if (path.startsWith('/finance/cards')) return { cards };
+      if (path.includes('from=2026-10')) return { accounts: [], months: [previous, current] };
+      return { accounts: [account], months: [] };
+    });
+    const { wrapper } = await mountPage(Finance, { messages: ptBR, api: client });
+    await wrapper.find('#month-pick').setValue('2026-11'); await flushPromises();
+    expect(api.get).toHaveBeenCalledWith('/finance/cards?month=2026-11');
+    const month = wrapper.find('.month-view');
+    expect(month.find('.month-summary').text()).toContain('1.000,00');
+    expect(month.find('.month-summary').text()).toContain('25,0%');
+    const accountBlock = month.find('.month-account').text();
+    expect(accountBlock).toContain('Salário'); expect(accountBlock).toContain('Academia');
+    expect(accountBlock).not.toContain('Compra no cartão'); expect(accountBlock).not.toContain('Pagamento de fatura');
+    const cardBlock = month.find('.month-card').text();
+    expect(cardBlock).toContain('Cartão Nubank'); expect(cardBlock).toContain('3/10');
+    expect(cardBlock).toContain('2.215,08'); expect(cardBlock).toContain('3.456,92');
+    wrapper.unmount();
   });
 });

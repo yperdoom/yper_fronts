@@ -5,10 +5,11 @@
       <p v-if="error" class="alert alert-danger" role="alert">{{ error }}</p>
       <p v-if="connected.length" class="muted" role="status">{{ syncMessage || $t('finance.syncedAt', { date: lastSync ? new Date(lastSync).toLocaleString($i18n.locale) : $t('finance.unknown') }) }}</p>
       <p v-if="projection.bankPending && view === 'planning'" class="pending" role="status">{{ $t('finance.pendingShort', { count: projection.bankPending }) }} <RouterLink to="/finance/banking">{{ $t('banking.reviewAction') }}</RouterLink></p>
-      <div class="row tabs"><button v-for="tab in ['planning', 'accounts', 'entries', 'estimates']" :key="tab" class="btn" :class="{ 'btn-primary': view === tab }" :aria-pressed="view === tab" @click="view = tab">{{ $t(`finance.${tab}`) }}</button></div>
+      <div class="row tabs"><button v-for="tab in ['month', 'planning', 'accounts', 'entries', 'estimates']" :key="tab" class="btn" :class="{ 'btn-primary': view === tab }" :aria-pressed="view === tab" @click="view = tab">{{ $t(`finance.${tab}`) }}</button></div>
       <p v-if="loading" class="loading">{{ $t('common.loading') }}</p>
       <div v-else-if="!accounts.length" class="card empty"><p>{{ $t('finance.start') }}</p><button class="btn btn-primary" @click="openAccount()">{{ $t('finance.newAccount') }}</button></div>
       <template v-else>
+        <FinanceMonth v-if="view === 'month'" :accounts="accounts" />
         <section v-if="view === 'planning'" class="planning">
           <div class="card"><div class="card-body form-grid">
             <div class="field"><label for="finance-from">{{ $t('finance.from') }}</label><input id="finance-from" v-model="from" type="month" @change="loadProjection" /></div>
@@ -67,6 +68,7 @@
 
 <script>
 import { AppShell, Modal } from '@yper/ui';
+import FinanceMonth from '../components/FinanceMonth.vue';
 import { api } from '@/api';
 import { currency, toDateInput, errorMessage } from '@yper/i18n';
 import { moneyToCents, centsInput, activeIn } from '../finance.js';
@@ -92,8 +94,8 @@ const resources = {
 };
 
 export default {
-  components: { AppShell, Modal },
-  data: () => ({ view: 'planning', loading: true, saving: false, error: '', formError: '', modal: '', form: {},
+  components: { AppShell, Modal, FinanceMonth },
+  data: () => ({ view: 'month', loading: true, saving: false, error: '', formError: '', modal: '', form: {},
     accounts: [], entries: [], estimates: [], projection: { months: [], accounts: [] }, from: toDateInput().slice(0,7), count: 12,
     accountFilter: '', selectedMonth: toDateInput().slice(0,7), requestId: 0, syncing: false, syncMessage: '', showAllMetrics: false, entriesMonth: toDateInput().slice(0,7), entriesOrigin: 'all',
     metrics: ['incomeCents','reimbursementsCents','expenseCents','paidExpenseCents','estimateCents','overdueCents','transferCents','resultCents','operationalCents','reserveCents','balanceCents'], mainMetrics: ['incomeCents','expenseCents','resultCents','balanceCents'] }),

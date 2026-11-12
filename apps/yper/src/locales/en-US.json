@@ -83,7 +83,16 @@
     "origin": "Origin",
     "origin_all": "All",
     "origin_imported": "Imported from bank",
-    "origin_planned": "Planned"
+    "origin_planned": "Planned",
+    "monthStart": "Balance at month start",
+    "spentShare": "Spent: {value} of income",
+    "monthAccount": "Account movements",
+    "billDates": "Closes {closing} · due {due}",
+    "installmentShort": "Installment",
+    "remaining": "Remaining",
+    "billTotal": "Bill total",
+    "date": "Date",
+    "value": "Amount"
   },
   "notifications": {
     "title": "Notifications",

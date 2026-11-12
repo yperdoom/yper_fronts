@@ -83,7 +83,16 @@
     "origin": "Origem",
     "origin_all": "Todos",
     "origin_imported": "Importados do banco",
-    "origin_planned": "Planejados"
+    "origin_planned": "Planejados",
+    "monthStart": "Saldo no início do mês",
+    "spentShare": "Gasto: {value} das entradas",
+    "monthAccount": "Movimentações das contas",
+    "billDates": "Fechamento {closing} · vencimento {due}",
+    "installmentShort": "Parcela",
+    "remaining": "Restante",
+    "billTotal": "Total da fatura",
+    "date": "Data",
+    "value": "Valor"
   },
   "notifications": {
     "title": "Notificações",
