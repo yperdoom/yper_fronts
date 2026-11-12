@@ -1,8 +1,9 @@
 <template>
   <AppShell :title="$t('finance.title')">
-    <template #actions><RouterLink class="btn" to="/finance/banking">{{ $t('banking.title') }}</RouterLink><button class="btn btn-primary" :disabled="!accounts.length" @click="openEntry()">{{ $t('finance.newEntry') }}</button></template>
+    <template #actions><button v-if="connected.length" class="btn sync-banks" :disabled="syncing" @click="syncBanks">{{ $t(syncing ? 'finance.syncing' : 'finance.syncBanks') }}</button><RouterLink class="btn" to="/finance/banking">{{ $t('banking.title') }}</RouterLink><button class="btn btn-primary" :disabled="!accounts.length" @click="openEntry()">{{ $t('finance.newEntry') }}</button></template>
     <div class="finance">
       <p v-if="error" class="alert alert-danger" role="alert">{{ error }}</p>
+      <p v-if="connected.length" class="muted" role="status">{{ syncMessage || $t('finance.syncedAt', { date: lastSync ? new Date(lastSync).toLocaleString($i18n.locale) : $t('finance.unknown') }) }}</p>
       <p v-if="projection.bankPending" role="status">{{ $t('banking.pendingHint', { count: projection.bankPending }) }} <RouterLink to="/finance/banking">{{ $t('banking.reviewAction') }}</RouterLink></p>
       <div class="row tabs"><button v-for="tab in ['planning', 'accounts', 'entries', 'estimates']" :key="tab" class="btn" :class="{ 'btn-primary': view === tab }" :aria-pressed="view === tab" @click="view = tab">{{ $t(`finance.${tab}`) }}</button></div>
       <p v-if="loading" class="loading">{{ $t('common.loading') }}</p>
@@ -67,6 +68,8 @@ import { api } from '@/api';
 import { currency, toDateInput, errorMessage } from '@yper/i18n';
 import { moneyToCents, centsInput } from '../finance.js';
 
+const SYNC_INTERVAL_MS = 3600000;
+
 const resources = {
   accounts: {
     create: data => api.post('/finance/accounts', data),
@@ -89,13 +92,16 @@ export default {
   components: { AppShell, Modal },
   data: () => ({ view: 'planning', loading: true, saving: false, error: '', formError: '', modal: '', form: {},
     accounts: [], entries: [], estimates: [], projection: { months: [], accounts: [] }, from: toDateInput().slice(0,7), count: 12,
-    accountFilter: '', selectedMonth: toDateInput().slice(0,7), requestId: 0,
+    accountFilter: '', selectedMonth: toDateInput().slice(0,7), requestId: 0, syncing: false, syncMessage: '',
     metrics: ['incomeCents','reimbursementsCents','expenseCents','paidExpenseCents','estimateCents','overdueCents','transferCents','resultCents','operationalCents','reserveCents','balanceCents'] }),
   computed: {
     selected() { return this.projection.months.find(m => m.month === this.selectedMonth); },
+    connected() { return this.projection.accounts.filter(a => a.bankBalanceCents !== undefined); },
+    lastSync() { return this.connected.map(a => a.bankLastSuccess).filter(Boolean).sort()[0]; },
+    staleBanks() { return this.connected.some(a => !a.bankLastSuccess || Date.now() - Date.parse(a.bankLastSuccess) > SYNC_INTERVAL_MS); },
     categories() { return [...new Set([...this.entries.map(e => e.category), ...this.estimates.map(e => e.category)].filter(Boolean))].sort(); },
   },
-  async mounted() { await this.load(); },
+  async mounted() { await this.load(); if (this.staleBanks) await this.syncBanks(); },
   methods: {
     money(value) { return value == null ? this.$t('finance.unknown') : currency(value / 100); },
     monthLabel(value) { return new Intl.DateTimeFormat(this.$i18n.locale, { month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}-15T12:00:00Z`)); },
@@ -123,6 +129,18 @@ export default {
         this.projection = data;
         if (!data.months.some(m => m.month === this.selectedMonth)) this.selectedMonth = this.from;
       } catch (err) { if (request === this.requestId) this.error = errorMessage(this.$t, err); }
+    },
+    async syncBanks() {
+      if (this.syncing) return;
+      this.syncing = true; this.error = '';
+      try {
+        const results = (await api.post('/finance/banking/sync', {})).results || [];
+        const total = key => results.reduce((sum, r) => sum + (r[key] || 0), 0);
+        this.syncMessage = this.$t('banking.syncSummary', { imported: total('imported'), updated: total('updated'), transfers: total('transfers') });
+        if (results.some(r => r.status !== 'ok')) this.syncMessage += ' ' + this.$t('banking.syncPartial');
+        await this.loadProjection();
+      } catch (err) { this.error = errorMessage(this.$t, err); }
+      finally { this.syncing = false; }
     },
     show(modal, form) { this.form = form; this.formError = ''; this.modal = modal; },
     openAccount(a) { this.show('accounts', a ? { ...a, amount: centsInput(a.openingBalanceCents) } : { name: '', kind: 'operational', openingDate: toDateInput(), amount: '' }); },

@@ -73,7 +73,10 @@
     "amount": "Valor por ocorrência (R$)",
     "category": "Categoria",
     "paidDate": "Data efetiva do pagamento / recebimento",
-    "invalidMoney": "Informe um valor com no máximo duas casas decimais, sem separador de milhares."
+    "invalidMoney": "Informe um valor com no máximo duas casas decimais, sem separador de milhares.",
+    "syncBanks": "Atualizar contas",
+    "syncing": "Atualizando…",
+    "syncedAt": "Contas conectadas atualizadas em {date}."
   },
   "notifications": {
     "title": "Notificações",

@@ -73,7 +73,10 @@
     "amount": "Amount per occurrence (BRL)",
     "category": "Category",
     "paidDate": "Actual payment / receipt date",
-    "invalidMoney": "Enter an amount with at most two decimal places and no thousands separator."
+    "invalidMoney": "Enter an amount with at most two decimal places and no thousands separator.",
+    "syncBanks": "Update accounts",
+    "syncing": "Updating…",
+    "syncedAt": "Connected accounts updated on {date}."
   },
   "notifications": {
     "title": "Notifications",
