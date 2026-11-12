@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mountPage } from '@yper/test-utils';
 import { flushPromises } from '@vue/test-utils';
 import ptBR from '../../src/locales/pt-BR.json';
-import { moneyToCents } from '../../src/finance.js';
+import { moneyToCents, activeIn } from '../../src/finance.js';
 vi.mock('@/api', async () => {
   const { createFakeApi } = await import('@yper/test-utils');
   const client = createFakeApi(); return { ...client, default: client };
@@ -102,5 +102,48 @@ describe('Finance', () => {
     const { wrapper } = await mountPage(Finance, { messages: ptBR, api: client });
     expect(wrapper.find('.sync-banks').exists()).toBe(false);
     wrapper.unmount();
+  });
+  it('shows main projection metrics and reveals the others on demand', async () => {
+    const get = api.get.getMockImplementation();
+    const month = { month: '2026-11', incomeCents: 1, reimbursementsCents: 0, expenseCents: 2, paidExpenseCents: 0, estimateCents: 0, overdueCents: 0, transferCents: 0, resultCents: -1, operationalCents: null, reserveCents: null, balanceCents: 5, groups: {}, details: [] };
+    api.get.mockImplementation(async path => path.startsWith('/finance/projection') ? { accounts: [account], months: [month], bankPending: 3 } : get(path));
+    const { wrapper } = await mountPage(Finance, { messages: ptBR, api: client });
+    const rows = () => wrapper.findAll('.comparison tbody th').map(th => th.text());
+    expect(rows()).toEqual([ptBR.finance.incomeCents, ptBR.finance.expenseCents, ptBR.finance.resultCents, ptBR.finance.balanceCents]);
+    await wrapper.find('.more-metrics').trigger('click');
+    expect(rows()).toContain(ptBR.finance.overdueCents);
+    expect(wrapper.find('.pending').exists()).toBe(true);
+    await wrapper.findAll('.tabs .btn')[2].trigger('click');
+    expect(wrapper.find('.pending').exists()).toBe(false);
+    wrapper.unmount();
+  });
+  it('filters entries by origin and active month and shows their category', async () => {
+    const get = api.get.getMockImplementation();
+    const entries = [
+      { _id: 'imported', revision: 0, description: 'Mercado', type: 'expense', repeat: 'once', date: '2026-10-05', amountCents: 100, account: 'account', category: '', bankSource: 'm1', overrides: [] },
+      { _id: 'plan', revision: 0, description: 'Aluguel', type: 'expense', repeat: 'monthly', date: '2026-01-10', amountCents: 200, account: 'account', category: 'Casa', overrides: [] },
+      { _id: 'old', revision: 0, description: 'Antigo', type: 'expense', repeat: 'once', date: '2026-09-05', amountCents: 300, account: 'account', category: 'Casa', overrides: [] },
+    ];
+    api.get.mockImplementation(async path => path === '/finance/entries' ? { entries } : get(path));
+    const { wrapper } = await mountPage(Finance, { messages: ptBR, api: client });
+    await wrapper.findAll('.tabs .btn')[2].trigger('click');
+    await wrapper.find('#entries-month').setValue('2026-10');
+    const names = () => wrapper.findAll('.entries-list strong:first-child').map(n => n.text());
+    expect(names()).toEqual(['Mercado', 'Aluguel']);
+    expect(wrapper.find('.entries-list').text()).toContain(ptBR.banking.uncategorized);
+    await wrapper.find('#entries-origin').setValue('planned');
+    expect(names()).toEqual(['Aluguel']);
+    await wrapper.find('#entries-origin').setValue('imported');
+    expect(names()).toEqual(['Mercado']);
+    wrapper.unmount();
+  });
+  it('knows when a plan is active in a month', () => {
+    expect(activeIn({ repeat: 'once', date: '2026-10-05' }, '2026-10')).toBe(true);
+    expect(activeIn({ repeat: 'once', date: '2026-10-05' }, '2026-11')).toBe(false);
+    expect(activeIn({ repeat: 'monthly', date: '2026-01-10', endDate: '2026-06-10' }, '2026-07')).toBe(false);
+    expect(activeIn({ repeat: 'monthly', date: '2026-01-10' }, '2025-12')).toBe(false);
+    expect(activeIn({ repeat: 'installments', date: '2026-01-10', installment: 2, totalInstallments: 4 }, '2026-03')).toBe(true);
+    expect(activeIn({ repeat: 'installments', date: '2026-01-10', installment: 2, totalInstallments: 4 }, '2026-04')).toBe(false);
+    expect(activeIn({ repeat: 'once', date: '2026-10-05' }, '')).toBe(true);
   });
 });

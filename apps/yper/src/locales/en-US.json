@@ -76,7 +76,14 @@
     "invalidMoney": "Enter an amount with at most two decimal places and no thousands separator.",
     "syncBanks": "Update accounts",
     "syncing": "Updating…",
-    "syncedAt": "Connected accounts updated on {date}."
+    "syncedAt": "Connected accounts updated on {date}.",
+    "pendingShort": "{count} bank movement(s) to review.",
+    "moreMetrics": "More indicators",
+    "lessMetrics": "Fewer indicators",
+    "origin": "Origin",
+    "origin_all": "All",
+    "origin_imported": "Imported from bank",
+    "origin_planned": "Planned"
   },
   "notifications": {
     "title": "Notifications",

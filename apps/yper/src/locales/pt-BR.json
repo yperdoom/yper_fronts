@@ -76,7 +76,14 @@
     "invalidMoney": "Informe um valor com no máximo duas casas decimais, sem separador de milhares.",
     "syncBanks": "Atualizar contas",
     "syncing": "Atualizando…",
-    "syncedAt": "Contas conectadas atualizadas em {date}."
+    "syncedAt": "Contas conectadas atualizadas em {date}.",
+    "pendingShort": "{count} movimentação(ões) do banco para revisar.",
+    "moreMetrics": "Mais indicadores",
+    "lessMetrics": "Menos indicadores",
+    "origin": "Origem",
+    "origin_all": "Todos",
+    "origin_imported": "Importados do banco",
+    "origin_planned": "Planejados"
   },
   "notifications": {
     "title": "Notificações",
